@@ -3,7 +3,7 @@ version: "3.8"
 services:
   nginx-service:
     container_name: nginx
-    image: nginx:stable-alpine
+    image: nginx:1.21.6-alpine
     ports:
       - "8080:80"
     volumes:
@@ -26,7 +26,7 @@ services:
 
   postgres-service:
     container_name: postgres
-    image: postgres:${POSTGRES_VERSION:-14}-alpine
+    image: postgres:14.2-alpine
     ports:
       - "5432"
     restart: always
