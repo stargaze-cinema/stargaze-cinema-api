@@ -27,6 +27,8 @@ services:
   postgres-service:
     container_name: postgres
     image: postgres:${POSTGRES_VERSION:-14}-alpine
+    ports:
+      - "5432"
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-stargaze-cinema}
