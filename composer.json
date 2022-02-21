@@ -1,7 +1,7 @@
 {
     "type": "project",
     "license": "proprietary",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": ">=8.0.2",
@@ -31,6 +31,14 @@
         "symfony/twig-bundle": "6.0.*",
         "symfony/validator": "6.0.*",
         "symfony/yaml": "6.0.*"
+    },
+    "require-dev": {
+        "codeception/codeception": "5.0.0-alpha2",
+        "codeception/module-db": "^3.0",
+        "codeception/module-phpbrowser": "dev-master",
+        "codeception/module-rest": "^3.0",
+        "symfony/maker-bundle": "^1.37",
+        "vlucas/phpdotenv": "^5.4"
     },
     "config": {
         "allow-plugins": {
@@ -72,6 +80,24 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "test": [
+            "vendor/bin/codecept run --steps"
+        ],
+        "test-boot": [
+            "vendor/bin/codecept bootstrap"
+        ],
+        "test-generate-cest": [
+            "vendor/bin/codecept generate:cest"
+        ],
+        "test-generate-cept": [
+            "vendor/bin/codecept generate:cept"
+        ],
+        "test-generate-suite": [
+            "vendor/bin/codecept generate:suite"
+        ],
+        "test-build": [
+            "vendor/bin/codecept build"
         ]
     },
     "conflict": {
@@ -82,8 +108,5 @@
             "allow-contrib": false,
             "require": "6.0.*"
         }
-    },
-    "require-dev": {
-        "symfony/maker-bundle": "^1.37"
     }
 }

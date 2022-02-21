@@ -1,0 +1,16 @@
+actor: ApiTester
+suite_namespace: App\Tests\Api
+modules:
+  enabled:
+    - REST:
+        url: http://nginx/api
+        depends: PhpBrowser
+        part: Json
+    - Db:
+        dsn: "%DB_DSN%"
+        user: "%DB_USER%"
+        password: "%DB_PASSWORD%"
+        # dump: "tests/_data/dump.sql"
+        # populate: true
+        # cleanup: true
+        # populator: "psql -u $user -h $host $dbname < $dump"
