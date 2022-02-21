@@ -16,10 +16,10 @@ class Sessions
     private $id;
 
     #[ORM\OneToOne(targetEntity: Movies::class, cascade: ['persist', 'remove'])]
-    private $movie_id;
+    private $movie;
 
     #[ORM\OneToOne(targetEntity: Halls::class, cascade: ['persist', 'remove'])]
-    private $hall_id;
+    private $hall;
 
     #[ORM\Column(type: 'datetime')]
     private $begin_time;
@@ -40,24 +40,24 @@ class Sessions
 
     public function getMovieId(): ?Movies
     {
-        return $this->movie_id;
+        return $this->movie;
     }
 
-    public function setMovieId(?Movies $movie_id): self
+    public function setMovieId(?Movies $movie): self
     {
-        $this->movie_id = $movie_id;
+        $this->movie = $movie;
 
         return $this;
     }
 
     public function getHallId(): ?Halls
     {
-        return $this->hall_id;
+        return $this->hall;
     }
 
-    public function setHallId(?Halls $hall_id): self
+    public function setHallId(?Halls $hall): self
     {
-        $this->hall_id = $hall_id;
+        $this->hall = $hall;
 
         return $this;
     }

@@ -16,10 +16,10 @@ class Tickets
     private $id;
 
     #[ORM\ManyToOne(targetEntity: Users::class, inversedBy: 'tickets')]
-    private $user_id;
+    private $user;
 
     #[ORM\OneToOne(targetEntity: Sessions::class, cascade: ['persist', 'remove'])]
-    private $session_id;
+    private $session;
 
     #[ORM\Column(type: 'smallint')]
     private $place;
@@ -37,24 +37,24 @@ class Tickets
 
     public function getUserId(): ?Users
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?Users $user_id): self
+    public function setUserId(?Users $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
     public function getSessionId(): ?Sessions
     {
-        return $this->session_id;
+        return $this->session;
     }
 
-    public function setSessionId(?Sessions $session_id): self
+    public function setSessionId(?Sessions $session): self
     {
-        $this->session_id = $session_id;
+        $this->session = $session;
 
         return $this;
     }

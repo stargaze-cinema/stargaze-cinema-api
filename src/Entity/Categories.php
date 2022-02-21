@@ -18,11 +18,14 @@ class Categories
     #[ORM\Column(type: 'string', length: 32)]
     private $name;
 
+    #[ORM\ManyToOne(targetEntity: Movies::class, inversedBy: 'category_id')]
+    private $movies;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private $created_at;
 
-    #[ORM\ManyToOne(targetEntity: Movies::class, inversedBy: 'category_id')]
-    private $movies;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private $updated_at;
 
     public function getId(): ?int
     {
@@ -41,6 +44,18 @@ class Categories
         return $this;
     }
 
+    public function getMovies(): ?Movies
+    {
+        return $this->movies;
+    }
+
+    public function setMovies(?Movies $movies): self
+    {
+        $this->movies = $movies;
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->created_at;
@@ -53,14 +68,14 @@ class Categories
         return $this;
     }
 
-    public function getMovies(): ?Movies
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->movies;
+        return $this->updated_at;
     }
 
-    public function setMovies(?Movies $movies): self
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
     {
-        $this->movies = $movies;
+        $this->updated_at = $updated_at;
 
         return $this;
     }
