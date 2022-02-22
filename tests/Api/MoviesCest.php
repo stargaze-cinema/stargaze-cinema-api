@@ -13,7 +13,7 @@ class MoviesCest
             'title' => "Raya And The Last Dragon",
             'description' => "Some text.",
             'price' => 10.00,
-            'year' => 2022,
+            'year' => 2021,
             'duration' => 120,
             'created_at' => date("Y-m-d", time()),
             'updated_at' => date("Y-m-d", time())
@@ -29,25 +29,32 @@ class MoviesCest
         ]);
     }
 
-    public function tryToPostMovie(ApiTester $I)
+    public function tryToPostPatchDeleteMovie(ApiTester $I)
     {
-        $data = [
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPost('/movies', [
             'title' => "Raya And The Last Dragon",
             'description' => "Some text.",
             'price' => 10.00,
-            'year' => 2022,
-            'duration' => 120,
-            'createdAt' => "2022-02-21T16:47:20+00:00",
-            'updatedAt' => "2022-02-21T16:47:20+00:00"
-        ];
-
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPost('/movies', $data);
+            'year' => 2021,
+            'duration' => 120
+        ]);
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
-        $I->seeResponseMatchesJsonType([
-            "title" => 'string'
+
+        $response = json_decode($I->grabResponse());
+        $I->haveHttpHeader('Content-Type', 'application/merge-patch+json');
+        $I->sendPatch("/movies/" . $response->id, [
+            'description' => "Some updated text."
         ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'description' => "Some updated text."
+        ]);
+
+        $I->deleteHeader('Content-Type');
+        $I->sendDelete("/movies/" . $response->id);
+        $I->seeResponseCodeIs(204);
     }
 }

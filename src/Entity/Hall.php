@@ -3,37 +3,29 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\HallsRepository;
+use App\Repository\HallRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: HallsRepository::class)]
+#[ORM\Entity(repositoryClass: HallRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 #[ApiResource]
-class Halls
+class Hall
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    use Id;
+    use Timestamps;
 
     #[ORM\Column(type: 'string', length: 16)]
+    #[Assert\NotBlank()]
     private $name;
 
     #[ORM\Column(type: 'smallint')]
+    #[Assert\NotBlank()]
     private $capacity;
 
     #[ORM\Column(type: 'string', length: 8)]
+    #[Assert\NotBlank()]
     private $type;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $created_at;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $updated_at;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getName(): ?string
     {
@@ -67,30 +59,6 @@ class Halls
     public function setType(string $type): self
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
-    {
-        $this->updated_at = $updated_at;
 
         return $this;
     }

@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Producers;
+use App\Entity\Producer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Producers|null find($id, $lockMode = null, $lockVersion = null)
- * @method Producers|null findOneBy(array $criteria, array $orderBy = null)
- * @method Producers[]    findAll()
- * @method Producers[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Producer|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Producer|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Producer[]    findAll()
+ * @method Producer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProducersRepository extends ServiceEntityRepository
+class ProducerRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Producers::class);
+        parent::__construct($registry, Producer::class);
     }
 
     // /**
-    //  * @return Producers[] Returns an array of Producers objects
+    //  * @return Producer[] Returns an array of Producer objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class ProducersRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Producers
+    public function findOneBySomeField($value): ?Producer
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

@@ -1,7 +1,17 @@
 api_platform:
+    title: 'Stargaze Cinema API'
+    description: 'API for Stargaze Cinema'
+    version: '1.0.0'
+    eager_loading:
+        enabled: true
+    doctrine:
+        enabled: true
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
         json: ['application/merge-patch+json']
+    enable_swagger: true
+    enable_swagger_ui: true
     swagger:
         versions: [3]
+        api_keys: []

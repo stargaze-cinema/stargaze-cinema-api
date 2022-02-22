@@ -12,5 +12,5 @@ modules:
         password: "%DB_PASSWORD%"
         # dump: "tests/_data/dump.sql"
         # populate: true
-        # cleanup: true
+        cleanup: true
         # populator: "psql -u $user -h $host $dbname < $dump"
