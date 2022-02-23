@@ -9,7 +9,9 @@ class MoviesCest
     public function tryToGetMovie(ApiTester $I)
     {
         $I->haveInDatabase('movies', [
-            'id' => 1,
+            'id' => 3,
+            'category_id' => 1,
+            'producer_id' => 1,
             'title' => "Raya And The Last Dragon",
             'description' => "Some text.",
             'price' => 10.00,
@@ -34,9 +36,11 @@ class MoviesCest
         $I->haveHttpHeader('Accept', 'application/json');
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost('/movies', [
+            'category' => "Cartoon",
+            'producer' => "Somebody",
             'title' => "Raya And The Last Dragon",
             'description' => "Some text.",
-            'price' => 10.00,
+            'price' => 10,
             'year' => 2021,
             'duration' => 120
         ]);
@@ -45,16 +49,16 @@ class MoviesCest
 
         $response = json_decode($I->grabResponse());
         $I->haveHttpHeader('Content-Type', 'application/merge-patch+json');
-        $I->sendPatch("/movies/" . $response->id, [
+        $I->sendPatch("/movies/" . $response->movie->id, [
             'description' => "Some updated text."
         ]);
-        $I->seeResponseCodeIs(200);
+        $I->seeResponseCodeIs(201);
         $I->seeResponseContainsJson([
             'description' => "Some updated text."
         ]);
 
         $I->deleteHeader('Content-Type');
-        $I->sendDelete("/movies/" . $response->id);
+        $I->sendDelete("/movies/" . $response->movie->id);
         $I->seeResponseCodeIs(204);
     }
 }

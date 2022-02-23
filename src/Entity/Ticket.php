@@ -2,21 +2,18 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
+#[ORM\Table(name: "tickets")]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource]
 class Ticket
 {
     use Id;
     use Timestamps;
 
     #[ORM\Column(type: 'smallint')]
-    #[Assert\NotBlank()]
     private $place;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -61,5 +58,41 @@ class Ticket
         $this->session = $session;
 
         return $this;
+    }
+
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'place' => $this->place,
+            'client' => [
+                'id' => $this->client->getId(),
+                'name' => $this->client->name,
+                'email' => $this->client->email,
+                'role' => $this->client->role,
+            ],
+            'session' => [
+                'id' => $this->session->getId(),
+                'name' => $this->session->name,
+                'movie' => [
+                    'id' => $this->session->movie->getId(),
+                    'title' => $this->session->movie->title,
+                    'description' => $this->session->movie->description,
+                    'poster' => $this->session->movie->poster,
+                    'price' => $this->session->movie->price,
+                    'year' => $this->session->movie->year,
+                    'duration' => $this->session->movie->duration,
+                ],
+                'hall' => [
+                    'id' => $this->session->hall->getId(),
+                    'name' => $this->session->hall->name,
+                    'capacity' => $this->session->hall->capacity,
+                    'type' => $this->session->hall->type
+                ],
+            ],
+            'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
+            'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
+        ];
     }
 }

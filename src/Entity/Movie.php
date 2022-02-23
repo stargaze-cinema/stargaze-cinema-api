@@ -3,20 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\MovieRepository;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
+#[ORM\Table(name: "movies")]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource]
-class Movie
+class Movie implements \JsonSerializable
 {
     use Id;
     use Timestamps;
 
     #[ORM\Column(type: 'string', length: 64)]
-    #[Assert\NotBlank()]
     private $title;
 
     #[ORM\Column(type: 'string', length: 65535, nullable: true)]
@@ -26,25 +23,20 @@ class Movie
     private $poster;
 
     #[ORM\Column(type: 'float')]
-    #[Assert\NotBlank()]
     private $price;
 
     #[ORM\Column(type: 'smallint')]
-    #[Assert\NotBlank()]
     private $year;
 
     #[ORM\Column(type: 'smallint')]
-    #[Assert\NotBlank()]
     private $duration;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank()]
     private $category;
 
     #[ORM\ManyToOne(targetEntity: Producer::class, inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank()]
     private $producer;
 
     public function getTitle(): ?string
@@ -76,7 +68,7 @@ class Movie
         return $this->poster;
     }
 
-    public function setPoster(string $poster): self
+    public function setPoster(?string $poster): self
     {
         $this->poster = $poster;
 
@@ -141,5 +133,28 @@ class Movie
         $this->producer = $producer;
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'poster' => $this->poster,
+            'price' => $this->price,
+            'year' => $this->year,
+            'duration' => $this->duration,
+            'category' => [
+                'id' => $this->category->getId(),
+                'name' => $this->category->getName(),
+            ],
+            'producer' => [
+                'id' => $this->producer->getId(),
+                'name' => $this->producer->getName(),
+            ],
+            'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
+            'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
+        ];
     }
 }

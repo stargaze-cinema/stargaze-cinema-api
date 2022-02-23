@@ -2,23 +2,20 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProducerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProducerRepository::class)]
+#[ORM\Table(name: "producers")]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource]
-class Producer
+class Producer implements \JsonSerializable
 {
     use Id;
     use Timestamps;
 
     #[ORM\Column(type: 'string', length: 64)]
-    #[Assert\NotBlank()]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'producer', targetEntity: Movie::class)]
@@ -69,5 +66,26 @@ class Producer
         }
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'movies' => $this->movies->map(function (Movie $movie) {
+                return [
+                    'id' => $movie->getId(),
+                    'title' => $movie->title,
+                    'description' => $movie->description,
+                    'poster' => $movie->poster,
+                    'price' => $movie->price,
+                    'year' => $movie->year,
+                    'duration' => $movie->duration,
+                ];
+            })->toArray(),
+            'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
+            'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
+        ];
     }
 }

@@ -2,29 +2,24 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\HallRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HallRepository::class)]
+#[ORM\Table(name: "halls")]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource]
 class Hall
 {
     use Id;
     use Timestamps;
 
     #[ORM\Column(type: 'string', length: 16)]
-    #[Assert\NotBlank()]
     private $name;
 
     #[ORM\Column(type: 'smallint')]
-    #[Assert\NotBlank()]
     private $capacity;
 
     #[ORM\Column(type: 'string', length: 8)]
-    #[Assert\NotBlank()]
     private $type;
 
     public function getName(): ?string
@@ -61,5 +56,17 @@ class Hall
         $this->type = $type;
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'capacity' => $this->capacity,
+            'type' => $this->type,
+            'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
+            'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
+        ];
     }
 }

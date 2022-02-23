@@ -2,25 +2,21 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\SessionRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
+#[ORM\Table(name: "sessions")]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource]
-class Session
+class Session implements \JsonSerializable
 {
     use Id;
     use Timestamps;
 
     #[ORM\Column(type: 'datetime')]
-    #[Assert\NotBlank()]
     private $begin_time;
 
     #[ORM\Column(type: 'datetime')]
-    #[Assert\NotBlank()]
     private $end_time;
 
     #[ORM\ManyToOne(targetEntity: Movie::class)]
@@ -77,5 +73,30 @@ class Session
         $this->hall = $hall;
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'movie' => [
+                'id' => $this->movie->getId(),
+                'title' => $this->movie->title,
+                'description' => $this->movie->description,
+                'poster' => $this->movie->poster,
+                'price' => $this->movie->price,
+                'year' => $this->movie->year,
+                'duration' => $this->movie->duration,
+            ],
+            'hall' => [
+                'id' => $this->hall->getId(),
+                'name' => $this->hall->name,
+                'capacity' => $this->hall->capacity,
+                'type' => $this->hall->type
+            ],
+            'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
+            'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
+        ];
     }
 }

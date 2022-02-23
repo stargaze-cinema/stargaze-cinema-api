@@ -2,33 +2,27 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: "users")]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource]
 class User
 {
     use Id;
     use Timestamps;
 
     #[ORM\Column(type: 'string', length: 32)]
-    #[Assert\NotBlank()]
     private $name;
 
     #[ORM\Column(type: 'string', length: 128, unique: true)]
-    #[Assert\NotBlank()]
     private $email;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank()]
     private $password;
 
     #[ORM\Column(type: 'string', length: 16)]
-    #[Assert\NotBlank()]
     private $role;
 
     public function getName(): ?string
@@ -77,5 +71,17 @@ class User
         $this->role = $role;
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'role' => $this->role,
+            'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
+            'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
+        ];
     }
 }
