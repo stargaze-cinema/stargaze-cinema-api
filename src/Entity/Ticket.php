@@ -1,30 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Repository\TicketRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TicketRepository::class)]
+#[ORM\Entity(repositoryClass: \App\Repository\TicketRepository::class)]
 #[ORM\Table(name: "tickets")]
 #[ORM\HasLifecycleCallbacks()]
 class Ticket
 {
-    use Id;
-    use Timestamps;
+    use EntityIdentifierTrait;
+    use EntityTimestampsTrait;
 
     #[ORM\Column(type: 'smallint')]
-    private $place;
+    private int $place;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $client;
+    private User $client;
 
     #[ORM\ManyToOne(targetEntity: Session::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $session;
+    private Session $session;
 
-    public function getPlace(): ?int
+    public function getPlace(): int
     {
         return $this->place;
     }
@@ -36,32 +37,31 @@ class Ticket
         return $this;
     }
 
-    public function getClient(): ?User
+    public function getClient(): User
     {
         return $this->client;
     }
 
-    public function setClient(?User $client): self
+    public function setClient(User $client): self
     {
         $this->client = $client;
 
         return $this;
     }
 
-    public function getSession(): ?Session
+    public function getSession(): Session
     {
         return $this->session;
     }
 
-    public function setSession(?Session $session): self
+    public function setSession(Session $session): self
     {
         $this->session = $session;
 
         return $this;
     }
 
-
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,

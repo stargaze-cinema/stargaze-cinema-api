@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Parameters;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,7 +23,7 @@ final class CreateMovieParameters
     public $poster;
 
     #[Assert\NotBlank]
-    #[Assert\Type(type: 'integer', message: 'This value {{ value }} should be of type integer.')]
+    #[Assert\Type(type: 'float', message: 'This value {{ value }} should be of type float.')]
     #[Assert\Positive]
     public $price;
 

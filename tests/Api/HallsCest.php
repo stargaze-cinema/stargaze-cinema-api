@@ -1,18 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Api;
 
 use \App\Tests\ApiTester;
 
 class HallsCest
 {
-    public function tryToGetHall(ApiTester $I)
+    public function tryToGetHall(ApiTester $I): void
     {
         $I->haveInDatabase('halls', [
-            'id' => 1,
-            'name' => "Lunar",
+            'id' => 3,
+            'name' => "Moon",
             'capacity' => 100,
-            'type' => 'IMAX'
+            'type' => 'IMAX',
+            'created_at' => date("Y-m-d", time()),
+            'updated_at' => date("Y-m-d", time())
         ]);
 
         $I->sendGet('/halls');
@@ -20,35 +24,74 @@ class HallsCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             [
-                'name' => 'Lunar'
+                'name' => 'Moon'
             ]
         ]);
     }
 
-    public function tryToPostPatchDeleteHall(ApiTester $I)
+    public function tryToGetInvalidHall(ApiTester $I): void
+    {
+        $I->sendGet('/halls/420');
+        $I->seeResponseCodeIs(404);
+    }
+
+    public function tryToPostHall(ApiTester $I): void
     {
         $I->haveHttpHeader('Accept', 'application/json');
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost('/halls', [
-            'name' => 'Lunar',
+            'name' => "Moon",
             'capacity' => 100,
             'type' => 'IMAX'
         ]);
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
+    }
 
-        $response = json_decode($I->grabResponse());
-        $I->haveHttpHeader('Content-Type', 'application/merge-patch+json');
-        $I->sendPatch("/halls/" . $response->id, [
-            'name' => "Stargaze"
+    public function tryToPostInvalidHall(ApiTester $I): void
+    {
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPost('/halls', [
+            'name' => "Moon",
+            'type' => 'IMAX'
+        ]);
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+    }
+
+    public function tryToPatchHall(ApiTester $I): void
+    {
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveInDatabase('halls', [
+            'id' => 3,
+            'name' => "Moon",
+            'capacity' => 100,
+            'type' => 'IMAX',
+            'created_at' => date("Y-m-d", time()),
+            'updated_at' => date("Y-m-d", time())
+        ]);
+        $I->sendPatch("/halls/3", [
+            'name' => "Star"
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
-            'name' => "Stargaze"
+            'name' => "Star"
         ]);
+    }
 
-        $I->deleteHeader('Content-Type');
-        $I->sendDelete("/halls/" . $response->id);
+    public function tryToDeleteHall(ApiTester $I): void
+    {
+        $I->haveInDatabase('halls', [
+            'id' => 3,
+            'name' => "Moon",
+            'capacity' => 100,
+            'type' => 'IMAX',
+            'created_at' => date("Y-m-d", time()),
+            'updated_at' => date("Y-m-d", time())
+        ]);
+        $I->sendDelete("/halls/3");
         $I->seeResponseCodeIs(204);
     }
 }

@@ -1,31 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
 #[ORM\Table(name: "users")]
 #[ORM\HasLifecycleCallbacks()]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use Id;
-    use Timestamps;
+    use EntityIdentifierTrait;
+    use EntityTimestampsTrait;
 
     #[ORM\Column(type: 'string', length: 32)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 128, unique: true)]
-    private $email;
+    private string $email;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $password;
+    private string $password;
 
-    #[ORM\Column(type: 'string', length: 16)]
-    private $role;
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -37,7 +40,7 @@ class User
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -49,7 +52,10 @@ class User
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -61,19 +67,44 @@ class User
         return $this;
     }
 
-    public function getRole(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        return $this->role;
+        $roles = $this->roles;
+        $roles[] = 'USER';
+
+        return array_unique($roles);
     }
 
-    public function setRole(string $role): self
+    public function setRoles(array $roles): self
     {
-        $this->role = $role;
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,

@@ -1,32 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Repository\ProducerRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ProducerRepository::class)]
+#[ORM\Entity(repositoryClass: \App\Repository\ProducerRepository::class)]
 #[ORM\Table(name: "producers")]
 #[ORM\HasLifecycleCallbacks()]
 class Producer implements \JsonSerializable
 {
-    use Id;
-    use Timestamps;
+    use EntityIdentifierTrait;
+    use EntityTimestampsTrait;
 
     #[ORM\Column(type: 'string', length: 64)]
-    private $name;
+    private string $name;
 
     #[ORM\OneToMany(mappedBy: 'producer', targetEntity: Movie::class)]
-    private $movies;
+    private Collection $movies;
 
     public function __construct()
     {
-        $this->movies = new ArrayCollection();
+        $this->movies = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -59,7 +59,6 @@ class Producer implements \JsonSerializable
     public function removeMovie(Movie $movie): self
     {
         if ($this->movies->removeElement($movie)) {
-            // set the owning side to null (unless already changed)
             if ($movie->getProducer() === $this) {
                 $movie->setProducer(null);
             }
@@ -68,7 +67,7 @@ class Producer implements \JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,

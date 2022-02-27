@@ -1,33 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Repository\SessionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SessionRepository::class)]
+#[ORM\Entity(repositoryClass: \App\Repository\SessionRepository::class)]
 #[ORM\Table(name: "sessions")]
 #[ORM\HasLifecycleCallbacks()]
 class Session implements \JsonSerializable
 {
-    use Id;
-    use Timestamps;
+    use EntityIdentifierTrait;
+    use EntityTimestampsTrait;
 
     #[ORM\Column(type: 'datetime')]
-    private $begin_time;
+    private \DateTimeInterface $begin_time;
 
     #[ORM\Column(type: 'datetime')]
-    private $end_time;
+    private \DateTimeInterface $end_time;
 
     #[ORM\ManyToOne(targetEntity: Movie::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $movie;
+    private Movie $movie;
 
     #[ORM\ManyToOne(targetEntity: Hall::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $hall;
+    private Hall $hall;
 
-    public function getBeginTime(): ?\DateTimeInterface
+    public function getBeginTime(): \DateTimeInterface
     {
         return $this->begin_time;
     }
@@ -39,7 +40,7 @@ class Session implements \JsonSerializable
         return $this;
     }
 
-    public function getEndTime(): ?\DateTimeInterface
+    public function getEndTime(): \DateTimeInterface
     {
         return $this->end_time;
     }
@@ -51,31 +52,31 @@ class Session implements \JsonSerializable
         return $this;
     }
 
-    public function getMovie(): ?Movie
+    public function getMovie(): Movie
     {
         return $this->movie;
     }
 
-    public function setMovie(?Movie $movie): self
+    public function setMovie(Movie $movie): self
     {
         $this->movie = $movie;
 
         return $this;
     }
 
-    public function getHall(): ?Hall
+    public function getHall(): Hall
     {
         return $this->hall;
     }
 
-    public function setHall(?Hall $hall): self
+    public function setHall(Hall $hall): self
     {
         $this->hall = $hall;
 
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,

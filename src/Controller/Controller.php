@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -8,88 +10,52 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class Controller extends AbstractController
 {
     /**
-     * @var int HTTP status code - 200 (OK) by default
-     */
-    protected int $statusCode = JsonResponse::HTTP_OK;
-
-    /**
-     * Gets the value of statusCode.
-     *
-     * @return int
-     */
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
-
-    /**
-     * Sets the value of statusCode.
-     *
-     * @param int $statusCode the status code
-     * @return self
-     */
-    protected function setStatusCode(int $statusCode)
-    {
-        $this->statusCode = $statusCode;
-
-        return $this;
-    }
-
-    /**
      * Returns a JSON response
      *
-     * @param mixed $data
-     * @param array $headers
+     * @param mixed $data Payload
+     * @param int $statusCode HTTP status code
+     * @param array $headers HTTP headers
      * @return JsonResponse
      */
-    public function response(mixed $data, array $headers = []): JsonResponse
+    public static function response(mixed $data, int $statusCode = JsonResponse::HTTP_OK, array $headers = []): JsonResponse
     {
-        return new JsonResponse($data, $this->getStatusCode(), $headers);
+        return new JsonResponse($data, $statusCode, $headers);
     }
 
     /**
      * Sets an error message and returns a JSON response
      *
-     * @param array $errors
-     * @param array $headers
+     * @param array $data Information about errors
+     * @param int $statusCode HTTP status code
+     * @param array $headers HTTP headers
      * @return JsonResponse
      */
-    public function respondWithErrors(array $errors, array $headers = []): JsonResponse
+    public static function respondWithErrors(array $errors, int $statusCode = JsonResponse::HTTP_BAD_REQUEST, array $headers = []): JsonResponse
     {
-        $data = [
-            'status' => $this->getStatusCode(),
-            'errors' => $errors,
-        ];
-
-        return new JsonResponse($data, $this->getStatusCode(), $headers);
+        return new JsonResponse($errors, $statusCode, $headers);
     }
 
     /**
      * Sets an error message and returns a JSON response
      *
-     * @param string $success
-     * @param array $headers
+     * @param string $message Message to include
+     * @param array $headers HTTP headers
      * @return JsonResponse
      */
-    public function respondWithSuccess(string $success, array $headers = []): JsonResponse
+    public static function respondWithSuccess(string $message, array $headers = []): JsonResponse
     {
-        $data = [
-            'status' => $this->getStatusCode(),
-            'success' => $success,
-        ];
-
-        return new JsonResponse($data, $this->getStatusCode(), $headers);
+        return new JsonResponse([ "message" => $message ], JsonResponse::HTTP_OK, $headers);
     }
 
     /**
-     * Returns a 401 Unauthorized http response
+     * Returns a 401 Unauthorized HTTP response
      *
-     * @param array $message
+     * @param string $message Message to include
      * @return JsonResponse
      */
-    public function respondUnauthorized(array $message = ['Not authorized!']): JsonResponse
+    public static function respondUnauthorized(string $message = 'Unauthorized.'): JsonResponse
     {
-        return $this->setStatusCode(JsonResponse::HTTP_UNAUTHORIZED)->respondWithErrors($message);
+        return self::respondWithErrors(["message" => $message], JsonResponse::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -98,29 +64,28 @@ class Controller extends AbstractController
      * @param array $message
      * @return JsonResponse
      */
-    public function respondValidationError(array $message = ['Validation error']): JsonResponse
+    public static function respondValidationError(array $message = ['Validation error']): JsonResponse
     {
-        return $this->setStatusCode(JsonResponse::HTTP_UNPROCESSABLE_ENTITY)->respondWithErrors($message);
+        return self::respondWithErrors([$message], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
      * Returns a 404 Not Found
      *
-     * @param array $message
+     * @param string $message Message to include
      * @return JsonResponse
      */
-    public function respondNotFound(array $message = ['Not found!']): JsonResponse
+    public static function respondNotFound(string $message = 'Not found!'): JsonResponse
     {
-        return $this->setStatusCode(JsonResponse::HTTP_NOT_FOUND)->respondWithErrors($message);
+        return self::respondWithErrors(["message" => $message], JsonResponse::HTTP_NOT_FOUND);
     }
 
     /**
      * Returns a 204 No Content
      *
-     * @param array $message
      * @return JsonResponse
      */
-    public function respondNoContent(): JsonResponse
+    public static function respondNoContent(): JsonResponse
     {
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
@@ -128,15 +93,21 @@ class Controller extends AbstractController
     /**
      * Returns a 201 Created
      *
-     * @param array $data
+     * @param array $message Message to include
      * @return JsonResponse
      */
-    public function respondCreated(array $data = []): JsonResponse
+    public static function respondCreated(array $message = []): JsonResponse
     {
-        return $this->setStatusCode(JsonResponse::HTTP_CREATED)->response($data);
+        return self::response($message, JsonResponse::HTTP_CREATED);
     }
 
-    protected function transformJsonBody(\Symfony\Component\HttpFoundation\Request $request): \Symfony\Component\HttpFoundation\Request
+    /**
+     * Transforms payload of the request to readable data
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Request
+     */
+    protected static function transformJsonBody(\Symfony\Component\HttpFoundation\Request $request): \Symfony\Component\HttpFoundation\Request
     {
         $data = json_decode($request->getContent(), true);
 

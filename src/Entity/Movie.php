@@ -1,45 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Repository\MovieRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MovieRepository::class)]
+#[ORM\Entity(repositoryClass: \App\Repository\MovieRepository::class)]
 #[ORM\Table(name: "movies")]
 #[ORM\HasLifecycleCallbacks()]
 class Movie implements \JsonSerializable
 {
-    use Id;
-    use Timestamps;
+    use EntityIdentifierTrait;
+    use EntityTimestampsTrait;
 
     #[ORM\Column(type: 'string', length: 64)]
-    private $title;
+    private string $title;
 
     #[ORM\Column(type: 'string', length: 65535, nullable: true)]
-    private $description;
+    private ?string $description;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $poster;
+    private ?string $poster;
 
-    #[ORM\Column(type: 'float')]
-    private $price;
-
-    #[ORM\Column(type: 'smallint')]
-    private $year;
+    #[ORM\Column(type: 'decimal')]
+    private float $price;
 
     #[ORM\Column(type: 'smallint')]
-    private $duration;
+    private int $year;
+
+    #[ORM\Column(type: 'smallint')]
+    private int $duration;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
-    private $category;
+    private Category $category;
 
     #[ORM\ManyToOne(targetEntity: Producer::class, inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
-    private $producer;
+    private Producer $producer;
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -75,7 +76,7 @@ class Movie implements \JsonSerializable
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): float
     {
         return $this->price;
     }
@@ -87,7 +88,7 @@ class Movie implements \JsonSerializable
         return $this;
     }
 
-    public function getYear(): ?int
+    public function getYear(): int
     {
         return $this->year;
     }
@@ -99,7 +100,7 @@ class Movie implements \JsonSerializable
         return $this;
     }
 
-    public function getDuration(): ?int
+    public function getDuration(): int
     {
         return $this->duration;
     }
@@ -111,7 +112,7 @@ class Movie implements \JsonSerializable
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): Category
     {
         return $this->category;
     }
@@ -123,7 +124,7 @@ class Movie implements \JsonSerializable
         return $this;
     }
 
-    public function getProducer(): ?Producer
+    public function getProducer(): Producer
     {
         return $this->producer;
     }
@@ -135,7 +136,7 @@ class Movie implements \JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,

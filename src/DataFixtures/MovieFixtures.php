@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Movie;
@@ -34,11 +36,11 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
-            'App\DataFixtures\CategoryFixtures',
-            'App\DataFixtures\ProducerFixtures'
+            CategoryFixtures::class,
+            ProducerFixtures::class
         ];
     }
 }

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Api;
 
 use \App\Tests\ApiTester;
 
 class SessionsCest
 {
-    public function tryToGetSession(ApiTester $I)
+    public function tryToGetSession(ApiTester $I): void
     {
         $I->haveInDatabase('sessions', [
             'id' => 1,
@@ -26,7 +28,7 @@ class SessionsCest
         ]);
     }
 
-    public function tryToPostPatchDeleteSession(ApiTester $I)
+    public function tryToPostPatchDeleteSession(ApiTester $I): void
     {
         $I->haveHttpHeader('Accept', 'application/json');
         $I->haveHttpHeader('Content-Type', 'application/json');

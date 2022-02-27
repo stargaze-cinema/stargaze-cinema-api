@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Repository\HallRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: HallRepository::class)]
+#[ORM\Entity(repositoryClass: \App\Repository\HallRepository::class)]
 #[ORM\Table(name: "halls")]
 #[ORM\HasLifecycleCallbacks()]
 class Hall
 {
-    use Id;
-    use Timestamps;
+    use EntityIdentifierTrait;
+    use EntityTimestampsTrait;
 
     #[ORM\Column(type: 'string', length: 16)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'smallint')]
-    private $capacity;
+    private int $capacity;
 
     #[ORM\Column(type: 'string', length: 8)]
-    private $type;
+    private string $type;
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -34,7 +35,7 @@ class Hall
         return $this;
     }
 
-    public function getCapacity(): ?int
+    public function getCapacity(): int
     {
         return $this->capacity;
     }
@@ -46,7 +47,7 @@ class Hall
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -58,7 +59,7 @@ class Hall
         return $this;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,

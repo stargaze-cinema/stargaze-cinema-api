@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-trait Id
+trait EntityIdentifierTrait
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

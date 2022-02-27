@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Hall;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Hall|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,39 +12,10 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Hall[]    findAll()
  * @method Hall[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class HallRepository extends ServiceEntityRepository
+class HallRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
     {
         parent::__construct($registry, Hall::class);
     }
-
-    // /**
-    //  * @return Hall[] Returns an array of Hall objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('h.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Hall
-    {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
