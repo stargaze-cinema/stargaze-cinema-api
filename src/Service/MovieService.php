@@ -6,6 +6,8 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Movie;
+use App\Parameters\CreateMovieParameters;
+use App\Parameters\UpdateMovieParameters;
 
 class MovieService
 {
@@ -14,28 +16,20 @@ class MovieService
     ) {
     }
 
-    public function saveMovie(
-        string $title,
-        string | null $description,
-        string | null $poster,
-        float $price,
-        int $year,
-        int $duration,
-        string $category,
-        string $producer
-    ): Movie {
+    public function saveMovie(CreateMovieParameters $params): Movie
+    {
         $movie = new Movie();
-        $movie->setTitle($title);
-        $movie->setDescription($description);
-        $movie->setPoster($poster);
-        $movie->setPrice($price);
-        $movie->setYear($year);
-        $movie->setDuration($duration);
+        $movie->setTitle($params->title);
+        $movie->setDescription($params->description);
+        $movie->setPoster($params->poster);
+        $movie->setPrice($params->price);
+        $movie->setYear($params->year);
+        $movie->setDuration($params->duration);
         $movie->setCategory(
-            $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $category])
+            $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $params->category])
         );
         $movie->setProducer(
-            $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $producer])
+            $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $params->producer])
         );
 
         $this->entityManager->persist($movie);
@@ -45,44 +39,35 @@ class MovieService
     }
 
 
-    public function updateMovie(
-        Movie $movie,
-        string | null $title,
-        string | null $description,
-        string | null $poster,
-        float | null $price,
-        int | null $year,
-        int | null $duration,
-        string | null $category,
-        string | null $producer
-    ): Movie {
-        if ($title) {
-            $movie->setTitle($title);
+    public function updateMovie(Movie $movie, UpdateMovieParameters $params): Movie
+    {
+        if ($params->title) {
+            $movie->setTitle($params->title);
         }
-        if ($description) {
-            $movie->setDescription($description);
+        if ($params->description) {
+            $movie->setDescription($params->description);
         }
-        if ($price) {
-            $movie->setPrice($price);
+        if ($params->price) {
+            $movie->setPrice($params->price);
         }
-        if ($year) {
-            $movie->setYear($year);
+        if ($params->year) {
+            $movie->setYear($params->year);
         }
-        if ($poster) {
-            $movie->setPoster($poster);
+        if ($params->poster) {
+            $movie->setPoster($params->poster);
         }
-        if ($duration) {
-            $movie->setDuration($duration);
+        if ($params->duration) {
+            $movie->setDuration($params->duration);
         }
-        if ($category) {
-            $categoryObj = $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $category]);
+        if ($params->category) {
+            $categoryObj = $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $params->category]);
             if (!$categoryObj) {
                 throw new \Exception("Selected category does not exist.");
             }
             $movie->setProducer($categoryObj);
         }
-        if ($producer) {
-            $producerObj = $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $producer]);
+        if ($params->producer) {
+            $producerObj = $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $params->producer]);
             if (!$producerObj) {
                 throw new \Exception("Selected producer does not exist.");
             }

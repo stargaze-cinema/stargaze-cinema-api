@@ -16,6 +16,11 @@ final class UpdateMovieParameters
     #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
     public $description;
 
+    #[Assert\Length(max: 255)]
+    #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
+    #[Assert\Url]
+    public $poster;
+
     #[Assert\Type(type: 'integer', message: 'This value {{ value }} should be of type integer.')]
     #[Assert\Positive]
     #[Assert\GreaterThanOrEqual(value: 1888)]
@@ -36,10 +41,11 @@ final class UpdateMovieParameters
     #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
     public $producer;
 
-    public function __construct($title, $description, $price, $year, $duration, $category, $producer)
+    public function __construct($title, $description, $poster, $price, $year, $duration, $category, $producer)
     {
         $this->title = $title;
         $this->description = $description;
+        $this->poster = $poster;
         $this->price = $price;
         $this->title = $title;
         $this->year = $year;

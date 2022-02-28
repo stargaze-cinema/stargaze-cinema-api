@@ -21,7 +21,11 @@ class MovieController extends Controller
     public function index(): JsonResponse
     {
         $movies = $this->movieRepository->findAll();
-        return $this->response($movies);
+        if (!$movies) {
+            return new JsonResponse(["message" => 'No movies found.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($movies);
     }
 
     #[Route('/movies', name: 'movies.store', methods: ['POST'])]
@@ -29,42 +33,42 @@ class MovieController extends Controller
     {
         $request = $this->transformJsonBody($request);
         if (!$request) {
-            return self::respondValidationError();
+            return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $errors = $this->validator->validate(
-            new \App\Parameters\CreateMovieParameters(
-                $title = $request->get('title'),
-                $description = $request->get('description'),
-                $poster = $request->get('poster'),
-                $price = $request->get('price'),
-                $year = $request->get('year'),
-                $duration = $request->get('duration'),
-                $category = $request->get('category'),
-                $producer = $request->get('producer')
-            )
+        $params = new \App\Parameters\CreateMovieParameters(
+            title: $request->get('title'),
+            description: $request->get('description'),
+            poster: $request->get('poster'),
+            price: $request->get('price'),
+            year: $request->get('year'),
+            duration: $request->get('duration'),
+            category: $request->get('category'),
+            producer: $request->get('producer')
         );
+
+        $errors = $this->validator->validate($params);
         if (count($errors) > 0) {
             $errorMessage = [];
             foreach ($errors as $error) {
-                array_push($errorMessage, $error->getMessage());
+                array_push($errorMessage, [$error->getPropertyPath() => $error->getMessage()]);
             }
-            return self::respondValidationError($errorMessage);
+            return new JsonResponse($errorMessage, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $movie = $this->movieService->saveMovie($title, $description, $poster, $price, $year, $duration, $category, $producer);
+        $movie = $this->movieService->saveMovie($params);
 
-        return self::respondCreated(["message" => "Movie was successfully created.", "movie" => $movie]);
+        return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
 
     #[Route('/movies/{id}', name: 'movies.show', methods: ['GET'])]
     public function show(int $id): JsonResponse
     {
         if (!$movie = $this->movieRepository->find($id)) {
-            return self::respondNotFound();
+            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        return self::response($movie);
+        return new JsonResponse($movie);
     }
 
     #[Route('/movies/{id}', name: 'movies.update', methods: ['PATCH', 'PUT'])]
@@ -72,57 +76,47 @@ class MovieController extends Controller
     {
         $request = self::transformJsonBody($request);
         if (!$request) {
-            return self::respondValidationError();
+            return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (!$movie = $this->movieRepository->find($id)) {
-            return self::respondNotFound();
+            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $errors = $this->validator->validate(
-            new \App\Parameters\UpdateMovieParameters(
-                $title = $request->get('title'),
-                $description = $request->get('description'),
-                $poster = $request->get('poster'),
-                $price = $request->get('price'),
-                $year = $request->get('year'),
-                $duration = $request->get('duration'),
-                $category = $request->get('category'),
-                $producer = $request->get('producer')
-            )
+        $params = new \App\Parameters\UpdateMovieParameters(
+            title: $request->get('title'),
+            description: $request->get('description'),
+            poster: $request->get('poster'),
+            price: $request->get('price'),
+            year: $request->get('year'),
+            duration: $request->get('duration'),
+            category: $request->get('category'),
+            producer: $request->get('producer')
         );
+
+        $errors = $this->validator->validate($params);
         if (count($errors) > 0) {
             $errorMessage = [];
             foreach ($errors as $error) {
-                array_push($errorMessage, $error->getMessage());
+                array_push($errorMessage, [$error->getPropertyPath() => $error->getMessage()]);
             }
-            return self::respondValidationError($errorMessage);
+            return new JsonResponse(["message" => $errorMessage], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $movie = $this->movieService->updateMovie(
-            $movie,
-            $title,
-            $description,
-            $poster,
-            $price,
-            $year,
-            $duration,
-            $category,
-            $producer
-        );
+        $movie = $this->movieService->updateMovie($movie, $params);
 
-        return self::respondCreated(["message" => "Movie was successfully updated.", "movie" => $movie]);
+        return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
 
     #[Route('/movies/{id}', name: 'movies.destroy', methods: ['DELETE'])]
     public function destroy(int $id): JsonResponse
     {
         if (!$movie = $this->movieRepository->find($id)) {
-            return self::respondNotFound();
+            return new JsonResponse('No movie found.', JsonResponse::HTTP_NOT_FOUND);
         }
 
         $this->movieService->deleteMovie($movie);
 
-        return self::respondNoContent();
+        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }
 }

@@ -40,12 +40,6 @@ final class Version20220225191542 extends \Doctrine\Migrations\AbstractMigration
     public function down(Schema $schema): void
     {
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE movies DROP CONSTRAINT movies_category_fkey');
-        $this->addSql('ALTER TABLE movies DROP CONSTRAINT movies_producer_fkey');
-        $this->addSql('ALTER TABLE sessions DROP CONSTRAINT sessions_movie_fkey');
-        $this->addSql('ALTER TABLE sessions DROP CONSTRAINT sessions_hall_fkey');
-        $this->addSql('ALTER TABLE tickets DROP CONSTRAINT tickets_client_fkey');
-        $this->addSql('ALTER TABLE tickets DROP CONSTRAINT tickets_session_fkey');
         $this->addSql('DROP TABLE categories');
         $this->addSql('DROP TABLE halls');
         $this->addSql('DROP TABLE movies');
