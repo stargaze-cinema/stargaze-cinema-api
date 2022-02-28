@@ -58,6 +58,7 @@
 /web/js/
 
 .env
+.env.test
 # End of https://www.toptal.com/developers/gitignore/api/symfony
 
 ###> symfony/webpack-encore-bundle ###
@@ -67,3 +68,22 @@ npm-debug.log
 yarn-error.log
 .idea/
 ###< symfony/webpack-encore-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
