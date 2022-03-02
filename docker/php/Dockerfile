@@ -2,7 +2,7 @@ FROM php:8.1.3-fpm-alpine
 
 RUN apk update && apk add autoconf make g++
 
-RUN apk add libzip-dev icu-dev libpq-dev zlib-dev curl-dev \
+RUN apk add libzip-dev icu-dev libpq-dev zlib-dev curl-dev unzip \
     && pecl install apcu \
     && docker-php-ext-install curl \
     && docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache \

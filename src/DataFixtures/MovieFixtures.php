@@ -25,7 +25,7 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
 
         $movie = new Movie();
         $movie->setTitle('Avengers: Endgame');
-        $movie->setDescription('Watch Avengers: Endgam today!');
+        $movie->setDescription('Watch Avengers: Endgame today!');
         $movie->setPrice(11.99);
         $movie->setYear(2019);
         $movie->setDuration(140);
