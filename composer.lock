@@ -492,16 +492,16 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "2.5.6",
+            "version": "2.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "f1423b2a640b6ac545b6e0c02575427a4dc1e9dc"
+                "reference": "1e0d1d7a5982eeebc37dcb4d77bb1a5c5961d96d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/f1423b2a640b6ac545b6e0c02575427a4dc1e9dc",
-                "reference": "f1423b2a640b6ac545b6e0c02575427a4dc1e9dc",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/1e0d1d7a5982eeebc37dcb4d77bb1a5c5961d96d",
+                "reference": "1e0d1d7a5982eeebc37dcb4d77bb1a5c5961d96d",
                 "shasum": ""
             },
             "require": {
@@ -585,7 +585,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/DoctrineBundle/issues",
-                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.5.6"
+                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.5.7"
             },
             "funding": [
                 {
@@ -601,7 +601,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-02-13T20:17:53+00:00"
+            "time": "2022-03-05T10:29:13+00:00"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -3951,7 +3951,7 @@
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
@@ -4012,7 +4012,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.25.0"
             },
             "funding": [
                 {
@@ -4032,7 +4032,7 @@
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
@@ -4096,7 +4096,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.25.0"
             },
             "funding": [
                 {
@@ -4116,7 +4116,7 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -4179,7 +4179,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.25.0"
             },
             "funding": [
                 {
@@ -4267,7 +4267,7 @@
         },
         {
             "name": "symfony/polyfill-php81",
-            "version": "v1.24.0",
+            "version": "v1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php81.git",
@@ -4326,7 +4326,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php81/tree/v1.24.0"
+                "source": "https://github.com/symfony/polyfill-php81/tree/v1.25.0"
             },
             "funding": [
                 {
@@ -7323,16 +7323,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.10.3",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "c6a951b75d684fd43fbbd69617488e1e2e8924ba"
+                "reference": "14daed4296fae74d9e3201d2c4925d1acb7aa614"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/c6a951b75d684fd43fbbd69617488e1e2e8924ba",
-                "reference": "c6a951b75d684fd43fbbd69617488e1e2e8924ba",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/14daed4296fae74d9e3201d2c4925d1acb7aa614",
+                "reference": "14daed4296fae74d9e3201d2c4925d1acb7aa614",
                 "shasum": ""
             },
             "require": {
@@ -7370,7 +7370,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.10.3"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.11.0"
             },
             "funding": [
                 {
@@ -7378,7 +7378,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-02T14:16:47+00:00"
+            "time": "2022-03-03T13:19:32+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -7624,12 +7624,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "b949b18fb402585e1e9e2101bf56d9728c1d738a"
+                "reference": "60afd1ba2df0b9384eada0ae69e75d15815bf4f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/b949b18fb402585e1e9e2101bf56d9728c1d738a",
-                "reference": "b949b18fb402585e1e9e2101bf56d9728c1d738a",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/60afd1ba2df0b9384eada0ae69e75d15815bf4f7",
+                "reference": "60afd1ba2df0b9384eada0ae69e75d15815bf4f7",
                 "shasum": ""
             },
             "require": {
@@ -7694,7 +7694,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-03T07:58:28+00:00"
+            "time": "2022-03-03T16:15:14+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
