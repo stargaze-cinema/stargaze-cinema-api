@@ -22,7 +22,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, UserTest::class);
+        parent::__construct($registry, User::class);
     }
 
     /**
