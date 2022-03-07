@@ -42,11 +42,11 @@ class AuthController extends Controller
             return $errorResponse;
         }
 
-        if ($this->userRepository->findOneBy([ 'email' => $params->email ])) {
+        if ($this->userRepository->findOneBy([ 'email' => $params->getEmail() ])) {
             return new JsonResponse(['message' => 'This email is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        if ($params->password !== $params->password_confirmation) {
+        if ($params->getPassword() !== $params->getPassword_confirmation()) {
             return new JsonResponse(['message' => 'Password did not match.'], JsonResponse::HTTP_CONFLICT);
         }
 
@@ -72,11 +72,11 @@ class AuthController extends Controller
             return $errorResponse;
         }
 
-        if (!$user = $this->userRepository->findOneBy([ 'email' => $params->email ])) {
+        if (!$user = $this->userRepository->findOneBy([ 'email' => $params->getEmail() ])) {
             return new JsonResponse(['message' => 'Invalid credentials.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        if (!$passwordHasher->isPasswordValid($user, $params->password)) {
+        if (!$passwordHasher->isPasswordValid($user, $params->getPassword())) {
             return new JsonResponse(['message' => 'Incorrect password.'], JsonResponse::HTTP_CONFLICT);
         }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Movie;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Parameters\CreateMovieParameters;
 use App\Parameters\UpdateMovieParameters;
 
@@ -19,17 +19,17 @@ class MovieService
     public function saveMovie(CreateMovieParameters $params): Movie
     {
         $movie = new Movie();
-        $movie->setTitle($params->title);
-        $movie->setDescription($params->description);
-        $movie->setPoster($params->poster);
-        $movie->setPrice($params->price);
-        $movie->setYear($params->year);
-        $movie->setDuration($params->duration);
+        $movie->setTitle($params->getTitle());
+        $movie->setDescription($params->getDescription());
+        $movie->setPoster($params->getPoster());
+        $movie->setPrice($params->getPrice());
+        $movie->setYear($params->getYear());
+        $movie->setDuration($params->getDuration());
         $movie->setCategory(
-            $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $params->category])
+            $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $params->getCategory()])
         );
         $movie->setProducer(
-            $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $params->producer])
+            $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $params->getProducer()])
         );
 
         $this->entityManager->persist($movie);
@@ -41,33 +41,33 @@ class MovieService
 
     public function updateMovie(Movie $movie, UpdateMovieParameters $params): Movie
     {
-        if ($params->title) {
-            $movie->setTitle($params->title);
+        if ($title = $params->getTitle()) {
+            $movie->setTitle($title);
         }
-        if ($params->description) {
-            $movie->setDescription($params->description);
+        if ($description = $params->getDescription()) {
+            $movie->setDescription($description);
         }
-        if ($params->price) {
-            $movie->setPrice($params->price);
+        if ($price = $params->getPrice()) {
+            $movie->setPrice($price);
         }
-        if ($params->year) {
-            $movie->setYear($params->year);
+        if ($year = $params->getYear()) {
+            $movie->setYear($year);
         }
-        if ($params->poster) {
-            $movie->setPoster($params->poster);
+        if ($poster = $params->getPoster()) {
+            $movie->setPoster($poster);
         }
-        if ($params->duration) {
-            $movie->setDuration($params->duration);
+        if ($duration = $params->getDuration()) {
+            $movie->setDuration($duration);
         }
-        if ($params->category) {
-            $categoryObj = $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $params->category]);
+        if ($category = $params->getCategory()) {
+            $categoryObj = $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $category]);
             if (!$categoryObj) {
                 throw new \Exception("Selected category does not exist.");
             }
             $movie->setProducer($categoryObj);
         }
-        if ($params->producer) {
-            $producerObj = $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $params->producer]);
+        if ($producer = $params->getProducer()) {
+            $producerObj = $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $producer]);
             if (!$producerObj) {
                 throw new \Exception("Selected producer does not exist.");
             }
