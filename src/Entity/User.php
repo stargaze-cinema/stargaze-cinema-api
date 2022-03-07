@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
 #[ORM\Table(name: "users")]
 #[ORM\HasLifecycleCallbacks()]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements \JsonSerializable, UserInterface, PasswordAuthenticatedUserInterface
 {
     use EntityIdentifierTrait;
     use EntityTimestampsTrait;
@@ -110,7 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'role' => $this->role,
+            'roles' => $this->roles,
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
             'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
         ];

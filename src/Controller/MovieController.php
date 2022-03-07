@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\MovieService;
+use App\Repository\MovieRepository;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(name: 'movies.')]
 class MovieController extends Controller
 {
     public function __construct(
-        private \App\Repository\MovieRepository $movieRepository,
-        private \App\Service\MovieService $movieService,
-        private \Symfony\Component\Validator\Validator\ValidatorInterface $validator
+        private MovieService $movieService,
+        private MovieRepository $movieRepository,
+        private ValidatorInterface $validator
     ) {
     }
 
-    #[Route('/movies', name: 'movies.get', methods: ['GET'])]
+    #[Route('/movies', name: 'get', methods: ['GET'])]
     public function index(): JsonResponse
     {
         $movies = $this->movieRepository->findAll();
@@ -28,7 +32,7 @@ class MovieController extends Controller
         return new JsonResponse($movies);
     }
 
-    #[Route('/movies', name: 'movies.store', methods: ['POST'])]
+    #[Route('/movies', name: 'store', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
         $request = $this->transformJsonBody($request);
@@ -47,13 +51,8 @@ class MovieController extends Controller
             producer: $request->get('producer')
         );
 
-        $errors = $this->validator->validate($params);
-        if (count($errors) > 0) {
-            $errorMessage = [];
-            foreach ($errors as $error) {
-                array_push($errorMessage, [$error->getPropertyPath() => $error->getMessage()]);
-            }
-            return new JsonResponse($errorMessage, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+            return $errorResponse;
         }
 
         $movie = $this->movieService->saveMovie($params);
@@ -61,7 +60,7 @@ class MovieController extends Controller
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
 
-    #[Route('/movies/{id}', name: 'movies.show', methods: ['GET'])]
+    #[Route('/movies/{id}', name: 'show', methods: ['GET'])]
     public function show(int $id): JsonResponse
     {
         if (!$movie = $this->movieRepository->find($id)) {
@@ -71,7 +70,7 @@ class MovieController extends Controller
         return new JsonResponse($movie);
     }
 
-    #[Route('/movies/{id}', name: 'movies.update', methods: ['PATCH', 'PUT'])]
+    #[Route('/movies/{id}', name: 'update', methods: ['PATCH', 'PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
         $request = self::transformJsonBody($request);
@@ -94,13 +93,8 @@ class MovieController extends Controller
             producer: $request->get('producer')
         );
 
-        $errors = $this->validator->validate($params);
-        if (count($errors) > 0) {
-            $errorMessage = [];
-            foreach ($errors as $error) {
-                array_push($errorMessage, [$error->getPropertyPath() => $error->getMessage()]);
-            }
-            return new JsonResponse(["message" => $errorMessage], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+            return $errorResponse;
         }
 
         $movie = $this->movieService->updateMovie($movie, $params);
@@ -108,7 +102,7 @@ class MovieController extends Controller
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
 
-    #[Route('/movies/{id}', name: 'movies.destroy', methods: ['DELETE'])]
+    #[Route('/movies/{id}', name: 'destroy', methods: ['DELETE'])]
     public function destroy(int $id): JsonResponse
     {
         if (!$movie = $this->movieRepository->find($id)) {
