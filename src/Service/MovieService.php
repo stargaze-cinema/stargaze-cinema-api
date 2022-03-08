@@ -64,7 +64,7 @@ class MovieService
             if (!$categoryObj) {
                 throw new \Exception("Selected category does not exist.");
             }
-            $movie->setProducer($categoryObj);
+            $movie->setCategory($categoryObj);
         }
         if ($producer = $params->getProducer()) {
             $producerObj = $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $producer]);

@@ -26,7 +26,7 @@ final class UpdateMovieParameters
     #[Assert\GreaterThanOrEqual(value: 1888)]
     private $year;
 
-    #[Assert\Type(type: 'float', message: 'This value {{ value }} should be of type float.')]
+    #[Assert\Type(type: ['integer', 'float'], message: 'This value {{ value }} should be of type float.')]
     #[Assert\Positive]
     #[Assert\GreaterThanOrEqual(value: 10)]
     private $price;

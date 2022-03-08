@@ -23,7 +23,7 @@ final class CreateMovieParameters
     private $poster;
 
     #[Assert\NotBlank]
-    #[Assert\Type(type: 'float', message: 'This value {{ value }} should be of type float.')]
+    #[Assert\Type(type: ['integer', 'float'], message: 'This value {{ value }} should be of type float.')]
     #[Assert\Positive]
     private $price;
 
