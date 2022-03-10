@@ -80,8 +80,14 @@ class AuthController extends Controller
             return new JsonResponse(['message' => 'Incorrect password.'], JsonResponse::HTTP_CONFLICT);
         }
 
+        $token = $JWTManager->create($user);
+        $ttl = \Namshi\JOSE\JWS::load($token)->getPayload()['exp'];
+
         return new JsonResponse([
-            'token' => $JWTManager->create($user),
+            'token' => [
+                'value' => $token,
+                'ttl' => $ttl
+            ],
             'user' => $user
         ], JsonResponse::HTTP_OK);
     }
