@@ -1,0 +1,25 @@
+type: object
+required:
+    - title
+    - price
+    - year
+    - duration
+    - category
+    - producer
+properties:
+    title:
+        type: string
+    description:
+        type: string
+    poster:
+        type: string
+    price:
+        type: number
+    year:
+        type: integer
+    duration:
+        type: integer
+    category:
+        type: string
+    producer:
+        type: string

@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info:
+    title: Stargaze Cinema API documentation
+    version: 1.0.0
+servers:
+    - url: http://localhost:8000
+tags:
+    - name: Movie
+paths:
+    /api/auth/signin:
+        $ref: './resources/auth.yaml#/SignIn'
+    /api/auth/signup:
+        $ref: './resources/auth.yaml#/SignUp'
+    /api/movies:
+        $ref: './resources/movie.yaml#/Movie'
+    /api/movies/{id}:
+        $ref: './resources/movie.yaml#/MovieWithID'
+
+components:
+    schemas:
+        SignIn:
+            $ref: './schemas/signin_schema.yaml'
+        SignUp:
+            $ref: './schemas/signup_schema.yaml'
+        Movie:
+            $ref: './schemas/movie_schema.yaml'
+    securitySchemes:
+        BearerAuth:
+            $ref: './schemas/security_schema.yaml'

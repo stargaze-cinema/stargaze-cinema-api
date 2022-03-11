@@ -1,0 +1,100 @@
+Movie:
+    get:
+        tags:
+            - Movie
+        summary: Get all movies
+        security:
+            - BearerAuth: []
+        responses:
+            200:
+                $ref: '../responses/success_response.yaml'
+    post:
+        tags:
+            - Movie
+        summary: Create movie
+        security:
+            - BearerAuth: []
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        $ref: '../schemas/movie_schema.yaml'
+                        example:
+                            title: Avengers
+                            description: Watch Avengers Now!
+                            poster: https://cdn.stargazecinema/movies/Avengers/poster.png
+                            price: 10.00
+                            year: 2012
+                            duration: 132
+                            category: Action
+                            producer: John Fox
+        responses:
+            201:
+                $ref: '../responses/movie_response.yaml'
+                description: Movie created
+
+MovieWithID:
+    get:
+        tags:
+            - Movie
+        summary: Get movie by ID
+        security:
+            - BearerAuth: []
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+              type: string
+              example: "1"
+        responses:
+            200:
+                $ref : "../responses/movie_response.yaml"
+                description: Movie found
+    patch:
+        tags:
+            - Movie
+        summary: Update movie
+        security:
+            - BearerAuth: []
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+              type: string
+              example: "1"
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        $ref: '../schemas/movie_update_schema.yaml'
+                        example:
+                            title: Avengers
+                            description: Watch Avengers Now!
+                            poster: https://cdn.stargazecinema/movies/Avengers/poster.png
+                            price: 10.00
+                            year: 2012
+                            duration: 132
+                            category: Action
+                            producer: John Fox
+        responses:
+            201:
+                $ref : "../responses/movie_response.yaml"
+                description: Movie updated
+    delete:
+        tags:
+            - Movie
+        summary: Delete movie
+        security:
+            - BearerAuth: []
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+              type: string
+              example: "1"
+        responses:
+            204:
+                description: Movie deleted
