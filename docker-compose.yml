@@ -53,7 +53,7 @@ services:
 
     swagger-ui:
         container_name: swagger-ui
-        image: swaggerapi/swagger-ui:latest
+        image: swaggerapi/swagger-ui:4.6.2
         ports:
             - "8008:8080"
         volumes:

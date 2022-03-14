@@ -13,3 +13,8 @@ properties:
         type: string
     password_confirmation:
         type: string
+example:
+    name: John
+    email: bestguy@mail.com
+    password: securepass
+    password_confirmation: securepass

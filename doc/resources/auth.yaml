@@ -7,13 +7,10 @@ SignIn:
             content:
                 application/json:
                     schema:
-                        $ref: '../schemas/signin_schema.yaml'
-                        example:
-                            email: bestguy@mail.com
-                            password: securepass
+                        $ref: "../schemas/signin_schema.yaml"
         responses:
             200:
-                $ref: '../responses/signin_response.yaml'
+                $ref: "../responses/signin_response.yaml"
 
 SignUp:
     post:
@@ -24,12 +21,7 @@ SignUp:
             content:
                 application/json:
                     schema:
-                        $ref: '../schemas/signup_schema.yaml'
-                        example:
-                            name: John
-                            email: bestguy@mail.com
-                            password: securepass
-                            password_confirmation: securepass
+                        $ref: "../schemas/signup_schema.yaml"
         responses:
             201:
-                $ref: '../responses/signup_response.yaml'
+                $ref: "../responses/signup_response.yaml"

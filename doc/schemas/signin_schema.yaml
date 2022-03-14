@@ -7,3 +7,6 @@ properties:
         type: string
     password:
         type: string
+example:
+    email: bestguy@mail.com
+    password: securepass

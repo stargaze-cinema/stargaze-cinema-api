@@ -7,6 +7,8 @@ required:
     - category
     - producer
 properties:
+    id:
+        type: integer
     title:
         type: string
     description:
@@ -23,3 +25,16 @@ properties:
         type: string
     producer:
         type: string
+    created_at:
+        type: string
+    updated_at:
+        type: string
+example:
+    title: Avengers
+    description: Watch Avengers Now!
+    poster: https://cdn.stargazecinema/movies/Avengers/poster.png
+    price: 10.00
+    year: 2012
+    duration: 132
+    category: Action
+    producer: John Fox
