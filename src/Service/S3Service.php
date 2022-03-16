@@ -31,7 +31,6 @@ class S3Service
         $folderPath = !empty($folderPath) ? "$folderPath/" : '';
         $path =   $folderPath . $fileName . '.'. $file->guessClientExtension();
         $result = $this->client->putObject([
-            'ACL' => 'public-read',
             'Bucket' => $this->bucket,
             'SourceFile' => $file->getRealPath(),
             'Key' => $path

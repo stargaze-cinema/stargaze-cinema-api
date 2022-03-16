@@ -1,10 +1,6 @@
 parameters:
     locale: "en"
     cache_adapter: cache.adapter.apcu
-    app.aws.s3.access_id: "%env(AWS_ACCESS_ID)%"
-    app.aws.s3.access_secret: "%env(AWS_ACCESS_SECRET)%"
-    app.aws.s3.bucket: "%env(AWS_BUCKET)%"
-    app.aws.s3.region: "%env(AWS_REGION)%"
 
 services:
     _defaults:
@@ -22,10 +18,10 @@ services:
     App\Service\S3Service:
         arguments:
             - '@App\Factory\S3ClientFactory'
-            - "%app.aws.s3.bucket%"
+            - "%env(MINIO_BUCKET)%"
 
     App\Factory\S3ClientFactory:
         arguments:
-            - "%app.aws.s3.region%"
-            - "%app.aws.s3.access_id%"
-            - "%app.aws.s3.access_secret%"
+            - "%env(MINIO_REGION)%"
+            - "%env(MINIO_ACCESS_KEY)%"
+            - "%env(MINIO_SECRET_KEY)%"

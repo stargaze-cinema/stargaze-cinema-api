@@ -3,15 +3,14 @@
 namespace App\Factory;
 
 use Aws\S3\S3Client;
+use Aws\Credentials\Credentials;
 
 /**
  * Class S3ClientFactory
  * @package App\Factory
  */
-final class S3ClientFactory
+class S3ClientFactory
 {
-    const AMAZON_S3_VERSION = '2006-03-01';
-
     private string $region;
 
     private string $key;
@@ -32,13 +31,18 @@ final class S3ClientFactory
      */
     public function createClient(): S3Client
     {
-        return new S3Client([
-            'version' => 'latest',
-            'region' => $this->region,
-            'credentials' => [
-                'key'    => $this->key,
-                'secret' => $this->secret,
-            ]
+        $credentials = new Credentials($this->key, $this->secret);
+
+        $s3 =  new S3Client([
+            'version'     => 'latest',
+            'region'      => $this->region,
+            'credentials' => $credentials,
+            'endpoint'    => 'http://minio:9000',
+            'use_path_style_endpoint' => true,
         ]);
+
+        dd($s3->listBuckets());
+
+        return $s3;
     }
 }
