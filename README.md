@@ -9,3 +9,4 @@ RESTful API built with Symfony framework for the "Stargaze Cinema" project.
 3. Run `composer install` to install dependencies.
 4. API is now available at `localhost:8000/api`.
 5. Open `localhost:8080` in the browser to access PhpPgAdmin.
+6. Open `localhost:8008` in the browser to access Swagger API Documentation.

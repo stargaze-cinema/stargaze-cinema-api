@@ -1,0 +1,27 @@
+SignIn:
+    post:
+        tags:
+            - Auth
+        summary: Sign in to the service
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        $ref: "../schemas/signin_schema.yaml"
+        responses:
+            200:
+                $ref: "../responses/signin_response.yaml"
+
+SignUp:
+    post:
+        tags:
+            - Auth
+        summary: Sign up to the service
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        $ref: "../schemas/signup_schema.yaml"
+        responses:
+            201:
+                $ref: "../responses/signup_response.yaml"
