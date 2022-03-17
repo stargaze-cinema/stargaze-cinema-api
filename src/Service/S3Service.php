@@ -21,21 +21,28 @@ class S3Service
     /**
      * Uploads a file to amazon s3 using
      *
-     * @param UploadedFile $file
-     * @param string $folderPath
-     * @param string $fileName
-     * @return string
+     * @param UploadedFile $file File.
+     * @param string $path Path inside the bucket.
+     * @param string $filename Name of the file.
+     * @return string URL of the uploaded file.
      */
-    public function uploadFile(UploadedFile $file, string $folderPath, string $fileName): string
+    public function upload(UploadedFile $file, string $path = '', string $filename = ''): string
     {
-        $folderPath = !empty($folderPath) ? "$folderPath/" : '';
-        $path =   $folderPath . $fileName . '.'. $file->guessClientExtension();
+        $filename = $filename ?: $file->getClientOriginalName();
+        $folderPath = !empty($path) ? "$path/" : '';
         $result = $this->client->putObject([
+            'ACL' => 'public-read',
             'Bucket' => $this->bucket,
+            'Key' => $folderPath . $filename,
             'SourceFile' => $file->getRealPath(),
-            'Key' => $path
+            'ContentType' => $file->getMimeType()
         ]);
 
-        return $result->get('ObjectURL');
+        $imageUrl = $result->get('ObjectURL');
+        if (str_contains($imageUrl, 'minio')) {
+            $imageUrl = str_replace('minio', 'localhost', $imageUrl);
+        }
+
+        return $imageUrl;
     }
 }

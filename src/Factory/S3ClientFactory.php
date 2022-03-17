@@ -17,11 +17,14 @@ class S3ClientFactory
 
     private string $secret;
 
-    public function __construct(string $region, string $key, string $secret)
+    private string $endpoint;
+
+    public function __construct(string $region, string $key, string $secret, string $endpoint)
     {
         $this->region = $region;
         $this->key = $key;
         $this->secret = $secret;
+        $this->endpoint = $endpoint;
     }
 
     /**
@@ -31,17 +34,13 @@ class S3ClientFactory
      */
     public function createClient(): S3Client
     {
-        $credentials = new Credentials($this->key, $this->secret);
-
         $s3 =  new S3Client([
             'version'     => 'latest',
             'region'      => $this->region,
-            'credentials' => $credentials,
-            'endpoint'    => 'http://minio:9000',
+            'credentials' => new Credentials($this->key, $this->secret),
+            'endpoint'    => $this->endpoint,
             'use_path_style_endpoint' => true,
         ]);
-
-        dd($s3->listBuckets());
 
         return $s3;
     }

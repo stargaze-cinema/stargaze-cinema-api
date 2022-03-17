@@ -22,6 +22,9 @@ Movie:
             - BearerAuth: []
         requestBody:
             content:
+                multipart/form-data:
+                    schema:
+                        $ref: "../schemas/movie_schema.yaml"
                 application/json:
                     schema:
                         $ref: "../schemas/movie_schema.yaml"
@@ -63,18 +66,12 @@ MovieWithID:
               example: "1"
         requestBody:
             content:
+                multipart/form-data:
+                    schema:
+                        $ref: "../schemas/movie_update_schema.yaml"
                 application/json:
                     schema:
                         $ref: "../schemas/movie_update_schema.yaml"
-                        example:
-                            title: Avengers
-                            description: Watch Avengers Now!
-                            poster: https://cdn.stargazecinema/movies/Avengers/poster.png
-                            price: 10.00
-                            year: 2012
-                            duration: 132
-                            category: Action
-                            producer: John Fox
         responses:
             201:
                 $ref: "../responses/movie_response.yaml"

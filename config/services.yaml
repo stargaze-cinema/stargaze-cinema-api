@@ -23,5 +23,6 @@ services:
     App\Factory\S3ClientFactory:
         arguments:
             - "%env(MINIO_REGION)%"
-            - "%env(MINIO_ACCESS_KEY)%"
-            - "%env(MINIO_SECRET_KEY)%"
+            - "%env(MINIO_ROOT_USER)%"
+            - "%env(MINIO_ROOT_PASSWORD)%"
+            - "%env(MINIO_ENDPOINT_URL)%"

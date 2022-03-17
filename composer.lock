@@ -58,16 +58,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.212.7",
+            "version": "3.214.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "7f4c976df8a0fbe8d786e4b479d44e22478ce8af"
+                "reference": "a2eacf8c1b55de4733f4cfc315da38f1d4c66501"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7f4c976df8a0fbe8d786e4b479d44e22478ce8af",
-                "reference": "7f4c976df8a0fbe8d786e4b479d44e22478ce8af",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a2eacf8c1b55de4733f4cfc315da38f1d4c66501",
+                "reference": "a2eacf8c1b55de4733f4cfc315da38f1d4c66501",
                 "shasum": ""
             },
             "require": {
@@ -143,9 +143,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.212.7"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.214.0"
             },
-            "time": "2022-03-11T19:14:33+00:00"
+            "time": "2022-03-16T19:00:00+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1366,16 +1366,16 @@
         },
         {
             "name": "doctrine/persistence",
-            "version": "2.3.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/persistence.git",
-                "reference": "f8af155c1e7963f3d2b4415097d55757bbaa53d8"
+                "reference": "e7c8edcf98e819638af00e7b3cbbbd7734b9b2fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/persistence/zipball/f8af155c1e7963f3d2b4415097d55757bbaa53d8",
-                "reference": "f8af155c1e7963f3d2b4415097d55757bbaa53d8",
+                "url": "https://api.github.com/repos/doctrine/persistence/zipball/e7c8edcf98e819638af00e7b3cbbbd7734b9b2fb",
+                "reference": "e7c8edcf98e819638af00e7b3cbbbd7734b9b2fb",
                 "shasum": ""
             },
             "require": {
@@ -1388,23 +1388,23 @@
             },
             "conflict": {
                 "doctrine/annotations": "<1.0 || >=2.0",
-                "doctrine/common": "<2.10@dev"
+                "doctrine/common": "<2.10"
             },
             "require-dev": {
                 "composer/package-versions-deprecated": "^1.11",
                 "doctrine/annotations": "^1.0",
-                "doctrine/coding-standard": "^6.0 || ^9.0",
+                "doctrine/coding-standard": "^9.0",
                 "doctrine/common": "^3.0",
-                "phpstan/phpstan": "1.2.0",
-                "phpunit/phpunit": "^7.5.20 || ^8.0 || ^9.0",
-                "symfony/cache": "^4.4 || ^5.0 || ^6.0",
-                "vimeo/psalm": "4.13.1"
+                "phpstan/phpstan": "1.4.6",
+                "phpunit/phpunit": "^7.5.20 || ^8.5 || ^9.5",
+                "symfony/cache": "^4.4 || ^5.4 || ^6.0",
+                "vimeo/psalm": "4.21.0"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Doctrine\\Common\\": "lib/Doctrine/Common",
-                    "Doctrine\\Persistence\\": "lib/Doctrine/Persistence"
+                    "Doctrine\\Common\\": "src/Common",
+                    "Doctrine\\Persistence\\": "src/Persistence"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1448,9 +1448,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/persistence/issues",
-                "source": "https://github.com/doctrine/persistence/tree/2.3.0"
+                "source": "https://github.com/doctrine/persistence/tree/2.4.0"
             },
-            "time": "2022-01-09T19:58:46+00:00"
+            "time": "2022-03-13T16:11:46+00:00"
         },
         {
             "name": "doctrine/sql-formatter",
@@ -8519,12 +8519,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "5b0bc253fb836c3c8072b8db2683fcaaa06a856d"
+                "reference": "559347b45e1078137780392e38ae47f4d32c4b05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5b0bc253fb836c3c8072b8db2683fcaaa06a856d",
-                "reference": "5b0bc253fb836c3c8072b8db2683fcaaa06a856d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/559347b45e1078137780392e38ae47f4d32c4b05",
+                "reference": "559347b45e1078137780392e38ae47f4d32c4b05",
                 "shasum": ""
             },
             "require": {
@@ -8552,7 +8552,7 @@
                 "sebastian/exporter": "^5.0",
                 "sebastian/global-state": "^6.0",
                 "sebastian/object-enumerator": "^5.0",
-                "sebastian/type": "^3.0",
+                "sebastian/type": "^4.0",
                 "sebastian/version": "^4.0"
             },
             "require-dev": {
@@ -8611,7 +8611,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-13T18:37:11+00:00"
+            "time": "2022-03-15T10:13:03+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -8733,12 +8733,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/code-unit-reverse-lookup.git",
-                "reference": "0e5ac225f9d02ed63fe7edb34dbc7012180c8ee4"
+                "reference": "6292a8dd0ef4fe4327a7fbfa18afe01dc844466b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/code-unit-reverse-lookup/zipball/0e5ac225f9d02ed63fe7edb34dbc7012180c8ee4",
-                "reference": "0e5ac225f9d02ed63fe7edb34dbc7012180c8ee4",
+                "url": "https://api.github.com/repos/sebastianbergmann/code-unit-reverse-lookup/zipball/6292a8dd0ef4fe4327a7fbfa18afe01dc844466b",
+                "reference": "6292a8dd0ef4fe4327a7fbfa18afe01dc844466b",
                 "shasum": ""
             },
             "require": {
@@ -8781,7 +8781,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-11T07:14:00+00:00"
+            "time": "2022-03-15T07:16:22+00:00"
         },
         {
             "name": "sebastian/comparator",
@@ -9431,12 +9431,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/type.git",
-                "reference": "24a5d82c1c1ab4793df88663a3c89c634a9a9f9c"
+                "reference": "718e4a4537055560e3c6bfaa8a1277c092b2f9c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/type/zipball/24a5d82c1c1ab4793df88663a3c89c634a9a9f9c",
-                "reference": "24a5d82c1c1ab4793df88663a3c89c634a9a9f9c",
+                "url": "https://api.github.com/repos/sebastianbergmann/type/zipball/718e4a4537055560e3c6bfaa8a1277c092b2f9c2",
+                "reference": "718e4a4537055560e3c6bfaa8a1277c092b2f9c2",
                 "shasum": ""
             },
             "require": {
@@ -9449,7 +9449,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
@@ -9480,7 +9480,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-09T17:16:26+00:00"
+            "time": "2022-03-15T09:19:20+00:00"
         },
         {
             "name": "sebastian/version",

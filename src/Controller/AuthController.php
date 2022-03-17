@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Service\UserService;
 use App\Repository\UserRepository;
-use App\Service\S3Service;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -20,7 +19,6 @@ class AuthController extends Controller
     public function __construct(
         private UserService $userService,
         private UserRepository $userRepository,
-        private S3Service $s3Service,
         private ValidatorInterface $validator
     ) {
     }
@@ -60,16 +58,6 @@ class AuthController extends Controller
     #[Route('/signin', name: 'signin', methods: ['POST'])]
     public function signIn(Request $request, UserPasswordHasherInterface $passwordHasher, JWTTokenManagerInterface $JWTManager): JsonResponse
     {
-        // TEST
-        $image = $request->files->get('image');
-        $url = $this->s3Service->uploadFile(
-            $image,
-            '',
-            rand(0, 100) . ''
-        );
-        return new JsonResponse(["message" => $url]);
-        // TEST
-
         $request = $this->transformJsonBody($request);
         if (!$request) {
             return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);

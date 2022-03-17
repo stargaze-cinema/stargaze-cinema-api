@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\S3Service;
 use App\Service\MovieService;
 use App\Repository\MovieRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -17,7 +18,8 @@ class MovieController extends Controller
     public function __construct(
         private MovieService $movieService,
         private MovieRepository $movieRepository,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private S3Service $s3Service
     ) {
     }
 
@@ -35,18 +37,25 @@ class MovieController extends Controller
     #[Route('/movies', name: 'store', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
-        $request = $this->transformJsonBody($request);
-        if (!$request) {
-            return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        if ($request->getContentType() !== 'form') {
+            $request = $this->transformJsonBody($request);
+            if (!$request) {
+                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+
+        $posterUrl = $request->get('poster');
+        if ($posterFile = $request->files->get('poster')) {
+            $posterUrl = $this->s3Service->upload($posterFile, 'posters');
         }
 
         $params = new \App\Parameters\CreateMovieParameters(
             title: $request->get('title'),
             description: $request->get('description'),
-            poster: $request->get('poster'),
-            price: $request->get('price'),
-            year: $request->get('year'),
-            duration: $request->get('duration'),
+            poster: $posterUrl,
+            price: (float) $request->get('price'),
+            year: (int) $request->get('year'),
+            duration: (int) $request->get('duration'),
             category: $request->get('category'),
             producer: $request->get('producer')
         );
@@ -73,22 +82,29 @@ class MovieController extends Controller
     #[Route('/movies/{id}', name: 'update', methods: ['PATCH', 'PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
-        $request = self::transformJsonBody($request);
-        if (!$request) {
-            return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        if ($request->getContentType() !== 'form') {
+            $request = $this->transformJsonBody($request);
+            if (!$request) {
+                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            }
         }
 
         if (!$movie = $this->movieRepository->find($id)) {
             return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
+        $posterUrl = $request->get('poster');
+        if ($posterFile = $request->files->get('poster')) {
+            $posterUrl = $this->s3Service->upload($posterFile, 'posters');
+        }
+
         $params = new \App\Parameters\UpdateMovieParameters(
             title: $request->get('title'),
             description: $request->get('description'),
-            poster: $request->get('poster'),
-            price: $request->get('price'),
-            year: $request->get('year'),
-            duration: $request->get('duration'),
+            poster: $posterUrl,
+            price: (float) $request->get('price'),
+            year: (int) $request->get('year'),
+            duration: (int) $request->get('duration'),
             category: $request->get('category'),
             producer: $request->get('producer')
         );
