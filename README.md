@@ -11,6 +11,7 @@ RESTful API built with Symfony framework for the "Stargaze Cinema" project.
 5. Run `bin/console doctrine:database:create` to create database forthe application.
 6. Run `bin/console doctrine:migrations:migrate` to add tables to the database.
 7. Run `bin/console doctrine:fixtures:load` to seed the database.
+8. Run `bin/console lexik:jwt:generate-keypair` to generate JWT SSL keys.
 
 -   Open `localhost:8000` in the browser to access the application.
 -   Open `localhost:8080` in the browser to access PhpPgAdmin.
