@@ -34,6 +34,18 @@ class MovieController extends Controller
         return new JsonResponse($movies);
     }
 
+    #[Route('/movies/list', name: 'get.public', methods: ['GET'])]
+    public function list(Request $request): JsonResponse
+    {
+        $movies = $this->movieRepository->findAllQueryBuilder($request->query);
+
+        if (!$movies) {
+            return new JsonResponse(["message" => 'No movies found.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($movies);
+    }
+
     #[Route('/movies', name: 'store', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {

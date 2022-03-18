@@ -25,6 +25,8 @@ security:
 
     access_control:
         - { path: ^/api/auth, roles: PUBLIC_ACCESS }
+        - { path: ^/api/movies/list, roles: PUBLIC_ACCESS }
+        - { path: ^/api/movies/show, roles: PUBLIC_ACCESS }
         - { path: ^/api,      roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
