@@ -11,20 +11,13 @@ use Aws\Credentials\Credentials;
  */
 class S3ClientFactory
 {
-    private string $region;
-
-    private string $key;
-
-    private string $secret;
-
-    private string $endpoint;
-
-    public function __construct(string $region, string $key, string $secret, string $endpoint)
+    public function __construct(
+        private string $region,
+        private string $key,
+        private string $secret,
+        private string $endpoint
+    )
     {
-        $this->region = $region;
-        $this->key = $key;
-        $this->secret = $secret;
-        $this->endpoint = $endpoint;
     }
 
     /**
@@ -34,14 +27,12 @@ class S3ClientFactory
      */
     public function createClient(): S3Client
     {
-        $s3 =  new S3Client([
+        return new S3Client([
             'version'     => 'latest',
             'region'      => $this->region,
             'credentials' => new Credentials($this->key, $this->secret),
             'endpoint'    => $this->endpoint,
             'use_path_style_endpoint' => true,
         ]);
-
-        return $s3;
     }
 }

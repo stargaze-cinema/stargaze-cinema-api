@@ -37,7 +37,7 @@ class MovieController extends Controller
     #[Route('/movies', name: 'store', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
-        if ($request->getContentType() !== 'form') {
+        if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
                 return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
@@ -82,7 +82,7 @@ class MovieController extends Controller
     #[Route('/movies/{id}', name: 'update', methods: ['PATCH', 'PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
-        if ($request->getContentType() !== 'form') {
+        if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
                 return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);

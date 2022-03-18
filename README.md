@@ -4,7 +4,7 @@ RESTful API built with Symfony framework for the "Stargaze Cinema" project.
 
 ## Starting the application with Docker
 
-1. Create `.env` file using `.env.example` as the reference.
+1. Run `cp .env.example .env` in the terminal to create environment file.
 2. Run `docker-compose up -d --build` to create containers and start the application.
 3. Run `docker exec -it php sh` to enter Dockers' PHP console.
 4. Run `composer install` to install dependencies.
