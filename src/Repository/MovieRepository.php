@@ -21,21 +21,31 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function findAllQueryBuilder(\Symfony\Component\HttpFoundation\InputBag $query): array
+    public function findAllWithQuery(array $params): array
     {
-        $params = $query->all();
         if (!$params) {
             return $this->findAll();
         }
 
+        $matchedParams = false;
         $qb = $this->createQueryBuilder('movie');
         foreach ($params as $param => $value) {
             if (!$this->getClassMetadata()->hasField($param)) {
                 continue;
             }
+            $matchedParams = true;
 
-            $qb ->andWhere($qb->expr()->eq('movie.'.$param, ':movie_'.$param))
-                ->setParameter('movie_'.$param, $value);
+            if ($this->getClassMetadata()->getTypeOfField($param) === 'string') {
+                $qb->andWhere($qb->expr()->like("movie.$param", ":value"))
+                    ->setParameter('value', "%$value%");
+            } else {
+                $qb->andWhere($qb->expr()->eq("movie.$param", ":value"))
+                    ->setParameter('value', $value);
+            }
+        }
+
+        if (!$matchedParams) {
+            return $this->findAll();
         }
 
         return $qb->getQuery()->getResult();

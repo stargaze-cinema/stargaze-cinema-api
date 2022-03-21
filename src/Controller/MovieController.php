@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\Role;
 use App\Service\S3Service;
 use App\Service\UserService;
 use App\Service\MovieService;
@@ -17,20 +18,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovieController extends Controller
 {
     public function __construct(
-        UserService $userService,
+        private UserService $userService,
         private MovieService $movieService,
         private MovieRepository $movieRepository,
         private ValidatorInterface $validator,
         private S3Service $s3Service
     ) {
-        $token = $userService->getUserToken();
-        $this->currentUserRoles = $token->getRoleNames() ?: null;
     }
 
     #[Route('/movies', name: 'get', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {
-        $movies = $this->movieRepository->findAllQueryBuilder($request->query);
+        $movies = $this->movieRepository->findAllWithQuery($request->query->all());
 
         if (!$movies) {
             return new JsonResponse(["message" => 'No movies found.'], JsonResponse::HTTP_NOT_FOUND);
@@ -42,8 +41,10 @@ class MovieController extends Controller
     #[Route('/movies', name: 'store', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
-        if (!!$this->currentUserRoles && !in_array('ADMIN', $this->currentUserRoles)) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+        if (!!$roles = $this->userService->getCurrentUserRoles()) {
+            if (!in_array(Role::Admin->value, $roles)) {
+                return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            }
         }
 
         if ($request->getContentType() === 'json') {
@@ -91,8 +92,10 @@ class MovieController extends Controller
     #[Route('/movies/{id}', name: 'update', methods: ['PATCH', 'PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
-        if (!!$this->currentUserRoles && !in_array('ADMIN', $this->currentUserRoles)) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+        if (!!$roles = $this->userService->getCurrentUserRoles()) {
+            if (!in_array(Role::Admin->value, $roles)) {
+                return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            }
         }
 
         if ($request->getContentType() === 'json') {
