@@ -29,11 +29,7 @@ class MovieController extends Controller
     #[Route('/movies', name: 'get', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {
-        $movies = $this->movieRepository->findAllWithQuery($request->query->all());
-
-        if (!$movies) {
-            return new JsonResponse(["message" => 'No movies found.'], JsonResponse::HTTP_NOT_FOUND);
-        }
+        $movies = $this->movieRepository->findAllWithQueryPaginate($request->query->all());
 
         return new JsonResponse($movies);
     }

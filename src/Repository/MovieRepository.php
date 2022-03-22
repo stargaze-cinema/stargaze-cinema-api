@@ -21,19 +21,13 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function findAllWithQuery(array $params): array
+    public function findAllWithQueryPaginate(array $params): array
     {
-        if (!$params) {
-            return $this->findAll();
-        }
-
-        $matchedParams = false;
         $qb = $this->createQueryBuilder('movie');
         foreach ($params as $param => $value) {
             if (!$this->getClassMetadata()->hasField($param)) {
                 continue;
             }
-            $matchedParams = true;
 
             if ($this->getClassMetadata()->getTypeOfField($param) === 'string') {
                 $qb->andWhere($qb->expr()->like("movie.$param", ":value"))
@@ -44,10 +38,31 @@ class MovieRepository extends ServiceEntityRepository
             }
         }
 
-        if (!$matchedParams) {
-            return $this->findAll();
-        }
+        $order = array_key_exists('order', $params) ? $params['order'] : 'created_at';
+        $method = array_key_exists('orderMethod', $params) ? $params['orderMethod'] : 'DESC';
+        $qb->orderBy("movie.$order", $method);
 
-        return $qb->getQuery()->getResult();
+        $page = array_key_exists('page', $params)
+            ? ($params['page'] <= 0 ? 1 : intval($params['page']))
+            : 1;
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($qb->getQuery(), true);
+        $perPage = 10;
+        $totalItems = $paginator->count();
+        $pages = ceil($totalItems / $perPage);
+        $paginator->getQuery()
+            ->setFirstResult($perPage * ($page - 1))
+            ->setMaxResults($perPage);
+
+        return [
+            'paginator' => [
+                'currentPage' => $page,
+                'perPage' => $perPage,
+                'totalPages' => $pages,
+                'totalItems' => $totalItems,
+                'nextPage' => $page >= $pages ? null : $page + 1,
+                'prevPage' => $page === 1 ? null : $page - 1
+            ],
+            'data' => $paginator->getQuery()->getResult()
+        ];
     }
 }
