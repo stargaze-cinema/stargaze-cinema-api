@@ -23,9 +23,9 @@ security:
             lazy: true
             provider: app_user_provider
 
-    access_control:
-        - { path: ^/api/auth, roles: PUBLIC_ACCESS }
-        - { path: ^/api,      roles: IS_AUTHENTICATED_FULLY }
+    # access_control:
+    #     - { path: ^/api/auth, roles: PUBLIC_ACCESS }
+    #     - { path: ^/api,      roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use Aws\S3\S3Client;
@@ -16,8 +18,7 @@ class S3ClientFactory
         private string $key,
         private string $secret,
         private string $endpoint
-    )
-    {
+    ) {
     }
 
     /**

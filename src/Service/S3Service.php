@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use Aws\S3\S3Client;
@@ -10,12 +12,9 @@ class S3Service
 {
     private S3Client $client;
 
-    private string $bucket;
-
-    public function __construct(S3ClientFactory $clientFactory, string $bucket)
+    public function __construct(S3ClientFactory $clientFactory, private string $bucket)
     {
         $this->client = $clientFactory->createClient();
-        $this->bucket = $bucket;
     }
 
     /**
