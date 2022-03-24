@@ -17,8 +17,13 @@ class S3Service
         $this->client = $clientFactory->createClient();
     }
 
+    public function getBucket(): string
+    {
+        return $this->bucket;
+    }
+
     /**
-     * Uploads a file to amazon s3 using
+     * Uploads a file to Amazon S3
      *
      * @param UploadedFile $file File.
      * @param string $path Path inside the bucket.
@@ -43,5 +48,24 @@ class S3Service
         }
 
         return $imageUrl;
+    }
+
+    /**
+     * Deletes an object inside Amazon S3
+     *
+     * @param string $key Path to the file inside the bucket.
+     * @return bool
+     */
+    public function delete(string $key): bool
+    {
+        $result = $this->client->deleteObject([
+            'Bucket' => $this->bucket,
+            'Key' => $key
+        ]);
+
+        if ($result['DeleteMarker']) {
+            return true;
+        }
+        return false;
     }
 }

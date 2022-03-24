@@ -133,14 +133,20 @@ class MovieController extends Controller
     #[Route('/movies/{id}', name: 'destroy', methods: ['DELETE'])]
     public function destroy(int $id): JsonResponse
     {
-        if (!!$this->currentUserRoles && !in_array('ADMIN', $this->currentUserRoles)) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+        if (!!$roles = $this->userService->getCurrentUserRoles()) {
+            if (!in_array(Role::Admin->value, $roles)) {
+                return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            }
         }
 
         if (!$movie = $this->movieRepository->find($id)) {
             return new JsonResponse('No movie found.', JsonResponse::HTTP_NOT_FOUND);
         }
 
+        if ($poster = $movie->getPoster()) {
+            $bucket = $this->s3Service->getBucket();
+            $this->s3Service->delete(explode("$bucket/", $poster)[1]);
+        }
         $this->movieService->deleteMovie($movie);
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
