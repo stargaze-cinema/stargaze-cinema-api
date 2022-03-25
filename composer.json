@@ -39,6 +39,7 @@
         "codeception/module-phpbrowser": "dev-master",
         "codeception/module-rest": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "fzaninotto/faker": "^1.5",
         "symfony/maker-bundle": "^1.37",
         "vlucas/phpdotenv": "^5.4"
     },

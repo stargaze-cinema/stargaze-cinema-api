@@ -7,20 +7,23 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class CategoryFixtures extends Fixture
 {
+    const NUMBER = 10;
+
     public function load(ObjectManager $manager): void
     {
-        $category = new Category();
-        $category->setName('Cartoon');
-        $manager->persist($category);
-        $this->addReference('category_1', $category);
+        $generator = Factory::create();
 
-        $category = new Category();
-        $category->setName('Action');
-        $manager->persist($category);
-        $this->addReference('category_2', $category);
+        for ($i = 0; $i <= self::NUMBER; $i++) {
+            $category = new Category();
+            $category->setName($generator->colorName);
+            $manager->persist($category);
+
+            $this->addReference("category_$i", $category);
+        }
 
         $manager->flush();
     }

@@ -50,7 +50,7 @@ class AuthController extends Controller
             return new JsonResponse(['message' => 'Password did not match.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        $user = $this->userService->saveUser($params);
+        $user = $this->userService->save($params);
 
         return new JsonResponse($user, JsonResponse::HTTP_CREATED);
     }

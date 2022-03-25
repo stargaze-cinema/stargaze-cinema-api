@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\TicketRepository::class)]
 #[ORM\Table(name: "tickets")]
 #[ORM\HasLifecycleCallbacks()]
-class Ticket
+class Ticket implements \JsonSerializable
 {
     use EntityIdentifierTrait;
     use EntityTimestampsTrait;
@@ -19,7 +19,7 @@ class Ticket
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private User $client;
+    private User $user;
 
     #[ORM\ManyToOne(targetEntity: Session::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -37,14 +37,14 @@ class Ticket
         return $this;
     }
 
-    public function getClient(): User
+    public function getUser(): User
     {
-        return $this->client;
+        return $this->user;
     }
 
-    public function setClient(User $client): self
+    public function setUser(User $user): self
     {
-        $this->client = $client;
+        $this->user = $user;
 
         return $this;
     }
@@ -63,32 +63,41 @@ class Ticket
 
     public function jsonSerialize(): array
     {
+        $sessionMovie = $this->session->getMovie();
+        $sessionHall = $this->session->getHall();
         return [
             'id' => $this->id,
             'place' => $this->place,
-            'client' => [
-                'id' => $this->client->getId(),
-                'name' => $this->client->name,
-                'email' => $this->client->email,
-                'role' => $this->client->role,
+            'user' => [
+                'id' => $this->user->getId(),
+                'name' => $this->user->getName(),
+                'email' => $this->user->getEmail(),
+                'roles' => $this->user->getRoles(),
+                'created_at' => $this->user->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $this->user->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
             'session' => [
                 'id' => $this->session->getId(),
-                'name' => $this->session->name,
+                'begin_at' => $this->session->getBeginTime()->format('Y-m-d\TH:i:s.u'),
+                'end_at' => $this->session->getEndTime()->format('Y-m-d\TH:i:s.u'),
                 'movie' => [
-                    'id' => $this->session->movie->getId(),
-                    'title' => $this->session->movie->title,
-                    'description' => $this->session->movie->description,
-                    'poster' => $this->session->movie->poster,
-                    'price' => $this->session->movie->price,
-                    'year' => $this->session->movie->year,
-                    'duration' => $this->session->movie->duration,
+                    'id' => $sessionMovie->getId(),
+                    'title' => $sessionMovie->getTitle(),
+                    'description' => $sessionMovie->getDescription(),
+                    'poster' => $sessionMovie->getPoster(),
+                    'price' => $sessionMovie->getPrice(),
+                    'year' => $sessionMovie->getYear(),
+                    'duration' => $sessionMovie->getDuration(),
+                    'created_at' => $sessionMovie->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $sessionMovie->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                 ],
                 'hall' => [
-                    'id' => $this->session->hall->getId(),
-                    'name' => $this->session->hall->name,
-                    'capacity' => $this->session->hall->capacity,
-                    'type' => $this->session->hall->type
+                    'id' => $sessionHall->getId(),
+                    'name' => $sessionHall->getName(),
+                    'capacity' => $sessionHall->getCapacity(),
+                    'type' => $sessionHall->getType(),
+                    'created_at' => $sessionHall->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $sessionHall->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                 ],
             ],
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

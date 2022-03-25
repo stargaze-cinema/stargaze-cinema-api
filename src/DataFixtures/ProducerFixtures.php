@@ -7,20 +7,23 @@ namespace App\DataFixtures;
 use App\Entity\Producer;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class ProducerFixtures extends Fixture
 {
+    const NUMBER = 30;
+
     public function load(ObjectManager $manager): void
     {
-        $producer = new Producer();
-        $producer->setName('John Fox');
-        $manager->persist($producer);
-        $this->addReference('producer_1', $producer);
+        $generator = Factory::create();
 
-        $producer = new Producer();
-        $producer->setName('Evan You');
-        $manager->persist($producer);
-        $this->addReference('producer_2', $producer);
+        for ($i = 0; $i <= self::NUMBER; $i++) {
+            $producer = new Producer();
+            $producer->setName($generator->name);
+            $manager->persist($producer);
+
+            $this->addReference("producer_$i", $producer);
+        }
 
         $manager->flush();
     }

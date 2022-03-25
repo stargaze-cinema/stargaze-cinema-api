@@ -17,10 +17,10 @@ class Controller extends AbstractController
      * @param Request $request
      * @return Request
      */
-    protected function transformJsonBody(Request $request): Request | bool
+    protected function transformJsonBody(Request $request): Request | null
     {
         if (!$data = json_decode($request->getContent(), true)) {
-            return false;
+            return null;
         }
 
         $request->request->replace($data);
