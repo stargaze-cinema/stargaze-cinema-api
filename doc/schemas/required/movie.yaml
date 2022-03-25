@@ -1,0 +1,7 @@
+required:
+    - title
+    - price
+    - year
+    - duration
+    - category_id
+    - producer_id

@@ -13,7 +13,7 @@ Movie:
                         schema:
                             type: array
                             items:
-                                $ref: "../schemas/movie_schema.yaml"
+                                $ref: "../schemas/movie.yaml"
     post:
         tags:
             - Movie
@@ -24,13 +24,19 @@ Movie:
             content:
                 multipart/form-data:
                     schema:
-                        $ref: "../schemas/movie_schema.yaml"
+                        allOf:
+                            - $ref: "../schemas/movie.yaml"
+                            - $ref: "../schemas/required/movie.yaml"
+                            - $ref: "../examples/movie.yaml"
                 application/json:
                     schema:
-                        $ref: "../schemas/movie_schema.yaml"
+                        allOf:
+                            - $ref: "../schemas/movie.yaml"
+                            - $ref: "../schemas/required/movie.yaml"
+                            - $ref: "../examples/movie.yaml"
         responses:
             201:
-                $ref: "../responses/movie_response.yaml"
+                $ref: "../responses/movie.yaml"
                 description: Movie created
 
 MovieWithID:
@@ -49,7 +55,7 @@ MovieWithID:
               example: "1"
         responses:
             200:
-                $ref: "../responses/movie_response.yaml"
+                $ref: "../responses/movie.yaml"
                 description: Movie found
     patch:
         tags:
@@ -68,13 +74,17 @@ MovieWithID:
             content:
                 multipart/form-data:
                     schema:
-                        $ref: "../schemas/movie_update_schema.yaml"
+                        allOf:
+                            - $ref: "../schemas/movie.yaml"
+                            - $ref: "../examples/movie.yaml"
                 application/json:
                     schema:
-                        $ref: "../schemas/movie_update_schema.yaml"
+                        allOf:
+                            - $ref: "../schemas/movie.yaml"
+                            - $ref: "../examples/movie.yaml"
         responses:
             201:
-                $ref: "../responses/movie_response.yaml"
+                $ref: "../responses/movie.yaml"
                 description: Movie updated
     delete:
         tags:

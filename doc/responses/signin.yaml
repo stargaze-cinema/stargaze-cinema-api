@@ -12,4 +12,4 @@ content:
                         ttl:
                             type: number
                 user:
-                    $ref: '../schemas/user_schema.yaml'
+                    $ref: '../schemas/user.yaml'
