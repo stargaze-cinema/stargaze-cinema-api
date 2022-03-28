@@ -14,8 +14,8 @@ class SessionsCest
             'id' => 1,
             'movie_id' => 1,
             'hall_id' => 1,
-            'begin_time' => date('Y-m-d H:i:s', time()),
-            'end_time' => date('Y-m-d H:i:s', time())
+            'begin_at' => date('Y-m-d H:i:s', time()),
+            'end_at' => date('Y-m-d H:i:s', time())
         ]);
 
         $I->sendGet('/sessions');
@@ -53,8 +53,8 @@ class SessionsCest
         $I->sendPost('/sessions', [
             'movie_id' => 1,
             'hall_id' => 1,
-            'begin_time' => date('Y-m-d H:i:s', time()),
-            'end_time' => date('Y-m-d H:i:s', time())
+            'begin_at' => date('Y-m-d H:i:s', time()),
+            'end_at' => date('Y-m-d H:i:s', time())
         ]);
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
