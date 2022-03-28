@@ -50,8 +50,8 @@ class TicketController extends Controller
 
         $params = new \App\Parameters\CreateTicketParameters(
             place: $request->get('place'),
-            user_id: $request->get('user_id'),
-            session_id: $request->get('session_id')
+            userId: $request->get('user_id'),
+            sessionId: $request->get('session_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
@@ -93,8 +93,8 @@ class TicketController extends Controller
 
         $params = new \App\Parameters\UpdateTicketParameters(
             place: $request->get('place'),
-            user_id: $request->get('user_id'),
-            session_id: $request->get('session_id')
+            userId: $request->get('user_id'),
+            sessionId: $request->get('session_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {

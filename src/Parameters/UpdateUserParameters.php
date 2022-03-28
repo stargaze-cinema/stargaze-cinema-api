@@ -23,7 +23,7 @@ final class UpdateUserParameters
         private $password,
         #[Assert\NotBlank]
         #[Assert\Length(min: 8, max: 255)]
-        private $password_confirmation
+        private $passwordConfirmation
     ) {
     }
 
@@ -115,24 +115,24 @@ final class UpdateUserParameters
     }
 
     /**
-     * Get the value of password_confirmation
+     * Get the value of passwordConfirmation
      *
      * @return string
      */
-    public function getPassword_confirmation(): string
+    public function getPasswordConfirmation(): string
     {
-        return $this->password_confirmation;
+        return $this->passwordConfirmation;
     }
 
     /**
-     * Set the value of password_confirmation
+     * Set the value of passwordConfirmation
      *
-     * @param string $password_confirmation
+     * @param string $passwordConfirmation
      * @return self
      */
-    public function setPassword_confirmation(string $password_confirmation): self
+    public function setPasswordConfirmation(string $passwordConfirmation): self
     {
-        $this->password_confirmation = $password_confirmation;
+        $this->passwordConfirmation = $passwordConfirmation;
 
         return $this;
     }

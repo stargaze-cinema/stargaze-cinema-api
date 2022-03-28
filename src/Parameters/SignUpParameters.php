@@ -22,7 +22,7 @@ final class SignUpParameters
         private $password,
         #[Assert\NotBlank]
         #[Assert\Length(min: 8, max: 255)]
-        private $password_confirmation
+        private $passwordConfirmation
     ) {
     }
 
@@ -81,19 +81,19 @@ final class SignUpParameters
     }
 
     /**
-     * Get the value of password_confirmation
+     * Get the value of passwordConfirmation
      */
-    public function getPassword_confirmation(): string
+    public function getPasswordConfirmation(): string
     {
-        return $this->password_confirmation;
+        return $this->passwordConfirmation;
     }
 
     /**
-     * Set the value of password_confirmation
+     * Set the value of passwordConfirmation
      */
-    public function setPassword_confirmation(string $password_confirmation): self
+    public function setPasswordConfirmation(string $passwordConfirmation): self
     {
-        $this->password_confirmation = $password_confirmation;
+        $this->passwordConfirmation = $passwordConfirmation;
 
         return $this;
     }

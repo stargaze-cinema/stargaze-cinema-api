@@ -10,9 +10,9 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class MovieFixtures extends Fixture implements DependentFixtureInterface
+final class MovieFixtures extends Fixture implements DependentFixtureInterface
 {
-    const NUMBER = 20;
+    public const NUMBER = 20;
 
     public function load(ObjectManager $manager): void
     {

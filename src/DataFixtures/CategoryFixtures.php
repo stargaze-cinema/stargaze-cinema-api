@@ -9,9 +9,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class CategoryFixtures extends Fixture
+final class CategoryFixtures extends Fixture
 {
-    const NUMBER = 10;
+    public const NUMBER = 10;
 
     public function load(ObjectManager $manager): void
     {

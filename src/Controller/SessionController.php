@@ -45,18 +45,18 @@ class SessionController extends Controller
         }
 
         $params = new \App\Parameters\CreateSessionParameters(
-            begin_at: $request->get('begin_at'),
-            end_at: $request->get('end_at'),
-            movie_id: $request->get('movie_id'),
-            hall_id: $request->get('hall_id')
+            beginAt: $request->get('begin_at'),
+            endAt: $request->get('end_at'),
+            movieId: $request->get('movie_id'),
+            hallId: $request->get('hall_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
             return $errorResponse;
         }
 
-        $params->setBeginTime(new \DateTime($params->getBeginTime()));
-        $params->setEndTime(new \DateTime($params->getEndTime()));
+        $params->setBeginAt(new \DateTime($params->getBeginAt()));
+        $params->setEndAt(new \DateTime($params->getEndAt()));
 
         $session = $this->sessionService->save($params);
 
@@ -92,18 +92,18 @@ class SessionController extends Controller
         }
 
         $params = new \App\Parameters\UpdateSessionParameters(
-            begin_at: $request->get('begin_at'),
-            end_at: $request->get('end_at'),
-            movie_id: $request->get('movie_id'),
-            hall_id: $request->get('hall_id')
+            beginAt: $request->get('begin_at'),
+            endAt: $request->get('end_at'),
+            movieId: $request->get('movie_id'),
+            hallId: $request->get('hall_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
             return $errorResponse;
         }
 
-        $params->setBeginTime(new \DateTime($params->getBeginTime()));
-        $params->setEndTime(new \DateTime($params->getEndTime()));
+        $params->setBeginAt(new \DateTime($params->getBeginAt()));
+        $params->setEndAt(new \DateTime($params->getEndAt()));
 
         $session = $this->sessionService->update($session, $params);
 

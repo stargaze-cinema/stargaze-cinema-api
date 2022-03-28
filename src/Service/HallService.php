@@ -29,7 +29,6 @@ class HallService
         return $movie;
     }
 
-
     public function update(Hall $hall, UpdateHallParameters $params): Hall
     {
         if ($name = $params->getName()) {

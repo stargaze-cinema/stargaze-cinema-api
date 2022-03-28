@@ -13,87 +13,87 @@ final class UpdateSessionParameters
             pattern: '/(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)(T)?(\d\d)(:)?(\d\d)(:)?(\d\d)(\.\d+)?(Z|([+-])(\d\d)(:)?(\d\d))/',
             message: 'This value {{ value }} is not a valid DateTime, expected ISO string.'
         )]
-        private \DateTime | string $begin_at,
+        private \DateTime | string $beginAt,
         #[Assert\Regex(
             pattern: '/(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)(T)?(\d\d)(:)?(\d\d)(:)?(\d\d)(\.\d+)?(Z|([+-])(\d\d)(:)?(\d\d))/',
             message: 'This value {{ value }} is not a valid DateTime, expected ISO string.'
         )]
-        private \DateTime | string $end_at,
+        private \DateTime | string $endAt,
         #[Assert\Type(type: 'integer')]
-        private $movie_id,
+        private $movieId,
         #[Assert\Type(type: 'integer')]
-        private $hall_id
+        private $hallId
     ) {
     }
 
     /**
-     * Get the value of begin_at
+     * Get the value of beginAt
      */
-    public function getBeginTime(): \DateTime | string | null
+    public function getBeginAt(): \DateTime | string | null
     {
-        return $this->begin_at;
+        return $this->beginAt;
     }
 
     /**
-     * Set the value of begin_at
+     * Set the value of beginAt
      */
-    public function setBeginTime(\DateTime $begin_at): self
+    public function setBeginAt(\DateTime $beginAt): self
     {
-        $this->begin_at = $begin_at;
+        $this->beginAt = $beginAt;
 
         return $this;
     }
 
     /**
-     * Get the value of end_at
+     * Get the value of endAt
      */
-    public function getEndTime(): \DateTime | string | null
+    public function getEndAt(): \DateTime | string | null
     {
-        return $this->end_at;
+        return $this->endAt;
     }
 
     /**
-     * Set the value of end_at
+     * Set the value of endAt
      */
-    public function setEndTime(\DateTime $end_at): self
+    public function setEndAt(\DateTime $endAt): self
     {
-        $this->end_at = $end_at;
+        $this->endAt = $endAt;
 
         return $this;
     }
 
     /**
-     * Get the value of movie_id
+     * Get the value of movieId
      */
     public function getMovieId(): ?int
     {
-        return $this->movie_id;
+        return $this->movieId;
     }
 
     /**
-     * Set the value of movie_id
+     * Set the value of movieId
      */
-    public function setMovieId(int $movie_id): self
+    public function setMovieId(int $movieId): self
     {
-        $this->movie_id = $movie_id;
+        $this->movieId = $movieId;
 
         return $this;
     }
 
     /**
-     * Get the value of hall_id
+     * Get the value of hallId
      */
     public function getHallId(): ?int
     {
-        return $this->hall_id;
+        return $this->hallId;
     }
 
     /**
-     * Set the value of hall_id
+     * Set the value of hallId
      */
-    public function setHallId(int $hall_id): self
+    public function setHallId(int $hallId): self
     {
-        $this->hall_id = $hall_id;
+        $this->hallId = $hallId;
 
         return $this;
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Ticket;
+use App\Exception\NotExistsException;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Parameters\CreateTicketParameters;
 use App\Parameters\UpdateTicketParameters;
@@ -16,18 +17,21 @@ class TicketService
     ) {
     }
 
+    /**
+     * @throws NotExistsException
+     */
     public function save(CreateTicketParameters $params): Ticket
     {
         $ticket = new Ticket();
         $ticket->setPlace($params->getPlace());
-        if (!$userClass = $this->entityManager->getRepository(\App\Entity\User::class)->find($params->getUserId())) {
-            throw new \Exception("Selected user does not exist.");
+        if (!$userEntity = $this->entityManager->getRepository(\App\Entity\User::class)->find($params->getUserId())) {
+            throw new NotExistsException("Selected user does not exist.");
         }
-        $ticket->setUser($userClass);
-        if (!$sessionClass = $this->entityManager->getRepository(\App\Entity\Session::class)->find($params->getSessionId())) {
-            throw new \Exception("Selected session does not exist.");
+        $ticket->setUser($userEntity);
+        if (!$sessionEntity = $this->entityManager->getRepository(\App\Entity\Session::class)->find($params->getSessionId())) {
+            throw new NotExistsException("Selected session does not exist.");
         }
-        $ticket->setSession($sessionClass);
+        $ticket->setSession($sessionEntity);
 
         $this->entityManager->persist($ticket);
         $this->entityManager->flush();
@@ -35,23 +39,25 @@ class TicketService
         return $ticket;
     }
 
-
+    /**
+     * @throws NotExistsException
+     */
     public function update(Ticket $ticket, UpdateTicketParameters $params): Ticket
     {
         if ($place = $params->getPlace()) {
             $ticket->setPlace($place);
         }
         if ($user_id = $params->getUserId()) {
-            if (!$userClass = $this->entityManager->getRepository(\App\Entity\User::class)->find($user_id)) {
-                throw new \Exception("Selected user does not exist.");
+            if (!$userEntity = $this->entityManager->getRepository(\App\Entity\User::class)->find($user_id)) {
+                throw new NotExistsException("Selected user does not exist.");
             }
-            $ticket->setUser($userClass);
+            $ticket->setUser($userEntity);
         }
         if ($session_id = $params->getSessionId()) {
-            if (!$sessionClass = $this->entityManager->getRepository(\App\Entity\Session::class)->find($session_id)) {
-                throw new \Exception("Selected session does not exist.");
+            if (!$sessionEntity = $this->entityManager->getRepository(\App\Entity\Session::class)->find($session_id)) {
+                throw new NotExistsException("Selected session does not exist.");
             }
-            $ticket->setSession($sessionClass);
+            $ticket->setSession($sessionEntity);
         }
 
         $this->entityManager->persist($ticket);

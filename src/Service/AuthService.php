@@ -16,7 +16,7 @@ class AuthService
     ) {
     }
 
-    private function getUserToken(): TokenInterface | null
+    private function getUserToken(): ?TokenInterface
     {
         return $this->tokenStorage->getToken() ?: null;
     }

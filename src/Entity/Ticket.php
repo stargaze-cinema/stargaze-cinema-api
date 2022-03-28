@@ -78,8 +78,8 @@ class Ticket implements \JsonSerializable
             ],
             'session' => [
                 'id' => $this->session->getId(),
-                'begin_at' => $this->session->getBeginTime()->format('Y-m-d\TH:i:s.u'),
-                'end_at' => $this->session->getEndTime()->format('Y-m-d\TH:i:s.u'),
+                'begin_at' => $this->session->getBeginAt()->format('Y-m-d\TH:i:s.u'),
+                'end_at' => $this->session->getEndAt()->format('Y-m-d\TH:i:s.u'),
                 'movie' => [
                     'id' => $sessionMovie->getId(),
                     'title' => $sessionMovie->getTitle(),

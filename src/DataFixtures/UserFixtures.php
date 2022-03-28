@@ -11,9 +11,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class UserFixtures extends Fixture
+final class UserFixtures extends Fixture
 {
-    const NUMBER = 15;
+    public const NUMBER = 15;
 
     public function __construct(private UserService $userService)
     {

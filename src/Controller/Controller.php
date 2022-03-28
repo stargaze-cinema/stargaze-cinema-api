@@ -13,11 +13,8 @@ class Controller extends AbstractController
 {
     /**
      * Transforms payload of the request to readable data
-     *
-     * @param Request $request
-     * @return Request
      */
-    protected function transformJsonBody(Request $request): Request | null
+    protected function transformJsonBody(Request $request): ?Request
     {
         if (!$data = json_decode($request->getContent(), true)) {
             return null;
@@ -30,11 +27,8 @@ class Controller extends AbstractController
 
     /**
      * Parses Validator errors into a response if they exist
-     *
-     * @param ConstraintViolationListInterface $errors Errors class
-     * @return JsonResponse | null Prepared errors message or nothing
      */
-    protected function parseErrors(ConstraintViolationListInterface $errors): JsonResponse | null
+    protected function parseErrors(ConstraintViolationListInterface $errors): ?JsonResponse
     {
         $errorResponse = null;
 

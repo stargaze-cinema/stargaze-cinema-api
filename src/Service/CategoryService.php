@@ -27,7 +27,6 @@ class CategoryService
         return $movie;
     }
 
-
     public function update(Category $category, UpdateCategoryParameters $params): Category
     {
         if ($name = $params->getName()) {

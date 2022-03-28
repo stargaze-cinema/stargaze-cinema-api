@@ -59,8 +59,8 @@ class MovieController extends Controller
             price: (float) $request->get('price'),
             year: (int) $request->get('year'),
             duration: (int) $request->get('duration'),
-            category: $request->get('category'),
-            producer: $request->get('producer')
+            categoryId: $request->get('category_id'),
+            producerId: $request->get('producer_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
@@ -112,8 +112,8 @@ class MovieController extends Controller
             price: (float) $request->get('price'),
             year: (int) $request->get('year'),
             duration: (int) $request->get('duration'),
-            category: $request->get('category'),
-            producer: $request->get('producer')
+            categoryId: $request->get('category_id'),
+            producerId: $request->get('producer_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {

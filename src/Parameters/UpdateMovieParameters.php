@@ -29,9 +29,9 @@ final class UpdateMovieParameters
         #[Assert\GreaterThanOrEqual(value: 30)]
         private $duration,
         #[Assert\Type(type: 'integer')]
-        private $category_id,
+        private $categoryId,
         #[Assert\Type(type: 'integer')]
-        private $producer_id
+        private $producerId
     ) {
     }
 
@@ -144,37 +144,37 @@ final class UpdateMovieParameters
     }
 
     /**
-     * Get the value of category_id
+     * Get the value of categoryId
      */
     public function getCategoryId(): ?int
     {
-        return $this->category_id;
+        return $this->categoryId;
     }
 
     /**
-     * Set the value of category_id
+     * Set the value of categoryId
      */
-    public function setCategoryId(int $category_id): self
+    public function setCategoryId(int $categoryId): self
     {
-        $this->category_id = $category_id;
+        $this->categoryId = $categoryId;
 
         return $this;
     }
 
     /**
-     * Get the value of producer_id
+     * Get the value of producerId
      */
     public function getProducerId(): ?int
     {
-        return $this->producer_id;
+        return $this->producerId;
     }
 
     /**
-     * Set the value of producer_id
+     * Set the value of producerId
      */
-    public function setProducerId(int $producer_id): self
+    public function setProducerId(int $producerId): self
     {
-        $this->producer_id = $producer_id;
+        $this->producerId = $producerId;
 
         return $this;
     }

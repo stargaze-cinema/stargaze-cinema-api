@@ -28,24 +28,24 @@ class Session implements \JsonSerializable
     #[ORM\JoinColumn(nullable: false)]
     private Hall $hall;
 
-    public function getBeginTime(): \DateTime
+    public function getBeginAt(): \DateTime
     {
         return $this->begin_at;
     }
 
-    public function setBeginTime(\DateTime $begin_at): self
+    public function setBeginAt(\DateTime $begin_at): self
     {
         $this->begin_at = $begin_at;
 
         return $this;
     }
 
-    public function getEndTime(): \DateTime
+    public function getEndAt(): \DateTime
     {
         return $this->end_at;
     }
 
-    public function setEndTime(\DateTime $end_at): self
+    public function setEndAt(\DateTime $end_at): self
     {
         $this->end_at = $end_at;
 

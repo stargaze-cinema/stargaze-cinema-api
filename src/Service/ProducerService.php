@@ -27,7 +27,6 @@ class ProducerService
         return $movie;
     }
 
-
     public function update(Producer $producer, UpdateProducerParameters $params): Producer
     {
         if ($name = $params->getName()) {

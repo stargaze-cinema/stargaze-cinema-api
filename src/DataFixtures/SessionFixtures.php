@@ -10,9 +10,9 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class SessionFixtures extends Fixture implements DependentFixtureInterface
+final class SessionFixtures extends Fixture implements DependentFixtureInterface
 {
-    const NUMBER = 60;
+    public const NUMBER = 60;
 
     public function load(ObjectManager $manager): void
     {
@@ -20,8 +20,8 @@ class SessionFixtures extends Fixture implements DependentFixtureInterface
 
         for ($i = 0; $i <= self::NUMBER; $i++) {
             $session = new Session();
-            $session->setBeginTime($generator->dateTime);
-            $session->setEndTime($generator->dateTime->add(new \DateInterval('P2D')));
+            $session->setBeginAt($generator->dateTime);
+            $session->setEndAt($generator->dateTime->add(new \DateInterval('P2D')));
             $session->setMovie($this->getReference('movie_' . $generator->numberBetween(0, MovieFixtures::NUMBER)));
             $session->setHall($this->getReference('hall_' . $generator->numberBetween(0, HallFixtures::NUMBER)));
             $manager->persist($session);

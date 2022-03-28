@@ -10,9 +10,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class HallFixtures extends Fixture
+final class HallFixtures extends Fixture
 {
-    const NUMBER = 5;
+    public const NUMBER = 5;
 
     public function load(ObjectManager $manager): void
     {

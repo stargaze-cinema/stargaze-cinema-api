@@ -10,9 +10,9 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class TicketFixtures extends Fixture implements DependentFixtureInterface
+final class TicketFixtures extends Fixture implements DependentFixtureInterface
 {
-    const NUMBER = 30;
+    public const NUMBER = 30;
 
     public function load(ObjectManager $manager): void
     {

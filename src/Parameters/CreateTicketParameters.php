@@ -14,10 +14,10 @@ final class CreateTicketParameters
         private $place,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer')]
-        private $user_id,
+        private $userId,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer')]
-        private $session_id
+        private $sessionId
     ) {
     }
 
@@ -40,37 +40,37 @@ final class CreateTicketParameters
     }
 
     /**
-     * Get the value of user_id
+     * Get the value of userId
      */
     public function getUserId(): int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
     /**
-     * Set the value of user_id
+     * Set the value of userId
      */
-    public function setUserId($user_id): self
+    public function setUserId(int $userId): self
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
 
         return $this;
     }
 
     /**
-     * Get the value of session_id
+     * Get the value of sessionId
      */
     public function getSessionId(): int
     {
-        return $this->session_id;
+        return $this->sessionId;
     }
 
     /**
-     * Set the value of session_id
+     * Set the value of sessionId
      */
-    public function setSessionId(int $session_id): self
+    public function setSessionId(int $sessionId): self
     {
-        $this->session_id = $session_id;
+        $this->sessionId = $sessionId;
 
         return $this;
     }

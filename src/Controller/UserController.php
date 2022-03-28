@@ -52,7 +52,7 @@ class UserController extends Controller
             name: $request->get('name'),
             email: $request->get('email'),
             password: $request->get('password'),
-            password_confirmation: $request->get('password_confirmation'),
+            passwordConfirmation: $request->get('password_confirmation'),
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
@@ -101,7 +101,7 @@ class UserController extends Controller
             email: $request->get('email'),
             roles: $request->get('roles'),
             password: $request->get('password'),
-            password_confirmation: $request->get('password_confirmation'),
+            passwordConfirmation: $request->get('password_confirmation'),
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
