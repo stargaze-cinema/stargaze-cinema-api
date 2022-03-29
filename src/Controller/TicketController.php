@@ -7,9 +7,12 @@ namespace App\Controller;
 use App\Service\AuthService;
 use App\Service\TicketService;
 use App\Repository\TicketRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'tickets.')]
@@ -19,7 +22,8 @@ class TicketController extends Controller
         private AuthService $authService,
         private TicketService $ticketService,
         private TicketRepository $ticketRepository,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private MailerInterface $mailer
     ) {
     }
 
@@ -59,6 +63,25 @@ class TicketController extends Controller
         }
 
         $ticket = $this->ticketService->save($params);
+        $user = $ticket->getUser();
+        $session = $ticket->getSession();
+        $movie = $session->getMovie();
+
+        $email = (new TemplatedEmail())
+            ->from(new Address('support@stargaze.com', 'Paul'))
+            ->to(new Address($user->getEmail(), $user->getName()))
+            ->subject('Your ticket for ' . $movie->getTitle())
+            ->htmlTemplate('emails/ticket.html.twig')
+            ->context([
+                'place' => $ticket->getPlace(),
+                'user' => $user,
+                'hall' => $session->getHall(),
+                'movie' => $movie,
+                'beginAt' => $session->getBeginAt()->format('l d G:i'),
+                'endAt' => $session->getEndAt()->format('l d G:i')
+            ]);
+
+        $this->mailer->send($email);
 
         return new JsonResponse($ticket, JsonResponse::HTTP_CREATED);
     }

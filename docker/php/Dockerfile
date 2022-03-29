@@ -1,7 +1,6 @@
 FROM php:8.1.4-fpm-alpine
-LABEL version="1.3" \
-    author="Paul Litovka" \
-    description="PHP8.1 FPM Alpine image for Stargaze Cinema project."
+
+COPY --from=composer:2.3 /usr/bin/composer /usr/local/bin/composer
 WORKDIR /var/www/stargaze
 USER root
 
@@ -17,6 +16,3 @@ RUN pecl install -f apcu \
     && docker-php-ext-install curl intl opcache pdo_pgsql pgsql \
     && docker-php-ext-enable pdo_pgsql apcu \
     && pecl clear-cache
-
-RUN curl -sS https://getcomposer.org/installer \
-    | php -- --install-dir=/usr/local/bin --filename=composer
