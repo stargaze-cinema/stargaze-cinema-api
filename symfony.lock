@@ -8,6 +8,9 @@
     "behat/gherkin": {
         "version": "v4.9.0"
     },
+    "behat/transliterator": {
+        "version": "v1.3.0"
+    },
     "codeception/codeception": {
         "version": "5.0",
         "recipe": {
@@ -130,6 +133,9 @@
     },
     "fzaninotto/faker": {
         "version": "v1.5.0"
+    },
+    "gedmo/doctrine-extensions": {
+        "version": "v3.6.0"
     },
     "graham-campbell/result-type": {
         "version": "v1.0.4"
@@ -312,6 +318,18 @@
     },
     "softcreatr/jsonpath": {
         "version": "0.8.0"
+    },
+    "stof/doctrine-extensions-bundle": {
+        "version": "1.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.2",
+            "ref": "e805aba9eff5372e2d149a9ff56566769e22819d"
+        },
+        "files": [
+            "config/packages/stof_doctrine_extensions.yaml"
+        ]
     },
     "symfony/asset": {
         "version": "v6.0.3"

@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\TicketRepository::class)]
+#[Gedmo\SoftDeleteable]
 #[ORM\Table(name: "tickets")]
 #[ORM\HasLifecycleCallbacks()]
 class Ticket implements \JsonSerializable
 {
     use EntityIdentifierTrait;
     use EntityTimestampsTrait;
+    use SoftDeleteableEntity;
 
     #[ORM\Column(type: 'smallint')]
     private int $place;
