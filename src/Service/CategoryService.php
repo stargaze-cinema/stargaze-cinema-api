@@ -13,8 +13,10 @@ class CategoryService extends AbstractEntityService
     /**
      * Creates new Category from parameters or updates an existing by passing its entity
      */
-    public function create(CreateCategoryParameters | UpdateCategoryParameters $params, Category $category = new Category()): Category
-    {
+    public function create(
+        CreateCategoryParameters | UpdateCategoryParameters $params,
+        Category $category = new Category()
+    ): Category {
         if ($name = $params->getName()) {
             $category->setName($name);
         }

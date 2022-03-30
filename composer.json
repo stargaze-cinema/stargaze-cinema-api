@@ -91,7 +91,7 @@
             "vendor/bin/phpcs -wap --colors"
         ],
         "lint-fix": [
-            "vendor/bin/phpcbf"
+            "vendor/bin/phpcbf -wvp"
         ],
         "test": [
             "vendor/bin/codecept run --steps"

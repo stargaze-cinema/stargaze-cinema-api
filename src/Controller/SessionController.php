@@ -40,7 +40,10 @@ class SessionController extends AbstractController
 
         if ($request->getContentType() === 'json') {
             if (!$request = $this->transformJsonBody($request)) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -61,12 +64,18 @@ class SessionController extends AbstractController
         $session = $this->sessionService->create($params);
 
         if ($session->getBeginAt() > $session->getEndAt()) {
-            return new JsonResponse(["message" => 'Start of the session should be earlier than the end.'], JsonResponse::HTTP_CONFLICT);
+            return new JsonResponse(
+                ["message" => 'Start of the session should be earlier than the end.'],
+                JsonResponse::HTTP_CONFLICT
+            );
         }
 
         $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
         if ($minutes < $session->getMovie()->getDuration()) {
-            return new JsonResponse(["message" => 'Session can not be shorter then the movie.'], JsonResponse::HTTP_CONFLICT);
+            return new JsonResponse(
+                ["message" => 'Session can not be shorter then the movie.'],
+                JsonResponse::HTTP_CONFLICT
+            );
         }
 
         $this->sessionService->save($session);
@@ -94,7 +103,10 @@ class SessionController extends AbstractController
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -123,12 +135,18 @@ class SessionController extends AbstractController
         $session = $this->sessionService->create($params, $session);
 
         if ($session->getBeginAt() > $session->getEndAt()) {
-            return new JsonResponse(["message" => 'Start of the session should be earlier than the end.'], JsonResponse::HTTP_CONFLICT);
+            return new JsonResponse(
+                ["message" => 'Start of the session should be earlier than the end.'],
+                JsonResponse::HTTP_CONFLICT
+            );
         }
 
         $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
         if ($minutes < $session->getMovie()->getDuration()) {
-            return new JsonResponse(["message" => 'Session can not be shorter then the movie.'], JsonResponse::HTTP_CONFLICT);
+            return new JsonResponse(
+                ["message" => 'Session can not be shorter then the movie.'],
+                JsonResponse::HTTP_CONFLICT
+            );
         }
 
         $this->sessionService->save($session);

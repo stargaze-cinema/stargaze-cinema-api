@@ -15,8 +15,10 @@ class ProducerService extends AbstractEntityService
      *
      * @throws NotExistsException
      */
-    public function create(CreateProducerParameters | UpdateProducerParameters $params, Producer $producer = new Producer()): Producer
-    {
+    public function create(
+        CreateProducerParameters | UpdateProducerParameters $params,
+        Producer $producer = new Producer()
+    ): Producer {
         if ($name = $params->getName()) {
             $producer->setName($name);
         }

@@ -16,8 +16,10 @@ class SessionService extends AbstractEntityService
      *
      * @throws NotExistsException
      */
-    public function create(CreateSessionParameters | UpdateSessionParameters $params, Session $session = new Session()): Session
-    {
+    public function create(
+        CreateSessionParameters | UpdateSessionParameters $params,
+        Session $session = new Session()
+    ): Session {
         if ($beginAt = $params->getBeginAt()) {
             $session->setBeginAt($beginAt);
         }

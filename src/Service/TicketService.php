@@ -16,8 +16,10 @@ class TicketService extends AbstractEntityService
      *
      * @throws NotExistsException
      */
-    public function create(CreateTicketParameters | UpdateTicketParameters $params, Ticket $ticket = new Ticket()): Ticket
-    {
+    public function create(
+        CreateTicketParameters | UpdateTicketParameters $params,
+        Ticket $ticket = new Ticket()
+    ): Ticket {
         if ($place = $params->getPlace()) {
             $ticket->setPlace($place);
         }

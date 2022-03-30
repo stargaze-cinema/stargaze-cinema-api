@@ -48,7 +48,10 @@ class TicketController extends AbstractController
 
         if ($request->getContentType() === 'json') {
             if (!$request = $this->transformJsonBody($request)) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -76,7 +79,12 @@ class TicketController extends AbstractController
             return new JsonResponse(['message' => 'Selected session has expired.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        if (!!$this->ticketRepository->findOneBy([ 'place' => $ticket->getPlace(), 'session' => $ticket->getSession() ])) {
+        if (
+            !!$this->ticketRepository->findOneBy([
+            'place' => $ticket->getPlace(),
+            'session' => $ticket->getSession()
+            ])
+        ) {
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 
@@ -120,7 +128,10 @@ class TicketController extends AbstractController
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -152,7 +163,12 @@ class TicketController extends AbstractController
             return new JsonResponse(['message' => 'Selected session has expired.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        if (!!$this->ticketRepository->findOneBy([ 'place' => $ticket->getPlace(), 'session' => $ticket->getSession() ])) {
+        if (
+            !!$this->ticketRepository->findOneBy([
+            'place' => $ticket->getPlace(),
+            'session' => $ticket->getSession()
+            ])
+        ) {
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 

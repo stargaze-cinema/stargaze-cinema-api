@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use \App\Tests\ApiTester;
+use App\Tests\ApiTester;
 
 class MoviesCest
 {

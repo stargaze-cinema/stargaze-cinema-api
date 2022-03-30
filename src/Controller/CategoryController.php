@@ -40,7 +40,10 @@ class CategoryController extends AbstractController
 
         if ($request->getContentType() === 'json') {
             if (!$request = $this->transformJsonBody($request)) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -78,7 +81,10 @@ class CategoryController extends AbstractController
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
