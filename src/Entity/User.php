@@ -12,11 +12,8 @@ use App\Enum\Role;
 #[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
 #[ORM\Table(name: "users")]
 #[ORM\HasLifecycleCallbacks()]
-class User implements \JsonSerializable, UserInterface, PasswordAuthenticatedUserInterface
+class User extends AbstractEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use EntityIdentifierTrait;
-    use EntityTimestampsTrait;
-
     #[ORM\Column(type: 'string', length: 32)]
     private string $name;
 

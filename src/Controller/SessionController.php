@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'sessions.')]
-class SessionController extends Controller
+class SessionController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -58,7 +58,18 @@ class SessionController extends Controller
         $params->setBeginAt(new \DateTime($params->getBeginAt()));
         $params->setEndAt(new \DateTime($params->getEndAt()));
 
-        $session = $this->sessionService->save($params);
+        $session = $this->sessionService->create($params);
+
+        if ($session->getBeginAt() > $session->getEndAt()) {
+            return new JsonResponse(["message" => 'Start of the session should be earlier than the end.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
+        if ($minutes < $session->getMovie()->getDuration()) {
+            return new JsonResponse(["message" => 'Session can not be shorter then the movie.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        $this->sessionService->save($session);
 
         return new JsonResponse($session, JsonResponse::HTTP_CREATED);
     }
@@ -102,10 +113,25 @@ class SessionController extends Controller
             return $errorResponse;
         }
 
-        $params->setBeginAt(new \DateTime($params->getBeginAt()));
-        $params->setEndAt(new \DateTime($params->getEndAt()));
+        if (!!$beginAt = $params->getBeginAt()) {
+            $params->setBeginAt(new \DateTime($beginAt));
+        }
+        if (!!$endAt = $params->getEndAt()) {
+            $params->setEndAt(new \DateTime($endAt));
+        }
 
-        $session = $this->sessionService->update($session, $params);
+        $session = $this->sessionService->create($params, $session);
+
+        if ($session->getBeginAt() > $session->getEndAt()) {
+            return new JsonResponse(["message" => 'Start of the session should be earlier than the end.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
+        if ($minutes < $session->getMovie()->getDuration()) {
+            return new JsonResponse(["message" => 'Session can not be shorter then the movie.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        $this->sessionService->save($session);
 
         return new JsonResponse($session, JsonResponse::HTTP_CREATED);
     }

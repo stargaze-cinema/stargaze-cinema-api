@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/auth', name: 'auth.')]
-class AuthController extends Controller
+class AuthController extends AbstractController
 {
     public function __construct(
         private UserService $userService,
@@ -50,14 +50,18 @@ class AuthController extends Controller
             return new JsonResponse(['message' => 'Password did not match.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        $user = $this->userService->save($params);
+        $user = $this->userService->create($params);
+        $this->userService->save($user);
 
         return new JsonResponse($user, JsonResponse::HTTP_CREATED);
     }
 
     #[Route('/signin', name: 'signin', methods: ['POST'])]
-    public function signIn(Request $request, UserPasswordHasherInterface $passwordHasher, JWTTokenManagerInterface $JWTManager): JsonResponse
-    {
+    public function signIn(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        JWTTokenManagerInterface $JWTManager
+    ): JsonResponse {
         $request = $this->transformJsonBody($request);
         if (!$request) {
             return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);

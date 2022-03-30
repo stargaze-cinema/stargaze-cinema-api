@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'movies.')]
-class MovieController extends Controller
+class MovieController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -67,7 +67,8 @@ class MovieController extends Controller
             return $errorResponse;
         }
 
-        $movie = $this->movieService->save($params);
+        $movie = $this->movieService->create($params);
+        $this->movieService->save($movie);
 
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
@@ -120,7 +121,8 @@ class MovieController extends Controller
             return $errorResponse;
         }
 
-        $movie = $this->movieService->update($movie, $params);
+        $movie = $this->movieService->create($params, $movie);
+        $this->movieService->save($movie);
 
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }

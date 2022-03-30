@@ -7,14 +7,14 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as AbstractBaseController;
 
-class Controller extends AbstractController
+abstract class AbstractController extends AbstractBaseController
 {
     /**
      * Transforms payload of the request to readable data
      */
-    protected function transformJsonBody(Request $request): ?Request
+    final protected function transformJsonBody(Request $request): ?Request
     {
         if (!$data = json_decode($request->getContent(), true)) {
             return null;
@@ -28,7 +28,7 @@ class Controller extends AbstractController
     /**
      * Parses Validator errors into a response if they exist
      */
-    protected function parseErrors(ConstraintViolationListInterface $errors): ?JsonResponse
+    final protected function parseErrors(ConstraintViolationListInterface $errors): ?JsonResponse
     {
         $errorResponse = null;
 

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'users.')]
-class UserController extends Controller
+class UserController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -59,7 +59,8 @@ class UserController extends Controller
             return $errorResponse;
         }
 
-        $user = $this->userService->save($params);
+        $user = $this->userService->create($params);
+        $this->userService->save($user);
 
         return new JsonResponse($user, JsonResponse::HTTP_CREATED);
     }
@@ -108,7 +109,8 @@ class UserController extends Controller
             return $errorResponse;
         }
 
-        $user = $this->userService->update($user, $params);
+        $user = $this->userService->create($params, $user);
+        $this->userService->save($user);
 
         return new JsonResponse($user, JsonResponse::HTTP_CREATED);
     }

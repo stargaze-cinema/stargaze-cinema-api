@@ -9,11 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\HallRepository::class)]
 #[ORM\Table(name: "halls")]
 #[ORM\HasLifecycleCallbacks()]
-class Hall implements \JsonSerializable
+class Hall extends AbstractEntity
 {
-    use EntityIdentifierTrait;
-    use EntityTimestampsTrait;
-
     #[ORM\Column(type: 'string', length: 16)]
     private string $name;
 

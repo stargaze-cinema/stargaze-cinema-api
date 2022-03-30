@@ -13,12 +13,12 @@ final class UpdateSessionParameters
             pattern: '/(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)(T)?(\d\d)(:)?(\d\d)(:)?(\d\d)(\.\d+)?(Z|([+-])(\d\d)(:)?(\d\d))/',
             message: 'This value {{ value }} is not a valid DateTime, expected ISO string.'
         )]
-        private \DateTime | string $beginAt,
+        private \DateTime | string | null $beginAt,
         #[Assert\Regex(
             pattern: '/(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)(T)?(\d\d)(:)?(\d\d)(:)?(\d\d)(\.\d+)?(Z|([+-])(\d\d)(:)?(\d\d))/',
             message: 'This value {{ value }} is not a valid DateTime, expected ISO string.'
         )]
-        private \DateTime | string $endAt,
+        private \DateTime | string | null $endAt,
         #[Assert\Type(type: 'integer')]
         private $movieId,
         #[Assert\Type(type: 'integer')]

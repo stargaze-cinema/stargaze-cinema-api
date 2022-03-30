@@ -17,6 +17,8 @@ services:
             - ./docker/php/php.ini:/etc/nginx/conf.d/php.ini
         networks:
             - stargaze
+        depends_on:
+            - php
 
     php:
         container_name: php

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'producers.')]
-class ProducerController extends Controller
+class ProducerController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -52,7 +52,8 @@ class ProducerController extends Controller
             return $errorResponse;
         }
 
-        $producer = $this->producerService->save($params);
+        $producer = $this->producerService->create($params);
+        $this->producerService->save($producer);
 
         return new JsonResponse($producer, JsonResponse::HTTP_CREATED);
     }
@@ -93,7 +94,8 @@ class ProducerController extends Controller
             return $errorResponse;
         }
 
-        $producer = $this->producerService->update($producer, $params);
+        $producer = $this->producerService->create($params, $producer);
+        $this->producerService->save($producer);
 
         return new JsonResponse($producer, JsonResponse::HTTP_CREATED);
     }

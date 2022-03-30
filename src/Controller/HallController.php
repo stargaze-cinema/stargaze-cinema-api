@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'halls.')]
-class HallController extends Controller
+class HallController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -54,7 +54,8 @@ class HallController extends Controller
             return $errorResponse;
         }
 
-        $hall = $this->hallService->save($params);
+        $hall = $this->hallService->create($params);
+        $this->hallService->save($hall);
 
         return new JsonResponse($hall, JsonResponse::HTTP_CREATED);
     }
@@ -97,7 +98,8 @@ class HallController extends Controller
             return $errorResponse;
         }
 
-        $hall = $this->hallService->update($hall, $params);
+        $hall = $this->hallService->create($params, $hall);
+        $this->hallService->save($hall);
 
         return new JsonResponse($hall, JsonResponse::HTTP_CREATED);
     }
