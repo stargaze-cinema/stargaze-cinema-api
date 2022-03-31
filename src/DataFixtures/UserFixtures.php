@@ -13,7 +13,7 @@ use Faker\Factory;
 
 final class UserFixtures extends Fixture
 {
-    public const NUMBER = 15;
+    public const NUMBER = 10;
 
     public function __construct(private UserService $userService)
     {
@@ -37,8 +37,16 @@ final class UserFixtures extends Fixture
         $manager->persist($user);
         $this->addReference("user_1", $user);
 
+        $user = new User();
+        $user->setName('Deeja');
+        $user->setEmail('deeja@stab.com');
+        $user->setRoles([Role::Admin->value]);
+        $user->setPassword($this->userService->hashPassword($user, '123456789'));
+        $manager->persist($user);
+        $this->addReference("user_2", $user);
+
         $generator = Factory::create();
-        for ($i = 2; $i <= self::NUMBER; $i++) {
+        for ($i = 3; $i <= self::NUMBER; $i++) {
             $user = new User();
             $user->setName($generator->name);
             $user->setEmail($generator->email);

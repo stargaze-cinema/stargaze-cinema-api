@@ -23,15 +23,19 @@ class MovieService extends AbstractEntityService
         }
         if ($description = $params->getDescription()) {
             $movie->setDescription($description);
+        } else {
+            $movie->setDescription(null);
+        }
+        if ($poster = $params->getPoster()) {
+            $movie->setPoster($poster);
+        } else {
+            $movie->setPoster(null);
         }
         if ($price = $params->getPrice()) {
             $movie->setPrice($price);
         }
         if ($year = $params->getYear()) {
             $movie->setYear($year);
-        }
-        if ($poster = $params->getPoster()) {
-            $movie->setPoster($poster);
         }
         if ($duration = $params->getDuration()) {
             $movie->setDuration($duration);

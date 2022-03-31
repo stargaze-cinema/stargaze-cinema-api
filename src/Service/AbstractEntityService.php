@@ -6,17 +6,24 @@ namespace App\Service;
 
 use App\Entity\AbstractEntity;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 abstract class AbstractEntityService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private UserPasswordHasherInterface $passwordHasher
     ) {
     }
 
     final protected function getEntityRepository(string $className): \Doctrine\Persistence\ObjectRepository
     {
         return $this->entityManager->getRepository($className);
+    }
+
+    final public function hashPassword(\App\Entity\User $user, string $password): string
+    {
+        return $this->passwordHasher->hashPassword($user, $password);
     }
 
     final public function save(AbstractEntity $entity): void

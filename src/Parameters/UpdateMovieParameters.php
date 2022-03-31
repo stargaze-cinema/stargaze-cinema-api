@@ -19,14 +19,10 @@ final class UpdateMovieParameters
         #[Assert\Type(type: 'string')]
         private $poster,
         #[Assert\Type(type: ['integer', 'float'])]
-        #[Assert\Positive]
         private $price,
         #[Assert\Type(type: 'integer')]
-        #[Assert\Positive]
-        #[Assert\GreaterThanOrEqual(value: 1888)]
         private $year,
         #[Assert\Type(type: 'integer')]
-        #[Assert\GreaterThanOrEqual(value: 30)]
         private $duration,
         #[Assert\Type(type: 'integer')]
         private $categoryId,

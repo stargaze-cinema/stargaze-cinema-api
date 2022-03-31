@@ -4,73 +4,88 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
+use App\Entity\Hall;
+use App\Entity\Movie;
+use App\Entity\Session;
 use App\Tests\ApiTester;
 
 class SessionsCest
 {
     public function tryToGetSession(ApiTester $I): void
     {
-        $I->haveInDatabase('sessions', [
-            'id' => 1,
-            'movie_id' => 1,
-            'hall_id' => 1,
-            'begin_at' => date('Y-m-d H:i:s', time()),
-            'end_at' => date('Y-m-d H:i:s', time())
+        $I->haveInRepository(Session::class, [
+            'movie' => $I->grabEntityFromRepository(Movie::class, ['id' => 1]),
+            'hall' => $I->grabEntityFromRepository(Hall::class, ['id' => 1]),
+            'begin_at' => new \DateTime(),
+            'end_at' => new \DateTime('+2 hours')
         ]);
 
         $I->sendGet('/sessions');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            [
-                'name' => 'Lunar'
-            ]
-        ]);
+        $I->seeResponseCodeIsSuccessful();
     }
 
-    public function tryToPostPatchDeleteSession(ApiTester $I): void
+    public function tryToGetInvalidSession(ApiTester $I): void
     {
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveInDatabase('movies', [
-            'id' => 1,
-            'title' => "Raya And The Last Dragon",
-            'description' => "Some text.",
-            'price' => 10.00,
-            'year' => 2021,
-            'duration' => 120,
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
-        ]);
-        $I->haveInDatabase('halls', [
-            'id' => 1,
-            'name' => "Lunar",
-            'capacity' => 100,
-            'type' => 'IMAX',
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
-        ]);
+        $I->sendGet('/sessions/420');
+        $I->seeResponseCodeIsClientError();
+    }
+
+    public function tryToPostSession(ApiTester $I): void
+    {
+        $I->amBearerAuthorized();
         $I->sendPost('/sessions', [
-            'movie_id' => 1,
-            'hall_id' => 1,
-            'begin_at' => date('Y-m-d H:i:s', time()),
-            'end_at' => date('Y-m-d H:i:s', time())
+            'movie_id' => 3,
+            'hall_id' => 3,
+            'begin_at' => (new \DateTime())->format(\DateTime::ISO8601),
+            'end_at' => (new \DateTime('+6 hours'))->format(\DateTime::ISO8601)
         ]);
-        $I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
+    }
 
-        $response = json_decode($I->grabResponse());
-        $I->haveHttpHeader('Content-Type', 'application/merge-patch+json');
-        $I->sendPatch("/sessions/" . $response->id, [
-            'name' => "Stargaze"
+    public function tryToPostInvalidSession(ApiTester $I): void
+    {
+        $I->amBearerAuthorized();
+        $I->sendPost('/sessions', [
+            'movie_id' => 3,
+            'hall_id' => 3,
+            'begin_at' => (new \DateTime())->format(\DateTime::ISO8601),
+            'end_at' => (new \DateTime('+30 minutes'))->format(\DateTime::ISO8601)
         ]);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseContainsJson([
-            'name' => "Stargaze"
-        ]);
+        $I->seeResponseCodeIsClientError();
+        $I->seeResponseIsJson();
+    }
 
-        $I->deleteHeader('Content-Type');
-        $I->sendDelete("/sessions/" . $response->id);
-        $I->seeResponseCodeIs(204);
+    public function tryToPatchSession(ApiTester $I): void
+    {
+        $I->amBearerAuthorized();
+        $now = new \DateTime();
+        $I->haveInRepository(Session::class, [
+            'movie' => $I->grabEntityFromRepository(Movie::class, ['id' => 1]),
+            'hall' => $I->grabEntityFromRepository(Hall::class, ['id' => 1]),
+            'begin_at' => $now,
+            'end_at' => new \DateTime('+3 hours')
+        ]);
+        $id = $I->grabFromRepository(Session::class, 'id', ['begin_at' => $now]);
+        $I->sendPatch("/sessions/$id", [
+            'end_at' => (new \DateTime('+4 hours'))->format(\DateTime::ISO8601),
+        ]);
+        $I->seeResponseCodeIsSuccessful();
+        $I->seeResponseIsJson();
+    }
+
+    public function tryToDeleteSession(ApiTester $I): void
+    {
+        $I->amBearerAuthorized();
+        $now = new \DateTime();
+        $I->haveInRepository(Session::class, [
+            'movie' => $I->grabEntityFromRepository(Movie::class, ['id' => 1]),
+            'hall' => $I->grabEntityFromRepository(Hall::class, ['id' => 1]),
+            'begin_at' => $now,
+            'end_at' => new \DateTime('+2 hours')
+        ]);
+        $id = $I->grabFromRepository(Session::class, 'id', ['begin_at' => $now]);
+        $I->sendDelete("/sessions/$id");
+        $I->seeResponseCodeIsSuccessful();
     }
 }

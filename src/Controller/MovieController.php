@@ -62,8 +62,8 @@ class MovieController extends AbstractController
             price: (float) $request->get('price'),
             year: (int) $request->get('year'),
             duration: (int) $request->get('duration'),
-            categoryId: $request->get('category_id'),
-            producerId: $request->get('producer_id')
+            categoryId: (int) $request->get('category_id'),
+            producerId: (int) $request->get('producer_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {

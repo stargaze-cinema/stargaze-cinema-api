@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
+use App\Entity\Category;
 use App\Tests\ApiTester;
 
 class CategoriesCest
 {
     public function tryToGetCategory(ApiTester $I): void
     {
-        $I->haveInDatabase('categories', [
-            'id' => 1,
+        $I->haveInRepository(Category::class, [
             'name' => "Action",
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
         ]);
 
         $I->sendGet('/categories');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
+        $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             [
                 'name' => 'Action'
@@ -30,45 +27,40 @@ class CategoriesCest
     public function tryToGetInvalidCategory(ApiTester $I): void
     {
         $I->sendGet('/categories/420');
-        $I->seeResponseCodeIs(404);
+        $I->seeResponseCodeIsClientError();
     }
 
     public function tryToPostCategory(ApiTester $I): void
     {
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->amBearerAuthorized();
         $I->sendPost('/categories', [
-            'name' => 'Action'
+            'name' => 'Cringe'
         ]);
-        $I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
     }
 
     public function tryToPostInvalidCategory(ApiTester $I): void
     {
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->amBearerAuthorized();
         $I->sendPost('/categories', [
             'name' => true
         ]);
-        $I->seeResponseCodeIs(422);
+        $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();
     }
 
     public function tryToPatchCategory(ApiTester $I): void
     {
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveInDatabase('categories', [
-            'id' => 3,
-            'name' => "Disnep",
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
+        $I->amBearerAuthorized();
+        $I->haveInRepository(Category::class, [
+            'name' => "Disnep"
         ]);
-        $I->sendPatch("/categories/3", [
+        $id = $I->grabFromRepository(Category::class, 'id', ['name' => 'Disnep']);
+        $I->sendPatch("/categories/$id", [
             'name' => "Disney"
         ]);
-        $I->seeResponseCodeIs(200);
+        $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             'name' => "Disney"
         ]);
@@ -76,13 +68,12 @@ class CategoriesCest
 
     public function tryToDeleteCategory(ApiTester $I): void
     {
-        $I->haveInDatabase('categories', [
-            'id' => 3,
-            'name' => "Disnep",
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
+        $I->amBearerAuthorized();
+        $I->haveInRepository(Category::class, [
+            'name' => "Delete me"
         ]);
-        $I->sendDelete("/categories/3");
-        $I->seeResponseCodeIs(204);
+        $id = $I->grabFromRepository(Category::class, 'id', ['name' => 'Delete me']);
+        $I->sendDelete("/categories/$id");
+        $I->seeResponseCodeIsSuccessful();
     }
 }
