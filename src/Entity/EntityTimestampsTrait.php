@@ -9,10 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 trait EntityTimestampsTrait
 {
     #[ORM\Column(type: "datetime", nullable: true)]
-    private \DateTimeInterface $created_at;
+    private \DateTime $created_at;
 
     #[ORM\Column(type: "datetime", nullable: true)]
-    private \DateTimeInterface $updated_at;
+    private \DateTime $updated_at;
 
     #[ORM\PrePersist()]
     public function createdAt(): void
@@ -27,7 +27,7 @@ trait EntityTimestampsTrait
         $this->updated_at = new \DateTime();
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): \DateTime
     {
         return $this->created_at;
     }
@@ -39,7 +39,7 @@ trait EntityTimestampsTrait
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTimeInterface
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updated_at;
     }

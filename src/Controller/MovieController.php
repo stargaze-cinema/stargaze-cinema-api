@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Enum\Role;
 use App\Service\S3Service;
-use App\Service\UserService;
+use App\Service\AuthService;
 use App\Service\MovieService;
 use App\Repository\MovieRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -18,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovieController extends Controller
 {
     public function __construct(
-        private UserService $userService,
+        private AuthService $authService,
         private MovieService $movieService,
         private MovieRepository $movieRepository,
         private ValidatorInterface $validator,
@@ -37,10 +36,8 @@ class MovieController extends Controller
     #[Route('/movies', name: 'store', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
-        if (!!$roles = $this->userService->getCurrentUserRoles()) {
-            if (!in_array(Role::Admin->value, $roles)) {
-                return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
-            }
+        if (!$this->authService->authenticatedAsAdmin()) {
+            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if ($request->getContentType() === 'json') {
@@ -62,15 +59,15 @@ class MovieController extends Controller
             price: (float) $request->get('price'),
             year: (int) $request->get('year'),
             duration: (int) $request->get('duration'),
-            category: $request->get('category'),
-            producer: $request->get('producer')
+            categoryId: $request->get('category_id'),
+            producerId: $request->get('producer_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
             return $errorResponse;
         }
 
-        $movie = $this->movieService->saveMovie($params);
+        $movie = $this->movieService->save($params);
 
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
@@ -88,10 +85,8 @@ class MovieController extends Controller
     #[Route('/movies/{id}', name: 'update', methods: ['PATCH', 'PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
-        if (!!$roles = $this->userService->getCurrentUserRoles()) {
-            if (!in_array(Role::Admin->value, $roles)) {
-                return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
-            }
+        if (!$this->authService->authenticatedAsAdmin()) {
+            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if ($request->getContentType() === 'json') {
@@ -117,15 +112,15 @@ class MovieController extends Controller
             price: (float) $request->get('price'),
             year: (int) $request->get('year'),
             duration: (int) $request->get('duration'),
-            category: $request->get('category'),
-            producer: $request->get('producer')
+            categoryId: $request->get('category_id'),
+            producerId: $request->get('producer_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
             return $errorResponse;
         }
 
-        $movie = $this->movieService->updateMovie($movie, $params);
+        $movie = $this->movieService->update($movie, $params);
 
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
@@ -133,21 +128,19 @@ class MovieController extends Controller
     #[Route('/movies/{id}', name: 'destroy', methods: ['DELETE'])]
     public function destroy(int $id): JsonResponse
     {
-        if (!!$roles = $this->userService->getCurrentUserRoles()) {
-            if (!in_array(Role::Admin->value, $roles)) {
-                return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
-            }
+        if (!$this->authService->authenticatedAsAdmin()) {
+            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if (!$movie = $this->movieRepository->find($id)) {
-            return new JsonResponse('No movie found.', JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         if ($poster = $movie->getPoster()) {
             $bucket = $this->s3Service->getBucket();
             $this->s3Service->delete(explode("$bucket/", $poster)[1]);
         }
-        $this->movieService->deleteMovie($movie);
+        $this->movieService->delete($movie);
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
     }

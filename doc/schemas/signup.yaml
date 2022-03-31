@@ -4,7 +4,7 @@ properties:
         type: string
     email:
         type: string
-    roles:
-        type: array
-        items:
-            type: string
+    password:
+        type: string
+    password_confirmation:
+        type: string

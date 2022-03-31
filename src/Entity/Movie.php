@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\MovieRepository::class)]
+#[Gedmo\SoftDeleteable]
 #[ORM\Table(name: "movies")]
 #[ORM\HasLifecycleCallbacks()]
 class Movie implements \JsonSerializable
 {
     use EntityIdentifierTrait;
     use EntityTimestampsTrait;
+    use SoftDeleteableEntity;
 
     #[ORM\Column(type: 'string', length: 64)]
     private string $title;
@@ -149,10 +153,14 @@ class Movie implements \JsonSerializable
             'category' => [
                 'id' => $this->category->getId(),
                 'name' => $this->category->getName(),
+                'created_at' => $this->category->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $this->category->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
             'producer' => [
                 'id' => $this->producer->getId(),
                 'name' => $this->producer->getName(),
+                'created_at' => $this->producer->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $this->producer->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
             'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),

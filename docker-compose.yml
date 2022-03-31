@@ -17,9 +17,6 @@ services:
             - ./docker/php/php.ini:/etc/nginx/conf.d/php.ini
         networks:
             - stargaze
-        depends_on:
-            - php
-            - postgres
 
     php:
         container_name: php
@@ -51,7 +48,7 @@ services:
 
     minio:
         container_name: minio
-        image: 'minio/minio:RELEASE.2022-03-22T02-05-10Z'
+        image: 'minio/minio:RELEASE.2022-03-24T00-43-44Z'
         command: server --address 0.0.0.0:9000 --console-address ":9001" /data
         ports:
             - "127.0.0.1:9000:9000"
@@ -90,7 +87,7 @@ services:
 
     swagger-ui:
         container_name: swagger-ui
-        image: swaggerapi/swagger-ui:v4.7.0
+        image: swaggerapi/swagger-ui:v4.9.0
         ports:
             - "8008:8080"
         volumes:

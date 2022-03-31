@@ -1,11 +1,18 @@
 openapi: 3.0.3
 info:
     title: Stargaze Cinema API documentation
-    version: 1.0.0
+    version: 1.1.0
 servers:
     - url: http://localhost:8000
 tags:
+    - name: Auth
     - name: Movie
+    - name: Category
+    - name: Producer
+    - name: Hall
+    - name: Session
+    - name: Ticket
+    - name: User
 paths:
     /api/auth/signin:
         $ref: './resources/auth.yaml#/SignIn'
@@ -15,15 +22,47 @@ paths:
         $ref: './resources/movie.yaml#/Movie'
     /api/movies/{id}:
         $ref: './resources/movie.yaml#/MovieWithID'
+    /api/categories:
+        $ref: './resources/category.yaml#/Category'
+    /api/categories/{id}:
+        $ref: './resources/category.yaml#/CategoryWithID'
+    /api/producers:
+        $ref: './resources/producer.yaml#/Producer'
+    /api/producers/{id}:
+        $ref: './resources/producer.yaml#/ProducerWithID'
+    /api/halls:
+        $ref: './resources/hall.yaml#/Hall'
+    /api/halls/{id}:
+        $ref: './resources/hall.yaml#/HallWithID'
+    /api/sessions:
+        $ref: './resources/session.yaml#/Session'
+    /api/sessions/{id}:
+        $ref: './resources/session.yaml#/SessionWithID'
+    /api/tickets:
+        $ref: './resources/ticket.yaml#/Ticket'
+    /api/tickets/{id}:
+        $ref: './resources/ticket.yaml#/TicketWithID'
+    /api/users:
+        $ref: './resources/user.yaml#/User'
+    /api/users/{id}:
+        $ref: './resources/user.yaml#/UserWithID'
 
 components:
     schemas:
-        SignIn:
-            $ref: './schemas/signin_schema.yaml'
-        SignUp:
-            $ref: './schemas/signup_schema.yaml'
         Movie:
-            $ref: './schemas/movie_schema.yaml'
+            $ref: './schemas/movie.yaml'
+        Category:
+            $ref: './schemas/category.yaml'
+        Producer:
+            $ref: './schemas/producer.yaml'
+        Hall:
+            $ref: './schemas/hall.yaml'
+        Session:
+            $ref: './schemas/session.yaml'
+        Ticket:
+            $ref: './schemas/ticket.yaml'
+        User:
+            $ref: './schemas/user.yaml'
     securitySchemes:
         BearerAuth:
-            $ref: './schemas/security_schema.yaml'
+            $ref: './schemas/security.yaml'

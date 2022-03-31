@@ -8,61 +8,41 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class CreateMovieParameters
 {
-    #[Assert\NotBlank]
-    #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
-    #[Assert\Length(min: 2, max: 64)]
-    private $title;
-
-    #[Assert\Length(max: 65535)]
-    #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
-    private $description;
-
-    #[Assert\Length(max: 255)]
-    #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
-    #[Assert\Url]
-    private $poster;
-
-    #[Assert\NotBlank]
-    #[Assert\Type(type: ['integer', 'float'], message: 'This value {{ value }} should be of type float.')]
-    #[Assert\Positive]
-    private $price;
-
-    #[Assert\NotBlank]
-    #[Assert\Type(type: 'integer', message: 'This value {{ value }} should be of type integer.')]
-    #[Assert\Positive]
-    #[Assert\GreaterThanOrEqual(value: 1888)]
-    private $year;
-
-    #[Assert\NotBlank]
-    #[Assert\Type(type: 'integer', message: 'This value {{ value }} should be of type integer.')]
-    #[Assert\GreaterThanOrEqual(value: 30)]
-    private $duration;
-
-    #[Assert\NotBlank]
-    #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
-    private $category;
-
-    #[Assert\NotBlank]
-    #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
-    private $producer;
-
-    public function __construct($title, $description, $poster, $price, $year, $duration, $category, $producer)
-    {
-        $this->title = $title;
-        $this->description = $description;
-        $this->poster = $poster;
-        $this->price = $price;
-        $this->title = $title;
-        $this->year = $year;
-        $this->duration = $duration;
-        $this->category = $category;
-        $this->producer = $producer;
+    public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'string')]
+        #[Assert\Length(min: 2, max: 64)]
+        private $title,
+        #[Assert\Length(max: 65535)]
+        #[Assert\Type(type: 'string')]
+        private $description,
+        #[Assert\Length(max: 255)]
+        #[Assert\Type(type: 'string')]
+        private $poster,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: ['integer', 'float'])]
+        #[Assert\Positive]
+        private $price,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer')]
+        #[Assert\Positive]
+        #[Assert\GreaterThanOrEqual(value: 1888)]
+        private $year,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer')]
+        #[Assert\GreaterThanOrEqual(value: 30)]
+        private $duration,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer')]
+        private $categoryId,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer')]
+        private $producerId
+    ) {
     }
 
     /**
      * Get the value of title
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -71,9 +51,6 @@ final class CreateMovieParameters
 
     /**
      * Set the value of title
-     *
-     * @param string $title
-     * @return self
      */
     public function setTitle(string $title): self
     {
@@ -84,19 +61,14 @@ final class CreateMovieParameters
 
     /**
      * Get the value of description
-     *
-     * @return string | null
      */
-    public function getDescription(): string | null
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     /**
      * Set the value of description
-     *
-     * @param string $description
-     * @return self
      */
     public function setDescription(string $description): self
     {
@@ -107,19 +79,14 @@ final class CreateMovieParameters
 
     /**
      * Get the value of poster
-     *
-     * @return string | null
      */
-    public function getPoster(): string | null
+    public function getPoster(): ?string
     {
         return $this->poster;
     }
 
     /**
      * Set the value of poster
-     *
-     * @param string $poster
-     * @return self
      */
     public function setPoster(string $poster): self
     {
@@ -130,8 +97,6 @@ final class CreateMovieParameters
 
     /**
      * Get the value of price
-     *
-     * @return float | int
      */
     public function getPrice(): float | int
     {
@@ -140,9 +105,6 @@ final class CreateMovieParameters
 
     /**
      * Set the value of price
-     *
-     * @param float | int $price
-     * @return self
      */
     public function setPrice(float | int $price): self
     {
@@ -153,8 +115,6 @@ final class CreateMovieParameters
 
     /**
      * Get the value of year
-     *
-     * @return int
      */
     public function getYear(): int
     {
@@ -163,9 +123,6 @@ final class CreateMovieParameters
 
     /**
      * Set the value of year
-     *
-     * @param int $year
-     * @return self
      */
     public function setYear(int $year): self
     {
@@ -176,8 +133,6 @@ final class CreateMovieParameters
 
     /**
      * Get the value of duration
-     *
-     * @return int
      */
     public function getDuration(): int
     {
@@ -186,9 +141,6 @@ final class CreateMovieParameters
 
     /**
      * Set the value of duration
-     *
-     * @param int $duration
-     * @return self
      */
     public function setDuration(int $duration): self
     {
@@ -198,47 +150,37 @@ final class CreateMovieParameters
     }
 
     /**
-     * Get the value of category
-     *
-     * @return string
+     * Get the value of categoryId
      */
-    public function getCategory(): string
+    public function getCategoryId(): int
     {
-        return $this->category;
+        return $this->categoryId;
     }
 
     /**
-     * Set the value of category
-     *
-     * @param string $category
-     * @return self
+     * Set the value of categoryId
      */
-    public function setCategory(string $category): self
+    public function setCategoryId(int $categoryId): self
     {
-        $this->category = $category;
+        $this->categoryId = $categoryId;
 
         return $this;
     }
 
     /**
-     * Get the value of producer
-     *
-     * @return string
+     * Get the value of producerId
      */
-    public function getProducer(): string
+    public function getProducerId(): int
     {
-        return $this->producer;
+        return $this->producerId;
     }
 
     /**
-     * Set the value of producer
-     *
-     * @param string $producer
-     * @return self
+     * Set the value of producerId
      */
-    public function setProducer(string $producer): self
+    public function setProducerId(int $producerId): self
     {
-        $this->producer = $producer;
+        $this->producerId = $producerId;
 
         return $this;
     }

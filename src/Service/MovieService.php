@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Movie;
+use App\Exception\NotExistsException;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Parameters\CreateMovieParameters;
 use App\Parameters\UpdateMovieParameters;
@@ -16,7 +17,10 @@ class MovieService
     ) {
     }
 
-    public function saveMovie(CreateMovieParameters $params): Movie
+    /**
+     * @throws NotExistsException
+     */
+    public function save(CreateMovieParameters $params): Movie
     {
         $movie = new Movie();
         $movie->setTitle($params->getTitle());
@@ -25,12 +29,14 @@ class MovieService
         $movie->setPrice($params->getPrice());
         $movie->setYear($params->getYear());
         $movie->setDuration($params->getDuration());
-        $movie->setCategory(
-            $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $params->getCategory()])
-        );
-        $movie->setProducer(
-            $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $params->getProducer()])
-        );
+        if (!$categoryEntity = $this->entityManager->getRepository(\App\Entity\Category::class)->find($params->getCategoryId())) {
+            throw new NotExistsException("Selected category does not exist.");
+        }
+        $movie->setCategory($categoryEntity);
+        if (!$producerEntity = $this->entityManager->getRepository(\App\Entity\Producer::class)->find($params->getProducerId())) {
+            throw new NotExistsException("Selected producer does not exist.");
+        }
+        $movie->setProducer($producerEntity);
 
         $this->entityManager->persist($movie);
         $this->entityManager->flush();
@@ -38,8 +44,10 @@ class MovieService
         return $movie;
     }
 
-
-    public function updateMovie(Movie $movie, UpdateMovieParameters $params): Movie
+    /**
+     * @throws NotExistsException
+     */
+    public function update(Movie $movie, UpdateMovieParameters $params): Movie
     {
         if ($title = $params->getTitle()) {
             $movie->setTitle($title);
@@ -59,19 +67,17 @@ class MovieService
         if ($duration = $params->getDuration()) {
             $movie->setDuration($duration);
         }
-        if ($category = $params->getCategory()) {
-            $categoryObj = $this->entityManager->getRepository(\App\Entity\Category::class)->findOneBy(['name' => $category]);
-            if (!$categoryObj) {
-                throw new \Exception("Selected category does not exist.");
+        if ($category_id = $params->getCategoryId()) {
+            if (!$categoryEntity = $this->entityManager->getRepository(\App\Entity\Category::class)->find($category_id)) {
+                throw new NotExistsException("Selected category does not exist.");
             }
-            $movie->setCategory($categoryObj);
+            $movie->setCategory($categoryEntity);
         }
-        if ($producer = $params->getProducer()) {
-            $producerObj = $this->entityManager->getRepository(\App\Entity\Producer::class)->findOneBy(['name' => $producer]);
-            if (!$producerObj) {
-                throw new \Exception("Selected producer does not exist.");
+        if ($producer_id = $params->getProducerId()) {
+            if (!$producerEntity = $this->entityManager->getRepository(\App\Entity\Producer::class)->find($producer_id)) {
+                throw new NotExistsException("Selected producer does not exist.");
             }
-            $movie->setProducer($producerObj);
+            $movie->setProducer($producerEntity);
         }
 
         $this->entityManager->persist($movie);
@@ -80,7 +86,7 @@ class MovieService
         return $movie;
     }
 
-    public function deleteMovie(Movie $movie): bool
+    public function delete(Movie $movie): bool
     {
         $this->entityManager->remove($movie);
         $this->entityManager->flush();

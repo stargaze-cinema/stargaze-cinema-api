@@ -75,12 +75,20 @@ class Producer implements \JsonSerializable
             'movies' => $this->movies->map(function (Movie $movie) {
                 return [
                     'id' => $movie->getId(),
-                    'title' => $movie->title,
-                    'description' => $movie->description,
-                    'poster' => $movie->poster,
-                    'price' => $movie->price,
-                    'year' => $movie->year,
-                    'duration' => $movie->duration,
+                    'title' => $movie->getTitle(),
+                    'description' => $movie->getDescription(),
+                    'poster' => $movie->getPoster(),
+                    'price' => $movie->getPrice(),
+                    'year' => $movie->getYear(),
+                    'duration' => $movie->getDuration(),
+                    'category' => [
+                        'id' => $movie->getCategory()->getId(),
+                        'name' => $movie->getCategory()->getName(),
+                        'created_at' => $movie->getCategory()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'updated_at' => $movie->getCategory()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                    ],
+                    'created_at' => $movie->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $movie->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                 ];
             })->toArray(),
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

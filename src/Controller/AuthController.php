@@ -35,7 +35,7 @@ class AuthController extends Controller
             name: $request->get('name'),
             email: $request->get('email'),
             password: $request->get('password'),
-            password_confirmation: $request->get('password_confirmation'),
+            passwordConfirmation: $request->get('password_confirmation'),
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
@@ -46,11 +46,11 @@ class AuthController extends Controller
             return new JsonResponse(['message' => 'This email is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        if ($params->getPassword() !== $params->getPassword_confirmation()) {
+        if ($params->getPassword() !== $params->getPasswordConfirmation()) {
             return new JsonResponse(['message' => 'Password did not match.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        $user = $this->userService->saveUser($params);
+        $user = $this->userService->save($params);
 
         return new JsonResponse($user, JsonResponse::HTTP_CREATED);
     }

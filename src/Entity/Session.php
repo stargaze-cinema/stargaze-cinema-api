@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\SessionRepository::class)]
+#[Gedmo\SoftDeleteable]
 #[ORM\Table(name: "sessions")]
 #[ORM\HasLifecycleCallbacks()]
 class Session implements \JsonSerializable
 {
     use EntityIdentifierTrait;
     use EntityTimestampsTrait;
+    use SoftDeleteableEntity;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $begin_time;
+    private \DateTime $begin_at;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $end_time;
+    private \DateTime $end_at;
 
     #[ORM\ManyToOne(targetEntity: Movie::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -28,26 +32,26 @@ class Session implements \JsonSerializable
     #[ORM\JoinColumn(nullable: false)]
     private Hall $hall;
 
-    public function getBeginTime(): \DateTimeInterface
+    public function getBeginAt(): \DateTime
     {
-        return $this->begin_time;
+        return $this->begin_at;
     }
 
-    public function setBeginTime(\DateTimeInterface $begin_time): self
+    public function setBeginAt(\DateTime $begin_at): self
     {
-        $this->begin_time = $begin_time;
+        $this->begin_at = $begin_at;
 
         return $this;
     }
 
-    public function getEndTime(): \DateTimeInterface
+    public function getEndAt(): \DateTime
     {
-        return $this->end_time;
+        return $this->end_at;
     }
 
-    public function setEndTime(\DateTimeInterface $end_time): self
+    public function setEndAt(\DateTime $end_at): self
     {
-        $this->end_time = $end_time;
+        $this->end_at = $end_at;
 
         return $this;
     }
@@ -80,21 +84,26 @@ class Session implements \JsonSerializable
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'begin_at' => $this->begin_at->format('Y-m-d\TH:i:s.u'),
+            'end_at' => $this->end_at->format('Y-m-d\TH:i:s.u'),
             'movie' => [
                 'id' => $this->movie->getId(),
-                'title' => $this->movie->title,
-                'description' => $this->movie->description,
-                'poster' => $this->movie->poster,
-                'price' => $this->movie->price,
-                'year' => $this->movie->year,
-                'duration' => $this->movie->duration,
+                'title' => $this->movie->getTitle(),
+                'description' => $this->movie->getDescription(),
+                'poster' => $this->movie->getPoster(),
+                'price' => $this->movie->getPrice(),
+                'year' => $this->movie->getYear(),
+                'duration' => $this->movie->getDuration(),
+                'created_at' => $this->movie->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $this->movie->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
             'hall' => [
                 'id' => $this->hall->getId(),
-                'name' => $this->hall->name,
-                'capacity' => $this->hall->capacity,
-                'type' => $this->hall->type
+                'name' => $this->hall->getName(),
+                'capacity' => $this->hall->getCapacity(),
+                'type' => $this->hall->getType(),
+                'created_at' => $this->hall->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $this->hall->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
             'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),

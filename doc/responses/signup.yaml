@@ -2,4 +2,4 @@ description: Signed up successfully
 content:
     application/json:
         schema:
-            $ref: '../schemas/user_schema.yaml'
+            $ref: '../schemas/user.yaml'

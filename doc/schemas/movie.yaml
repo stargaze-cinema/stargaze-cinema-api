@@ -1,0 +1,25 @@
+type: object
+properties:
+    id:
+        type: integer
+    title:
+        type: string
+    description:
+        type: string
+    poster:
+        type: string
+        format: binary
+    price:
+        type: number
+    year:
+        type: integer
+    duration:
+        type: integer
+    category_id:
+        type: integer
+    producer_id:
+        type: integer
+    created_at:
+        type: string
+    updated_at:
+        type: string

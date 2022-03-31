@@ -7,32 +7,30 @@ namespace App\Service;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Parameters\SignUpParameters;
+use App\Parameters\UpdateUserParameters;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordHasher,
-        private TokenStorageInterface $tokenStorage
+        private UserPasswordHasherInterface $passwordHasher
     ) {
     }
 
-    private function getUserToken(): TokenInterface | null
+    public function hashPassword(User $user, string $password): string
     {
-        return $this->tokenStorage->getToken() ?: null;
+        return $this->passwordHasher->hashPassword($user, $password);
     }
 
-    public function saveUser(SignUpParameters $params): User
+    public function save(SignUpParameters $params): User
     {
         $user = new User();
         $user->setName($params->getName());
         $user->setEmail($params->getEmail());
-        $user->setPassword($this->passwordHasher->hashPassword($user, $params->getPassword()));
-        $user->setRoles([Role::User]);
+        $user->setPassword($this->hashPassword($user, $params->getPassword()));
+        $user->setRoles([Role::User->value]);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -40,17 +38,32 @@ class UserService
         return $user;
     }
 
-    public function getCurrentUser(): User
+    public function update(User $user, UpdateUserParameters $params): User
     {
-        $token = $this->getUserToken();
+        if ($name = $params->getName()) {
+            $user->setName($name);
+        }
+        if ($email = $params->getEmail()) {
+            $user->setEmail($email);
+        }
+        if ($password = $params->getPassword()) {
+            $user->setPassword($this->hashPassword($user, $password));
+        }
+        if ($roles = $params->getRoles()) {
+            $user->setRoles($roles);
+        }
 
-        return $token->getUser();
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
     }
 
-    public function getCurrentUserRoles(): array
+    public function delete(User $user): bool
     {
-        $token = $this->getUserToken();
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
 
-        return $token->getRoleNames();
+        return true;
     }
 }

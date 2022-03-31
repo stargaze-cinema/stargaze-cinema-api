@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\HallRepository::class)]
 #[ORM\Table(name: "halls")]
 #[ORM\HasLifecycleCallbacks()]
-class Hall
+class Hall implements \JsonSerializable
 {
     use EntityIdentifierTrait;
     use EntityTimestampsTrait;

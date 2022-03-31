@@ -8,36 +8,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class SignUpParameters
 {
-    #[Assert\NotBlank]
-    #[Assert\Type(type: 'string', message: 'This value {{ value }} should be of type string.')]
-    #[Assert\Length(min: 2, max: 32)]
-    private $name;
-
-    #[Assert\NotBlank]
-    #[Assert\Email(message: "The email '{{ value }}' is not a valid email.")]
-    #[Assert\Length(min: 2, max: 128)]
-    private $email;
-
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 8, max: 255)]
-    private $password;
-
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 8, max: 255)]
-    private $password_confirmation;
-
-    public function __construct($name, $email, $password, $password_confirmation)
-    {
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
-        $this->password_confirmation = $password_confirmation;
+    public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'string')]
+        #[Assert\Length(min: 2, max: 32)]
+        private $name,
+        #[Assert\NotBlank]
+        #[Assert\Email]
+        #[Assert\Length(min: 2, max: 128)]
+        private $email,
+        #[Assert\NotBlank]
+        #[Assert\Length(min: 8, max: 255)]
+        private $password,
+        #[Assert\NotBlank]
+        #[Assert\Length(min: 8, max: 255)]
+        private $passwordConfirmation
+    ) {
     }
 
     /**
      * Get the value of name
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -46,9 +36,6 @@ final class SignUpParameters
 
     /**
      * Set the value of name
-     *
-     * @param string $name
-     * @return self
      */
     public function setName(string $name): self
     {
@@ -59,8 +46,6 @@ final class SignUpParameters
 
     /**
      * Get the value of email
-     *
-     * @return string
      */
     public function getEmail(): string
     {
@@ -69,9 +54,6 @@ final class SignUpParameters
 
     /**
      * Set the value of email
-     *
-     * @param string $email
-     * @return self
      */
     public function setEmail(string $email): self
     {
@@ -82,8 +64,6 @@ final class SignUpParameters
 
     /**
      * Get the value of password
-     *
-     * @return string
      */
     public function getPassword(): string
     {
@@ -92,9 +72,6 @@ final class SignUpParameters
 
     /**
      * Set the value of password
-     *
-     * @param string $password
-     * @return self
      */
     public function setPassword(string $password): self
     {
@@ -104,24 +81,19 @@ final class SignUpParameters
     }
 
     /**
-     * Get the value of password_confirmation
-     *
-     * @return string
+     * Get the value of passwordConfirmation
      */
-    public function getPassword_confirmation(): string
+    public function getPasswordConfirmation(): string
     {
-        return $this->password_confirmation;
+        return $this->passwordConfirmation;
     }
 
     /**
-     * Set the value of password_confirmation
-     *
-     * @param string $password_confirmation
-     * @return self
+     * Set the value of passwordConfirmation
      */
-    public function setPassword_confirmation(string $password_confirmation): self
+    public function setPasswordConfirmation(string $passwordConfirmation): self
     {
-        $this->password_confirmation = $password_confirmation;
+        $this->passwordConfirmation = $passwordConfirmation;
 
         return $this;
     }

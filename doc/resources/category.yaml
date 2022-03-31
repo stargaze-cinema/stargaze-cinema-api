@@ -1,0 +1,93 @@
+Category:
+    get:
+        tags:
+            - Category
+        summary: Get all categories
+        security:
+            - BearerAuth: []
+        responses:
+            200:
+                description: List of categories
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/category.yaml"
+    post:
+        tags:
+            - Category
+        summary: Create category
+        security:
+            - BearerAuth: []
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: "../schemas/category.yaml"
+                            - $ref: "../schemas/required/category.yaml"
+                            - $ref: "../examples/category.yaml"
+        responses:
+            201:
+                $ref: "../responses/category.yaml"
+                description: Category created
+
+CategoryWithID:
+    get:
+        tags:
+            - Category
+        summary: Get category by ID
+        security:
+            - BearerAuth: []
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+              type: string
+              example: "1"
+        responses:
+            200:
+                $ref: "../responses/category.yaml"
+                description: Category found
+    patch:
+        tags:
+            - Category
+        summary: Update category
+        security:
+            - BearerAuth: []
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+              type: string
+              example: "1"
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: "../schemas/category.yaml"
+                            - $ref: "../examples/category.yaml"
+        responses:
+            201:
+                $ref: "../responses/category.yaml"
+                description: Category updated
+    delete:
+        tags:
+            - Category
+        summary: Delete category
+        security:
+            - BearerAuth: []
+        parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+              type: string
+              example: "1"
+        responses:
+            204:
+                description: Category deleted
