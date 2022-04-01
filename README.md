@@ -26,7 +26,7 @@ RESTful API built with Symfony framework for the "Stargaze Cinema" project.
 5. Run `export $(grep -v '^#' .env | xargs)` to load environment variables.
 6. Run `composer test-build` to build Actor classes.
 7. Now you are ready to test:
-    - Create Suit test with `composer test-generate-suite`
+    - Create Suite test with `composer test-generate-suite`
     - Create Cept test with `composer test-generate-cept`
     - Create Cest test with `composer test-generate-cest`
     - Run tests with `composer test`
