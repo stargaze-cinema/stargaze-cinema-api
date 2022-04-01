@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'movies.')]
-class MovieController extends Controller
+class MovieController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -43,7 +43,10 @@ class MovieController extends Controller
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -59,15 +62,16 @@ class MovieController extends Controller
             price: (float) $request->get('price'),
             year: (int) $request->get('year'),
             duration: (int) $request->get('duration'),
-            categoryId: $request->get('category_id'),
-            producerId: $request->get('producer_id')
+            categoryId: (int) $request->get('category_id'),
+            producerId: (int) $request->get('producer_id')
         );
 
         if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
             return $errorResponse;
         }
 
-        $movie = $this->movieService->save($params);
+        $movie = $this->movieService->create($params);
+        $this->movieService->save($movie);
 
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }
@@ -92,7 +96,10 @@ class MovieController extends Controller
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -120,7 +127,8 @@ class MovieController extends Controller
             return $errorResponse;
         }
 
-        $movie = $this->movieService->update($movie, $params);
+        $movie = $this->movieService->create($params, $movie);
+        $this->movieService->save($movie);
 
         return new JsonResponse($movie, JsonResponse::HTTP_CREATED);
     }

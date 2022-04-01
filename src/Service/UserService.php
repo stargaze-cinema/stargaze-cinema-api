@@ -8,37 +8,18 @@ use App\Entity\User;
 use App\Enum\Role;
 use App\Parameters\SignUpParameters;
 use App\Parameters\UpdateUserParameters;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserService
+class UserService extends AbstractEntityService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
+        \Doctrine\ORM\EntityManagerInterface $entityManager
     ) {
+        parent::__construct($entityManager);
     }
 
-    public function hashPassword(User $user, string $password): string
-    {
-        return $this->passwordHasher->hashPassword($user, $password);
-    }
-
-    public function save(SignUpParameters $params): User
-    {
-        $user = new User();
-        $user->setName($params->getName());
-        $user->setEmail($params->getEmail());
-        $user->setPassword($this->hashPassword($user, $params->getPassword()));
-        $user->setRoles([Role::User->value]);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return $user;
-    }
-
-    public function update(User $user, UpdateUserParameters $params): User
+    public function create(SignUpParameters| UpdateUserParameters $params, User $user = new User()): User
     {
         if ($name = $params->getName()) {
             $user->setName($name);
@@ -49,21 +30,19 @@ class UserService
         if ($password = $params->getPassword()) {
             $user->setPassword($this->hashPassword($user, $password));
         }
-        if ($roles = $params->getRoles()) {
-            $user->setRoles($roles);
+        if (!$params instanceof \App\Parameters\SignUpParameters) {
+            if ($roles = $params->getRoles()) {
+                $user->setRoles($roles);
+            }
+        } else {
+            $user->setRoles([Role::User->value]);
         }
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
 
         return $user;
     }
 
-    public function delete(User $user): bool
+    final public function hashPassword(User $user, string $password): string
     {
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
-
-        return true;
+        return $this->passwordHasher->hashPassword($user, $password);
     }
 }

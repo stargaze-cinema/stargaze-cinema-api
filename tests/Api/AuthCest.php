@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use \App\Tests\ApiTester;
+use App\Tests\ApiTester;
 
 class AuthCest
 {
@@ -17,7 +17,7 @@ class AuthCest
             'password' => "securepass",
             'password_confirmation' => "securepass"
         ]);
-        $I->seeResponseCodeIs(409);
+        $I->seeResponseCodeIsClientError();
     }
 
     public function tryToSignUpInvalidPassword(ApiTester $I): void
@@ -29,7 +29,7 @@ class AuthCest
             'password' => "securepass",
             'password_confirmation' => "unsecurepass"
         ]);
-        $I->seeResponseCodeIs(409);
+        $I->seeResponseCodeIsClientError();
     }
 
     public function tryToSignUp(ApiTester $I): void
@@ -41,17 +41,16 @@ class AuthCest
             'password' => "securepass",
             'password_confirmation' => "securepass"
         ]);
-        $I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIsSuccessful();
     }
 
     public function tryToSignIn(ApiTester $I): void
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost('/auth/signin', [
-            'email' => "fluffytester@test.net",
-            'password' => "securepass",
+            'email' => "deeja@stab.com",
+            'password' => "123456789"
         ]);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
+        $I->seeResponseCodeIsSuccessful();
     }
 }

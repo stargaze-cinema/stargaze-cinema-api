@@ -6,13 +6,23 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-trait EntityTimestampsTrait
+abstract class AbstractEntity implements \JsonSerializable
 {
-    #[ORM\Column(type: "datetime", nullable: true)]
-    private \DateTime $created_at;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(type: 'integer')]
+    protected int $id;
 
     #[ORM\Column(type: "datetime", nullable: true)]
-    private \DateTime $updated_at;
+    protected \DateTime $created_at;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    protected \DateTime $updated_at;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     #[ORM\PrePersist()]
     public function createdAt(): void

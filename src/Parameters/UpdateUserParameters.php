@@ -76,7 +76,7 @@ final class UpdateUserParameters
     /**
      * Get the value of roles
      */
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
         return $this->roles;
     }

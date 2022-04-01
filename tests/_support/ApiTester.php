@@ -23,7 +23,19 @@ class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
 
-    /**
-     * Define custom actions here
-     */
+    private array $credentials = [
+        'email' => "deeja@stab.com",
+        'password' => "123456789"
+    ];
+
+    public function amBearerAuthorized(array $credentials = null): void
+    {
+        $this->haveHttpHeader('Accept', 'application/json');
+        $this->haveHttpHeader('Content-Type', 'application/json');
+
+        $this->sendPost('/auth/signin', $credentials ?: $this->credentials);
+        $response = json_decode($this->grabResponse());
+
+        $this->amBearerAuthenticated($response->token->value);
+    }
 }

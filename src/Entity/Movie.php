@@ -12,10 +12,8 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 #[Gedmo\SoftDeleteable]
 #[ORM\Table(name: "movies")]
 #[ORM\HasLifecycleCallbacks()]
-class Movie implements \JsonSerializable
+class Movie extends AbstractEntity
 {
-    use EntityIdentifierTrait;
-    use EntityTimestampsTrait;
     use SoftDeleteableEntity;
 
     #[ORM\Column(type: 'string', length: 64)]

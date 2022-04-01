@@ -7,19 +7,23 @@ namespace App\Controller;
 use App\Service\AuthService;
 use App\Service\TicketService;
 use App\Repository\TicketRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'tickets.')]
-class TicketController extends Controller
+class TicketController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
         private TicketService $ticketService,
         private TicketRepository $ticketRepository,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private MailerInterface $mailer
     ) {
     }
 
@@ -44,7 +48,10 @@ class TicketController extends Controller
 
         if ($request->getContentType() === 'json') {
             if (!$request = $this->transformJsonBody($request)) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -58,7 +65,45 @@ class TicketController extends Controller
             return $errorResponse;
         }
 
-        $ticket = $this->ticketService->save($params);
+        $ticket = $this->ticketService->create($params);
+        $user = $ticket->getUser();
+        $session = $ticket->getSession();
+        $movie = $session->getMovie();
+        $hall = $session->getHall();
+
+        if (1 > $ticket->getPlace() || $ticket->getPlace() > $hall->getCapacity()) {
+            return new JsonResponse(['message' => 'Selected place is out of range.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        if ($session->getEndAt() < new \DateTime('now')) {
+            return new JsonResponse(['message' => 'Selected session has expired.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        if (
+            !!$this->ticketRepository->findOneBy([
+            'place' => $ticket->getPlace(),
+            'session' => $ticket->getSession()
+            ])
+        ) {
+            return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        $email = (new TemplatedEmail())
+            ->from(new Address('support@stargaze.com'))
+            ->to(new Address($user->getEmail(), $user->getName()))
+            ->subject('Your ticket for ' . $movie->getTitle())
+            ->htmlTemplate('emails/ticket.html.twig')
+            ->context([
+                'place' => $ticket->getPlace(),
+                'user' => $user,
+                'hall' => $hall,
+                'movie' => $movie,
+                'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
+                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%')
+            ]);
+
+        $this->ticketService->save($ticket);
+        $this->mailer->send($email);
 
         return new JsonResponse($ticket, JsonResponse::HTTP_CREATED);
     }
@@ -83,7 +128,10 @@ class TicketController extends Controller
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -101,7 +149,45 @@ class TicketController extends Controller
             return $errorResponse;
         }
 
-        $ticket = $this->ticketService->update($ticket, $params);
+        $ticket = $this->ticketService->create($params);
+        $user = $ticket->getUser();
+        $session = $ticket->getSession();
+        $movie = $session->getMovie();
+        $hall = $session->getHall();
+
+        if (1 > $ticket->getPlace() || $ticket->getPlace() > $hall->getCapacity()) {
+            return new JsonResponse(['message' => 'Selected place is out of range.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        if ($session->getEndAt() < new \DateTime('now')) {
+            return new JsonResponse(['message' => 'Selected session has expired.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        if (
+            !!$this->ticketRepository->findOneBy([
+            'place' => $ticket->getPlace(),
+            'session' => $ticket->getSession()
+            ])
+        ) {
+            return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
+        }
+
+        $email = (new TemplatedEmail())
+            ->from(new Address('support@stargaze.com'))
+            ->to(new Address($user->getEmail(), $user->getName()))
+            ->subject('Your ticket for ' . $movie->getTitle() . ' was updated.')
+            ->htmlTemplate('emails/ticket.html.twig')
+            ->context([
+                'place' => $ticket->getPlace(),
+                'user' => $user,
+                'hall' => $hall,
+                'movie' => $movie,
+                'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
+                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%')
+            ]);
+
+        $this->ticketService->save($ticket);
+        $this->mailer->send($email);
 
         return new JsonResponse($ticket, JsonResponse::HTTP_CREATED);
     }

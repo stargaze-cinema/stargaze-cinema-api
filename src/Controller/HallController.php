@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'halls.')]
-class HallController extends Controller
+class HallController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -40,7 +40,10 @@ class HallController extends Controller
 
         if ($request->getContentType() === 'json') {
             if (!$request = $this->transformJsonBody($request)) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -54,7 +57,8 @@ class HallController extends Controller
             return $errorResponse;
         }
 
-        $hall = $this->hallService->save($params);
+        $hall = $this->hallService->create($params);
+        $this->hallService->save($hall);
 
         return new JsonResponse($hall, JsonResponse::HTTP_CREATED);
     }
@@ -79,7 +83,10 @@ class HallController extends Controller
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -97,7 +104,8 @@ class HallController extends Controller
             return $errorResponse;
         }
 
-        $hall = $this->hallService->update($hall, $params);
+        $hall = $this->hallService->create($params, $hall);
+        $this->hallService->save($hall);
 
         return new JsonResponse($hall, JsonResponse::HTTP_CREATED);
     }

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'categories.')]
-class CategoryController extends Controller
+class CategoryController extends AbstractController
 {
     public function __construct(
         private AuthService $authService,
@@ -40,7 +40,10 @@ class CategoryController extends Controller
 
         if ($request->getContentType() === 'json') {
             if (!$request = $this->transformJsonBody($request)) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -52,7 +55,8 @@ class CategoryController extends Controller
             return $errorResponse;
         }
 
-        $category = $this->categoryService->save($params);
+        $category = $this->categoryService->create($params);
+        $this->categoryService->save($category);
 
         return new JsonResponse($category, JsonResponse::HTTP_CREATED);
     }
@@ -77,7 +81,10 @@ class CategoryController extends Controller
         if ($request->getContentType() === 'json') {
             $request = $this->transformJsonBody($request);
             if (!$request) {
-                return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(
+                    ["message" => 'No request body found.'],
+                    JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -93,7 +100,8 @@ class CategoryController extends Controller
             return $errorResponse;
         }
 
-        $category = $this->categoryService->update($category, $params);
+        $category = $this->categoryService->create($params, $category);
+        $this->categoryService->save($category);
 
         return new JsonResponse($category, JsonResponse::HTTP_CREATED);
     }

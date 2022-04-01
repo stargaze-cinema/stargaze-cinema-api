@@ -10,17 +10,19 @@ services:
         container_name: nginx
         image: nginx:1.21.6-alpine
         ports:
-            - "8000:80"
+            - 8000:80
         volumes:
             - ./:/var/www/stargaze
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./docker/php/php.ini:/etc/nginx/conf.d/php.ini
         networks:
             - stargaze
+        depends_on:
+            - php
 
     php:
         container_name: php
-        image: php:8.1.4-fpm-alpine
+        image: php
         build:
             context: ./docker/php
         volumes:
@@ -35,7 +37,7 @@ services:
         container_name: postgres
         image: postgres:14.2-alpine
         ports:
-            - "5432:5432"
+            - 5432:5432
         restart: always
         environment:
             POSTGRES_DB: ${POSTGRES_DB:-stargaze-cinema}
@@ -48,11 +50,11 @@ services:
 
     minio:
         container_name: minio
-        image: 'minio/minio:RELEASE.2022-03-24T00-43-44Z'
+        image: 'minio/minio:RELEASE.2022-03-26T06-49-28Z'
         command: server --address 0.0.0.0:9000 --console-address ":9001" /data
         ports:
-            - "127.0.0.1:9000:9000"
-            - "9001:9001"
+            - 127.0.0.1:9000:9000
+            - 9001:9001
         environment:
             MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio-root-user}
             MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio-root-password}
@@ -70,6 +72,17 @@ services:
         networks:
             - stargaze
 
+    mailhog:
+        container_name: mailhog
+        image: mailhog/mailhog:v1.0.1
+        logging:
+            driver: none
+        ports:
+            - 1025:1025
+            - 8025:8025
+        networks:
+            - stargaze
+
     phppgadmin:
         container_name: phppgadmin
         image: neimheadh/phppgadmin:7.13.0
@@ -79,7 +92,7 @@ services:
             POSTGRES_USER: ${POSTGRES_USER:-symfony}
             POSTGRES_PASS: ${POSTGRES_PASSWORD:-secret}
         ports:
-            - '8080:80'
+            - 8080:80
         networks:
             - stargaze
         depends_on:
@@ -87,9 +100,9 @@ services:
 
     swagger-ui:
         container_name: swagger-ui
-        image: swaggerapi/swagger-ui:v4.9.0
+        image: swaggerapi/swagger-ui:v4.10.0
         ports:
-            - "8008:8080"
+            - 8008:8080
         volumes:
             - ./doc:/usr/share/nginx/html/doc
         environment:

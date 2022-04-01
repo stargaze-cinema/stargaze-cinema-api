@@ -10,11 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\ProducerRepository::class)]
 #[ORM\Table(name: "producers")]
 #[ORM\HasLifecycleCallbacks()]
-class Producer implements \JsonSerializable
+class Producer extends AbstractEntity
 {
-    use EntityIdentifierTrait;
-    use EntityTimestampsTrait;
-
     #[ORM\Column(type: 'string', length: 64)]
     private string $name;
 

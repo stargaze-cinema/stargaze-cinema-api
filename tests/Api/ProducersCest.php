@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use \App\Tests\ApiTester;
+use App\Entity\Producer;
+use App\Tests\ApiTester;
 
 class ProducersCest
 {
     public function tryToGetProducer(ApiTester $I): void
     {
-        $I->haveInDatabase('producers', [
-            'id' => 1,
+        $I->haveInRepository(Producer::class, [
             'name' => "Ryan Raynolds",
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
         ]);
 
         $I->sendGet('/producers');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
+        $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             [
                 'name' => 'Ryan Raynolds'
@@ -30,45 +27,40 @@ class ProducersCest
     public function tryToGetInvalidProducer(ApiTester $I): void
     {
         $I->sendGet('/producers/420');
-        $I->seeResponseCodeIs(404);
+        $I->seeResponseCodeIsClientError();
     }
 
     public function tryToPostProducer(ApiTester $I): void
     {
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->amBearerAuthorized();
         $I->sendPost('/producers', [
             'name' => "Ryan Raynolds",
         ]);
-        $I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
     }
 
     public function tryToPostInvalidProducer(ApiTester $I): void
     {
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->amBearerAuthorized();
         $I->sendPost('/producers', [
             'name' => 422,
         ]);
-        $I->seeResponseCodeIs(422);
+        $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();
     }
 
     public function tryToPatchProducer(ApiTester $I): void
     {
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveInDatabase('producers', [
-            'id' => 3,
-            'name' => "Ryan Raynolds",
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
+        $I->amBearerAuthorized();
+        $I->haveInRepository(Producer::class, [
+            'name' => "Ryan Raynolds"
         ]);
-        $I->sendPatch("/producers/3", [
+        $id = $I->grabFromRepository(Producer::class, 'id', ['name' => 'Ryan Raynolds']);
+        $I->sendPatch("/producers/$id", [
             'name' => "Star Raynolds"
         ]);
-        $I->seeResponseCodeIs(200);
+        $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             'name' => "Star Raynolds"
         ]);
@@ -76,15 +68,12 @@ class ProducersCest
 
     public function tryToDeleteProducer(ApiTester $I): void
     {
-        $I->haveInDatabase('producers', [
-            'id' => 3,
-            'name' => "Moon",
-            'capacity' => 100,
-            'type' => 'IMAX',
-            'created_at' => date("Y-m-d", time()),
-            'updated_at' => date("Y-m-d", time())
+        $I->amBearerAuthorized();
+        $I->haveInRepository(Producer::class, [
+            'name' => "Ryan Raynolds"
         ]);
-        $I->sendDelete("/producers/3");
-        $I->seeResponseCodeIs(204);
+        $id = $I->grabFromRepository(Producer::class, 'id', ['name' => 'Ryan Raynolds']);
+        $I->sendDelete("/producers/$id");
+        $I->seeResponseCodeIsSuccessful();
     }
 }

@@ -12,10 +12,8 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 #[Gedmo\SoftDeleteable]
 #[ORM\Table(name: "sessions")]
 #[ORM\HasLifecycleCallbacks()]
-class Session implements \JsonSerializable
+class Session extends AbstractEntity
 {
-    use EntityIdentifierTrait;
-    use EntityTimestampsTrait;
     use SoftDeleteableEntity;
 
     #[ORM\Column(type: 'datetime')]

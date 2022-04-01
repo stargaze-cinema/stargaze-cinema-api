@@ -10,11 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\CategoryRepository::class)]
 #[ORM\Table(name: "categories")]
 #[ORM\HasLifecycleCallbacks()]
-class Category implements \JsonSerializable
+class Category extends AbstractEntity
 {
-    use EntityIdentifierTrait;
-    use EntityTimestampsTrait;
-
     #[ORM\Column(type: 'string', length: 32)]
     private string $name;
 
