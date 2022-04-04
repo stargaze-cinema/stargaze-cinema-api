@@ -32,7 +32,9 @@ class S3Service
      */
     public function upload(UploadedFile $file, string $path = '', string $filename = ''): string
     {
-        $filename = $filename ?: $file->getClientOriginalName();
+        $filename = $filename
+        ? $filename . '.' . $file->guessClientExtension()
+        : $file->getClientOriginalName();
         $folderPath = !empty($path) ? "$path/" : '';
         $result = $this->client->putObject([
             'ACL' => 'public-read',

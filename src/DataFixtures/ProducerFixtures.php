@@ -17,7 +17,12 @@ final class ProducerFixtures extends Fixture
     {
         $generator = Factory::create();
 
-        for ($i = 0; $i <= self::NUMBER; $i++) {
+        $producer = new Producer();
+        $producer->setName('Don Hall');
+        $manager->persist($producer);
+        $this->addReference("producer_0", $producer);
+
+        for ($i = 1; $i <= self::NUMBER; $i++) {
             $producer = new Producer();
             $producer->setName($generator->name);
             $manager->persist($producer);

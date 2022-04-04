@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Service\S3Service;
 use App\Service\AuthService;
 use App\Service\MovieService;
+use App\Service\FrameService;
 use App\Repository\MovieRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +20,7 @@ class MovieController extends AbstractController
     public function __construct(
         private AuthService $authService,
         private MovieService $movieService,
+        private FrameService $frameService,
         private MovieRepository $movieRepository,
         private ValidatorInterface $validator,
         private S3Service $s3Service
@@ -77,9 +79,15 @@ class MovieController extends AbstractController
     }
 
     #[Route('/movies/{id}', name: 'show', methods: ['GET'])]
-    public function show(int $id): JsonResponse
+    public function show(string $id): JsonResponse
     {
-        if (!$movie = $this->movieRepository->find($id)) {
+        if (ctype_digit($id)) {
+            $movie = $this->movieRepository->find($id);
+        } else {
+            $movie = $this->movieRepository->findOneBy(['title' => $id]);
+        }
+
+        if (!$movie) {
             return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
@@ -151,5 +159,50 @@ class MovieController extends AbstractController
         $this->movieService->delete($movie);
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/movies/{id}/frames', name: 'uploadFrames', methods: ['POST'])]
+    public function uploadFrames(int $id, Request $request): JsonResponse
+    {
+        if ($request->getContentType() === 'json') {
+            return new JsonResponse(
+                ["message" => 'JSON request unsupported. Use Form-Data instead.'],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        if (!$this->authService->authenticatedAsAdmin()) {
+            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        if (!$movie = $this->movieRepository->find($id)) {
+            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $frames = [];
+
+        foreach ($request->files as $file) {
+            if (is_string($file)) {
+                $imageUrl = $file;
+                continue;
+            }
+
+            $imageUrl = $this->s3Service->upload($file, 'frames', $movie->getId() . '_' . md5(uniqid()));
+
+            $params = new \App\Parameters\CreateFrameParameters(
+                movieId: $id,
+                image: $imageUrl
+            );
+
+            $frame = $this->frameService->create($params);
+            $this->frameService->save($frame);
+
+            $frames[] = $imageUrl;
+        }
+
+        return new JsonResponse(
+            ['message' => 'Frames were successfully uploaded.', 'frames' => $frames],
+            JsonResponse::HTTP_CREATED
+        );
     }
 }

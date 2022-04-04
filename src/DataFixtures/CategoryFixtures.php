@@ -17,7 +17,12 @@ final class CategoryFixtures extends Fixture
     {
         $generator = Factory::create();
 
-        for ($i = 0; $i <= self::NUMBER; $i++) {
+        $category = new Category();
+        $category->setName('Animation');
+        $manager->persist($category);
+        $this->addReference("category_0", $category);
+
+        for ($i = 1; $i <= self::NUMBER; $i++) {
             $category = new Category();
             $category->setName($generator->colorName);
             $manager->persist($category);

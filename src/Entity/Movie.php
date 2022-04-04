@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\Collection;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\MovieRepository::class)]
@@ -41,6 +42,18 @@ class Movie extends AbstractEntity
     #[ORM\ManyToOne(targetEntity: Producer::class, inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
     private Producer $producer;
+
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Session::class)]
+    private Collection $sessions;
+
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Frame::class)]
+    private Collection $frames;
+
+    public function __construct()
+    {
+        $this->sessions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->frames = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     public function getTitle(): string
     {
@@ -138,6 +151,64 @@ class Movie extends AbstractEntity
         return $this;
     }
 
+    /**
+      * @return Collection<int, Session>
+      */
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(Session $session): self
+    {
+        if (!$this->sessions->contains($session)) {
+            $this->session[] = $session;
+            $session->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSession(Session $session): self
+    {
+        if ($this->session->removeElement($session)) {
+            if ($session->getMovie() === $this) {
+                $session->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Frame>
+     */
+    public function getFrames(): Collection
+    {
+        return $this->frames;
+    }
+
+    public function addFrame(Frame $frame): self
+    {
+        if (!$this->frames->contains($frame)) {
+            $this->frames[] = $frame;
+            $frame->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFrame(Frame $frame): self
+    {
+        if ($this->frames->removeElement($frame)) {
+            if ($frame->getMovie() === $this) {
+                $frame->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function jsonSerialize(): array
     {
         return [
@@ -160,6 +231,32 @@ class Movie extends AbstractEntity
                 'created_at' => $this->producer->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                 'updated_at' => $this->producer->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
+            'sessions' => $this->sessions->map(function (Session $session) {
+                return [
+                    'id' => $session->getId(),
+                    'begin_at' => $session->getBeginAt()->format('Y-m-d\TH:i:s.u'),
+                    'end_at' => $session->getEndAt()->format('Y-m-d\TH:i:s.u'),
+                    'hall' => [
+                        'id' => $session->getHall()->getId(),
+                        'name' => $session->getHall()->getName(),
+                        'capacity' => $session->getHall()->getCapacity(),
+                        'type' => $session->getHall()->getType(),
+                        'created_at' => $session->getHall()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'updated_at' => $session->getHall()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                    ],
+                    'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                ];
+            })->toArray(),
+            'frames' => $this->frames->map(function (Frame $frame) {
+                return [
+                    'id' => $frame->getId(),
+                    'image' => $frame->getImage(),
+                    'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                ];
+            })->toArray(),
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
             'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
         ];

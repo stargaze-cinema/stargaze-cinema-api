@@ -46,7 +46,7 @@ class MovieRepository extends ServiceEntityRepository
             ? ($params['page'] <= 0 ? 1 : intval($params['page']))
             : 1;
         $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($qb->getQuery(), true);
-        $perPage = 10;
+        $perPage = 20;
         $totalItems = $paginator->count();
         $pages = ceil($totalItems / $perPage);
         $paginator->getQuery()

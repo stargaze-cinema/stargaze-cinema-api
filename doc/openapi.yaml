@@ -7,6 +7,7 @@ servers:
 tags:
     - name: Auth
     - name: Movie
+    - name: Frame
     - name: Category
     - name: Producer
     - name: Hall
@@ -22,6 +23,8 @@ paths:
         $ref: './resources/movie.yaml#/Movie'
     /api/movies/{id}:
         $ref: './resources/movie.yaml#/MovieWithID'
+    /api/movies/{id}/frames:
+        $ref: './resources/movie.yaml#/MovieFrames'
     /api/categories:
         $ref: './resources/category.yaml#/Category'
     /api/categories/{id}:
@@ -51,6 +54,8 @@ components:
     schemas:
         Movie:
             $ref: './schemas/movie.yaml'
+        Frame:
+            $ref: './schemas/frame.yaml'
         Category:
             $ref: './schemas/category.yaml'
         Producer:

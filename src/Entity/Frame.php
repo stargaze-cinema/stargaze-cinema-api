@@ -1,60 +1,35 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
 
+use App\Repository\FrameRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
-#[ORM\Entity(repositoryClass: \App\Repository\SessionRepository::class)]
-#[Gedmo\SoftDeleteable]
-#[ORM\Table(name: "sessions")]
+#[ORM\Entity(repositoryClass: FrameRepository::class)]
+#[ORM\Table(name: "frames")]
 #[ORM\HasLifecycleCallbacks()]
-class Session extends AbstractEntity
+class Frame extends AbstractEntity
 {
-    use SoftDeleteableEntity;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $image;
 
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $begin_at;
-
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $end_at;
-
-    #[ORM\ManyToOne(targetEntity: Movie::class, inversedBy: 'sessions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Movie::class, inversedBy: 'frames')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Movie $movie;
 
-    #[ORM\ManyToOne(targetEntity: Hall::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private Hall $hall;
-
-    public function getBeginAt(): \DateTime
+    public function getImage(): ?string
     {
-        return $this->begin_at;
+        return $this->image;
     }
 
-    public function setBeginAt(\DateTime $begin_at): self
+    public function setImage(string $image): self
     {
-        $this->begin_at = $begin_at;
+        $this->image = $image;
 
         return $this;
     }
 
-    public function getEndAt(): \DateTime
-    {
-        return $this->end_at;
-    }
-
-    public function setEndAt(\DateTime $end_at): self
-    {
-        $this->end_at = $end_at;
-
-        return $this;
-    }
-
-    public function getMovie(): Movie
+    public function getMovie(): ?Movie
     {
         return $this->movie;
     }
@@ -66,25 +41,12 @@ class Session extends AbstractEntity
         return $this;
     }
 
-    public function getHall(): Hall
-    {
-        return $this->hall;
-    }
-
-    public function setHall(Hall $hall): self
-    {
-        $this->hall = $hall;
-
-        return $this;
-    }
-
     public function jsonSerialize(): array
     {
         $movie = $this->getMovie();
         return [
             'id' => $this->id,
-            'begin_at' => $this->begin_at->format('Y-m-d\TH:i:s.u'),
-            'end_at' => $this->end_at->format('Y-m-d\TH:i:s.u'),
+            'image' => $this->image,
             'movie' => [
                 'id' => $movie->getId(),
                 'title' => $movie->getTitle(),
@@ -107,14 +69,6 @@ class Session extends AbstractEntity
                 ],
                 'created_at' => $movie->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                 'updated_at' => $movie->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-            ],
-            'hall' => [
-                'id' => $this->hall->getId(),
-                'name' => $this->hall->getName(),
-                'capacity' => $this->hall->getCapacity(),
-                'type' => $this->hall->getType(),
-                'created_at' => $this->hall->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                'updated_at' => $this->hall->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
             'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
