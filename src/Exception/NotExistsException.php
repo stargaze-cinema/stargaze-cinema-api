@@ -10,7 +10,6 @@ final class NotExistsException extends \DomainException
 
     public function __construct(string $message)
     {
-        $this->_defaultCode = 401;
         $this->message = $message;
         parent::__construct();
     }
