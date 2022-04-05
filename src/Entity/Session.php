@@ -59,7 +59,7 @@ class Session extends AbstractEntity
         return $this->movie;
     }
 
-    public function setMovie(?Movie $movie): self
+    public function setMovie(Movie $movie): self
     {
         $this->movie = $movie;
 
