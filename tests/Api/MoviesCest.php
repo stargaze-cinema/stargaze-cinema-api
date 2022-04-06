@@ -70,6 +70,32 @@ class MoviesCest
         $I->seeResponseIsJson();
     }
 
+    public function tryToUploadFrames(ApiTester $I): void
+    {
+        $I->amBearerAuthorized();
+        $I->deleteHeader('Content-Type');
+        $I->haveInRepository(Movie::class, [
+            'category' => $I->grabEntityFromRepository(Category::class, ['id' => 1]),
+            'producer' => $I->grabEntityFromRepository(Producer::class, ['id' => 1]),
+            'title' => "Raya And The Last Dragon",
+            'description' => "Some text.",
+            'price' => 10.00,
+            'year' => 2019,
+            'duration' => 120,
+        ]);
+        $id = $I->grabFromRepository(Movie::class, 'id', ['title' => 'Raya And The Last Dragon']);
+
+        $files = [
+            'image_1' => codecept_data_dir('image_1.jpg'),
+            'image_2' => codecept_data_dir('image_2.jpg'),
+            'image_3' => codecept_data_dir('image_3.png')
+        ];
+
+        $I->sendPost("/movies/$id/frames", [], $files);
+        $I->seeResponseCodeIsSuccessful();
+        $I->seeResponseIsJson();
+    }
+
     public function tryToPatchMovie(ApiTester $I): void
     {
         $I->amBearerAuthorized();
