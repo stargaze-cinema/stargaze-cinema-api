@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Enum\Role;
+use App\Exception\UnauthorizedException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -16,28 +17,26 @@ class AuthService
     ) {
     }
 
+    /**
+     * @throws UnauthorizedException
+     */
     private function getUserToken(): ?TokenInterface
     {
-        return $this->tokenStorage->getToken() ?: null;
+        if (!$token = $this->tokenStorage->getToken()) {
+            throw new UnauthorizedException();
+        }
+
+        return $token;
     }
 
-    public function getCurrentUser(): User
+    private function getCurrentUser(): User
     {
-        $token = $this->getUserToken();
-
-        return $token->getUser();
-    }
-
-    public function getCurrentUserRoles(): array
-    {
-        $token = $this->getUserToken();
-
-        return $token->getRoleNames();
+        return $this->getUserToken()->getUser();
     }
 
     public function authenticatedAsAdmin(): bool
     {
-        $roles = $this->getCurrentUserRoles();
+        $roles = $this->getCurrentUser()->getRoles();
         if (!in_array(Role::Admin->value, $roles)) {
             return false;
         }
@@ -47,7 +46,7 @@ class AuthService
 
     public function authenticatedAsModer(): bool
     {
-        $roles = $this->getCurrentUserRoles();
+        $roles = $this->getCurrentUser()->getRoles();
         if (!in_array(Role::Moder->value, $roles)) {
             return false;
         }

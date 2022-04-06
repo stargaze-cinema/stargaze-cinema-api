@@ -22,7 +22,7 @@ class Session extends AbstractEntity
     #[ORM\Column(type: 'datetime')]
     private \DateTime $end_at;
 
-    #[ORM\ManyToOne(targetEntity: Movie::class)]
+    #[ORM\ManyToOne(targetEntity: Movie::class, inversedBy: 'sessions')]
     #[ORM\JoinColumn(nullable: false)]
     private Movie $movie;
 
@@ -80,20 +80,33 @@ class Session extends AbstractEntity
 
     public function jsonSerialize(): array
     {
+        $movie = $this->getMovie();
         return [
             'id' => $this->id,
             'begin_at' => $this->begin_at->format('Y-m-d\TH:i:s.u'),
             'end_at' => $this->end_at->format('Y-m-d\TH:i:s.u'),
             'movie' => [
-                'id' => $this->movie->getId(),
-                'title' => $this->movie->getTitle(),
-                'description' => $this->movie->getDescription(),
-                'poster' => $this->movie->getPoster(),
-                'price' => $this->movie->getPrice(),
-                'year' => $this->movie->getYear(),
-                'duration' => $this->movie->getDuration(),
-                'created_at' => $this->movie->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                'updated_at' => $this->movie->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                'id' => $movie->getId(),
+                'title' => $movie->getTitle(),
+                'description' => $movie->getDescription(),
+                'poster' => $movie->getPoster(),
+                'price' => $movie->getPrice(),
+                'year' => $movie->getYear(),
+                'duration' => $movie->getDuration(),
+                'category' => [
+                    'id' => $movie->getCategory()->getId(),
+                    'name' => $movie->getCategory()->getName(),
+                    'created_at' => $movie->getCategory()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $movie->getCategory()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                ],
+                'producer' => [
+                    'id' => $movie->getProducer()->getId(),
+                    'name' => $movie->getProducer()->getName(),
+                    'created_at' => $movie->getProducer()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $movie->getProducer()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                ],
+                'created_at' => $movie->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $movie->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
             'hall' => [
                 'id' => $this->hall->getId(),

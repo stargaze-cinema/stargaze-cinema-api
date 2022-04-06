@@ -1,8 +1,8 @@
 version: "3.9"
 
 networks:
-    stargaze:
-        name: stargaze
+    stargaze-api:
+        name: stargaze-api
         driver: bridge
 
 services:
@@ -16,7 +16,7 @@ services:
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
             - ./docker/php/php.ini:/etc/nginx/conf.d/php.ini
         networks:
-            - stargaze
+            - stargaze-api
         depends_on:
             - php
 
@@ -29,7 +29,7 @@ services:
             - ./:/var/www/stargaze
             - ./docker/php/php.ini:/usr/local/etc/php/php.ini
         networks:
-            - stargaze
+            - stargaze-api
         depends_on:
             - postgres
 
@@ -44,13 +44,13 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
             POSTGRES_USER: ${POSTGRES_USER:-symfony}
         networks:
-            - stargaze
+            - stargaze-api
         volumes:
             - pg-storage:/var/lib/postgresql/data:rw
 
     minio:
         container_name: minio
-        image: 'minio/minio:RELEASE.2022-03-26T06-49-28Z'
+        image: 'minio/minio:RELEASE.2022-04-01T03-41-39Z'
         command: server --address 0.0.0.0:9000 --console-address ":9001" /data
         ports:
             - 127.0.0.1:9000:9000
@@ -70,7 +70,7 @@ services:
             timeout: 20s
             retries: 3
         networks:
-            - stargaze
+            - stargaze-api
 
     mailhog:
         container_name: mailhog
@@ -81,7 +81,7 @@ services:
             - 1025:1025
             - 8025:8025
         networks:
-            - stargaze
+            - stargaze-api
 
     phppgadmin:
         container_name: phppgadmin
@@ -94,13 +94,13 @@ services:
         ports:
             - 8080:80
         networks:
-            - stargaze
+            - stargaze-api
         depends_on:
             - postgres
 
     swagger-ui:
         container_name: swagger-ui
-        image: swaggerapi/swagger-ui:v4.10.0
+        image: swaggerapi/swagger-ui:v4.10.3
         ports:
             - 8008:8080
         volumes:
@@ -108,7 +108,7 @@ services:
         environment:
             API_URL: doc/openapi.yaml
         networks:
-            - stargaze
+            - stargaze-api
         depends_on:
             - nginx
 
