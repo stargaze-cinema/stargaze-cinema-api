@@ -20,8 +20,8 @@ final class SessionFixtures extends Fixture implements DependentFixtureInterface
 
         for ($i = 0; $i <= self::NUMBER; $i++) {
             $session = new Session();
-            $session->setBeginAt($generator->dateTime);
-            $session->setEndAt($generator->dateTime->add(new \DateInterval('P2D')));
+            $session->setBeginAt($generator->dateTimeBetween('now', 'now'));
+            $session->setEndAt($generator->dateTimeBetween('+4 hours', '+4 hours'));
             $session->setMovie($this->getReference('movie_' . $generator->numberBetween(0, MovieFixtures::NUMBER)));
             $session->setHall($this->getReference('hall_' . $generator->numberBetween(0, HallFixtures::NUMBER)));
             $manager->persist($session);
