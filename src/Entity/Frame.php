@@ -6,8 +6,7 @@ use App\Repository\FrameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FrameRepository::class)]
-#[ORM\Table(name: "frames")]
-#[ORM\HasLifecycleCallbacks()]
+#[ORM\Table(name: "frames"), ORM\HasLifecycleCallbacks]
 class Frame extends AbstractEntity
 {
     #[ORM\Column(type: 'string', length: 255)]
@@ -50,25 +49,70 @@ class Frame extends AbstractEntity
             'movie' => [
                 'id' => $movie->getId(),
                 'title' => $movie->getTitle(),
-                'description' => $movie->getDescription(),
+                'synopsis' => $movie->getSynopsis(),
                 'poster' => $movie->getPoster(),
                 'price' => $movie->getPrice(),
                 'year' => $movie->getYear(),
-                'duration' => $movie->getDuration(),
-                'category' => [
-                    'id' => $movie->getCategory()->getId(),
-                    'name' => $movie->getCategory()->getName(),
-                    'created_at' => $movie->getCategory()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                    'updated_at' => $movie->getCategory()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                'runtime' => $movie->getRuntime(),
+                'rating' => $movie->getRating(),
+                'language' => [
+                    'id' => $movie->getLanguage()->getId(),
+                    'name' => $movie->getLanguage()->getName(),
+                    'created_at' => $movie->getLanguage()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $movie->getLanguage()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                 ],
-                'producer' => [
-                    'id' => $movie->getProducer()->getId(),
-                    'name' => $movie->getProducer()->getName(),
-                    'created_at' => $movie->getProducer()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                    'updated_at' => $movie->getProducer()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-                ],
-                'created_at' => $movie->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                'updated_at' => $movie->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                'countries' => $movie->getCountries()->map(function (Country $country) {
+                    return [
+                        'id' => $country->getId(),
+                        'name' => $country->getName(),
+                        'created_at' => $country->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'updated_at' => $country->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                    ];
+                })->toArray(),
+                'genres' => $movie->getGenres()->map(function (Genre $genre) {
+                    return [
+                        'id' => $genre->getId(),
+                        'name' => $genre->getName(),
+                        'created_at' => $genre->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'updated_at' => $genre->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                    ];
+                })->toArray(),
+                'directors' => $movie->getDirectors()->map(function (Director $director) {
+                    return [
+                        'id' => $director->getId(),
+                        'name' => $director->getName(),
+                        'created_at' => $director->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'updated_at' => $director->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                    ];
+                })->toArray(),
+                'sessions' => $movie->getSessions()->map(function (Session $session) {
+                    return [
+                        'id' => $session->getId(),
+                        'begin_at' => $session->getBeginAt()->format('Y-m-d\TH:i:s.u'),
+                        'end_at' => $session->getEndAt()->format('Y-m-d\TH:i:s.u'),
+                        'hall' => [
+                            'id' => $session->getHall()->getId(),
+                            'name' => $session->getHall()->getName(),
+                            'capacity' => $session->getHall()->getCapacity(),
+                            'type' => $session->getHall()->getType(),
+                            'created_at' => $session->getHall()->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                            'updated_at' => $session->getHall()->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                        ],
+                        'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                    ];
+                })->toArray(),
+                'frames' => $movie->getFrames()->map(function (Frame $frame) {
+                    return [
+                        'id' => $frame->getId(),
+                        'image' => $frame->getImage(),
+                        'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                        'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                    ];
+                })->toArray(),
+                'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),
             ],
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),
             'updated_at' => $this->updated_at->format('Y-m-d\TH:i:s.u'),

@@ -1,0 +1,4 @@
+required:
+    - name
+    - code
+    - native_name

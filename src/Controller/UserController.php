@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Service\AuthService;
 use App\Service\UserService;
+use App\Validator\UserValidator;
 use App\Repository\UserRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,8 +18,8 @@ class UserController extends AbstractController
     public function __construct(
         private AuthService $authService,
         private UserService $userService,
-        private UserRepository $userRepository,
-        private ValidatorInterface $validator
+        private UserValidator $userValidator,
+        private UserRepository $userRepository
     ) {
     }
 
@@ -51,14 +51,14 @@ class UserController extends AbstractController
             }
         }
 
-        $params = new \App\Parameters\SignUpParameters(
-            name: $request->get('name'),
-            email: $request->get('email'),
-            password: $request->get('password'),
-            passwordConfirmation: $request->get('password_confirmation'),
-        );
+        $params = [
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => $request->get('password'),
+            'passwordConfirmation' => $request->get('password_confirmation'),
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->userValidator->validateSignUp($params)) {
             return $errorResponse;
         }
 
@@ -103,15 +103,15 @@ class UserController extends AbstractController
             return new JsonResponse(["message" => 'No user found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $params = new \App\Parameters\UpdateUserParameters(
-            name: $request->get('name'),
-            email: $request->get('email'),
-            roles: $request->get('roles'),
-            password: $request->get('password'),
-            passwordConfirmation: $request->get('password_confirmation'),
-        );
+        $params = [
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'roles' => $request->get('roles'),
+            'password' => $request->get('password'),
+            'passwordConfirmation' => $request->get('password_confirmation'),
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->userValidator->validate($params, true)) {
             return $errorResponse;
         }
 

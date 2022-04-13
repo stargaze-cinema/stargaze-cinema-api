@@ -6,10 +6,10 @@ namespace App\Controller;
 
 use App\Service\AuthService;
 use App\Service\TicketService;
+use App\Validator\TicketValidator;
 use App\Repository\TicketRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mime\Address;
@@ -21,8 +21,8 @@ class TicketController extends AbstractController
     public function __construct(
         private AuthService $authService,
         private TicketService $ticketService,
+        private TicketValidator $ticketValidator,
         private TicketRepository $ticketRepository,
-        private ValidatorInterface $validator,
         private MailerInterface $mailer
     ) {
     }
@@ -55,13 +55,13 @@ class TicketController extends AbstractController
             }
         }
 
-        $params = new \App\Parameters\CreateTicketParameters(
-            place: $request->get('place'),
-            userId: $request->get('user_id'),
-            sessionId: $request->get('session_id')
-        );
+        $params = [
+            'place' => (int) $request->get('place') ?: null,
+            'userId' => (int) $request->get('user_id') ?: null,
+            'sessionId' => (int) $request->get('session_id') ?: null
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->ticketValidator->validate($params)) {
             return $errorResponse;
         }
 
@@ -139,17 +139,17 @@ class TicketController extends AbstractController
             return new JsonResponse(["message" => 'No ticket found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $params = new \App\Parameters\UpdateTicketParameters(
-            place: $request->get('place'),
-            userId: $request->get('user_id'),
-            sessionId: $request->get('session_id')
-        );
+        $params = [
+            'place' => (int) $request->get('place') ?: null,
+            'userId' => (int) $request->get('user_id') ?: null,
+            'sessionId' => (int) $request->get('session_id') ?: null
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->ticketValidator->validate($params, true)) {
             return $errorResponse;
         }
 
-        $ticket = $this->ticketService->create($params);
+        $ticket = $this->ticketService->create($params, $ticket);
         $user = $ticket->getUser();
         $session = $ticket->getSession();
         $movie = $session->getMovie();

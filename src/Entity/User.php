@@ -10,8 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use App\Enum\Role;
 
 #[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
-#[ORM\Table(name: "users")]
-#[ORM\HasLifecycleCallbacks()]
+#[ORM\Table(name: "users"), ORM\HasLifecycleCallbacks]
 class User extends AbstractEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Column(type: 'string', length: 32)]
@@ -98,8 +97,6 @@ class User extends AbstractEntity implements UserInterface, PasswordAuthenticate
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function jsonSerialize(): array

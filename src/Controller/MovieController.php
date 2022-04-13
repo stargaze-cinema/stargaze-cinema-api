@@ -9,7 +9,7 @@ use App\Service\AuthService;
 use App\Service\MovieService;
 use App\Service\FrameService;
 use App\Repository\MovieRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Validator\MovieValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +22,7 @@ class MovieController extends AbstractController
         private MovieService $movieService,
         private FrameService $frameService,
         private MovieRepository $movieRepository,
-        private ValidatorInterface $validator,
+        private MovieValidator $movieValidator,
         private S3Service $s3Service
     ) {
     }
@@ -52,23 +52,24 @@ class MovieController extends AbstractController
             }
         }
 
-        $posterUrl = $request->get('poster');
+        $params = [
+            'title' => $request->get('title'),
+            'synopsis' => $request->get('synopsis'),
+            'price' => (float) $request->get('price') ?: null,
+            'year' => (int) $request->get('year') ?: null,
+            'runtime' => (int) $request->get('runtime') ?: null,
+            'rating' => $request->get('rating'),
+            'languageId' => (int) $request->get('language_id') ?: null,
+            'countryIds' => $request->get('country_ids') ? json_decode($request->get('country_ids')) : null,
+            'genreIds' => $request->get('genre_ids') ? json_decode($request->get('genre_ids')) : null,
+            'directorIds' => $request->get('director_ids') ? json_decode($request->get('director_ids')) : null
+        ];
+
         if ($posterFile = $request->files->get('poster')) {
-            $posterUrl = $this->s3Service->upload($posterFile, 'posters');
+            $params['poster'] = $this->s3Service->upload($posterFile, 'posters');
         }
 
-        $params = new \App\Parameters\CreateMovieParameters(
-            title: $request->get('title'),
-            description: $request->get('description'),
-            poster: $posterUrl,
-            price: (float) $request->get('price'),
-            year: (int) $request->get('year'),
-            duration: (int) $request->get('duration'),
-            categoryId: (int) $request->get('category_id'),
-            producerId: (int) $request->get('producer_id')
-        );
-
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->movieValidator->validate($params)) {
             return $errorResponse;
         }
 
@@ -115,23 +116,26 @@ class MovieController extends AbstractController
             return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $posterUrl = $request->get('poster');
+        $params = [
+            'title' => $request->get('title'),
+            'synopsis' => $request->get('synopsis'),
+            'price' => (float) $request->get('price') ?: null,
+            'year' => (int) $request->get('year') ?: null,
+            'runtime' => (int) $request->get('runtime') ?: null,
+            'rating' => $request->get('rating'),
+            'languageId' => (int) $request->get('language_id') ?: null,
+            'countryIds' => $request->get('country_ids') ? json_decode($request->get('country_ids')) : null,
+            'genreIds' => $request->get('genre_ids') ? json_decode($request->get('genre_ids')) : null,
+            'directorIds' => $request->get('director_ids') ? json_decode($request->get('director_ids')) : null
+        ];
+
         if ($posterFile = $request->files->get('poster')) {
-            $posterUrl = $this->s3Service->upload($posterFile, 'posters');
+            $params['poster'] = $this->s3Service->upload($posterFile, 'posters');
+        } else {
+            $params['poster'] = $movie->getPoster();
         }
 
-        $params = new \App\Parameters\UpdateMovieParameters(
-            title: $request->get('title'),
-            description: $request->get('description'),
-            poster: $posterUrl,
-            price: (float) $request->get('price'),
-            year: (int) $request->get('year'),
-            duration: (int) $request->get('duration'),
-            categoryId: $request->get('category_id'),
-            producerId: $request->get('producer_id')
-        );
-
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->movieValidator->validate($params, true)) {
             return $errorResponse;
         }
 
@@ -189,10 +193,10 @@ class MovieController extends AbstractController
 
             $imageUrl = $this->s3Service->upload($file, 'frames', $movie->getId() . '_' . md5(uniqid()));
 
-            $params = new \App\Parameters\CreateFrameParameters(
-                movieId: $id,
-                image: $imageUrl
-            );
+            $params = [
+                'movieId' => $id,
+                'image' => $imageUrl
+            ];
 
             $frame = $this->frameService->create($params);
             $this->frameService->save($frame);

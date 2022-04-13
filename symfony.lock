@@ -274,6 +274,9 @@
     "psr/log": {
         "version": "3.0.0"
     },
+    "psy/psysh": {
+        "version": "v0.11.2"
+    },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },

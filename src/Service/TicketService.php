@@ -6,8 +6,6 @@ namespace App\Service;
 
 use App\Entity\Ticket;
 use App\Exception\NotExistsException;
-use App\Parameters\CreateTicketParameters;
-use App\Parameters\UpdateTicketParameters;
 
 class TicketService extends AbstractEntityService
 {
@@ -16,24 +14,22 @@ class TicketService extends AbstractEntityService
      *
      * @throws NotExistsException
      */
-    public function create(
-        CreateTicketParameters | UpdateTicketParameters $params,
-        Ticket $ticket = new Ticket()
-    ): Ticket {
-        if ($place = $params->getPlace()) {
-            $ticket->setPlace($place);
+    public function create(array $params, Ticket $ticket = new Ticket()): Ticket
+    {
+        if (isset($params['place'])) {
+            $ticket->setPlace($params['place']);
         }
-        if ($user_id = $params->getUserId()) {
-            if (!$userEntity = $this->getEntityRepository(\App\Entity\User::class)->find($user_id)) {
+        if (isset($params['userId'])) {
+            if (!$entity = $this->getEntityRepository(\App\Entity\User::class)->find($params['userId'])) {
                 throw new NotExistsException("Selected user does not exist.");
             }
-            $ticket->setUser($userEntity);
+            $ticket->setUser($entity);
         }
-        if ($session_id = $params->getSessionId()) {
-            if (!$sessionEntity = $this->getEntityRepository(\App\Entity\Session::class)->find($session_id)) {
+        if (isset($params['sessionId'])) {
+            if (!$entity = $this->getEntityRepository(\App\Entity\Session::class)->find($params['sessionId'])) {
                 throw new NotExistsException("Selected session does not exist.");
             }
-            $ticket->setSession($sessionEntity);
+            $ticket->setSession($entity);
         }
 
         return $ticket;

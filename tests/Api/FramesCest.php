@@ -60,7 +60,11 @@ class FramesCest
             'image' => 'http://localhost:9000/stargazecinema/frames/1.png',
             'movie' => $I->grabEntityFromRepository(Movie::class, ['id' => 1]),
         ]);
-        $id = $I->grabFromRepository(Frame::class, 'id', ['image' => 'http://localhost:9000/stargazecinema/frames/1.png']);
+        $id = $I->grabFromRepository(
+            Frame::class,
+            'id',
+            ['image' => 'http://localhost:9000/stargazecinema/frames/1.png']
+        );
         $I->sendDelete("/frames/$id");
         $I->seeResponseCodeIsSuccessful();
     }

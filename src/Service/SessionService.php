@@ -6,8 +6,6 @@ namespace App\Service;
 
 use App\Entity\Session;
 use App\Exception\NotExistsException;
-use App\Parameters\CreateSessionParameters;
-use App\Parameters\UpdateSessionParameters;
 
 class SessionService extends AbstractEntityService
 {
@@ -16,27 +14,25 @@ class SessionService extends AbstractEntityService
      *
      * @throws NotExistsException
      */
-    public function create(
-        CreateSessionParameters | UpdateSessionParameters $params,
-        Session $session = new Session()
-    ): Session {
-        if ($beginAt = $params->getBeginAt()) {
-            $session->setBeginAt($beginAt);
+    public function create(array $params, Session $session = new Session()): Session
+    {
+        if (isset($params['beginAt'])) {
+            $session->setBeginAt($params['beginAt']);
         }
-        if ($endAt = $params->getEndAt()) {
-            $session->setEndAt($endAt);
+        if (isset($params['endAt'])) {
+            $session->setEndAt($params['endAt']);
         }
-        if ($movieId = $params->getMovieId()) {
-            if (!$movieEntity = $this->getEntityRepository(\App\Entity\Movie::class)->find($movieId)) {
-                throw new NotExistsException("Selected category does not exist.");
+        if (isset($params['movieId'])) {
+            if (!$entity = $this->getEntityRepository(\App\Entity\Movie::class)->find($params['movieId'])) {
+                throw new NotExistsException("Selected genre does not exist.");
             }
-            $session->setMovie($movieEntity);
+            $session->setMovie($entity);
         }
-        if ($hallId = $params->getHallId()) {
-            if (!$hallEntity = $this->getEntityRepository(\App\Entity\Hall::class)->find($hallId)) {
+        if (isset($params['hallId'])) {
+            if (!$entity = $this->getEntityRepository(\App\Entity\Hall::class)->find($params['hallId'])) {
                 throw new NotExistsException("Selected hall does not exist.");
             }
-            $session->setHall($hallEntity);
+            $session->setHall($entity);
         }
 
         return $session;

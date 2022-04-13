@@ -1,9 +1,12 @@
 example:
     title: Avengers
-    description: Watch Avengers Now!
+    synopsis: Watch Avengers Now!
     poster: https://cdn.stargazecinema/movies/Avengers/poster.png
     price: 10.00
     year: 2012
-    duration: 132
-    category_id: 1
-    producer_id: 1
+    runtime: 132
+    rating: 'PEGI 12'
+    language_id: 1
+    country_ids: [1,2]
+    genre_ids: [1,2]
+    director_ids: [1,2]

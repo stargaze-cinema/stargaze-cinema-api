@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\PEGI;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\MovieRepository::class)]
-#[Gedmo\SoftDeleteable]
-#[ORM\Table(name: "movies")]
-#[ORM\HasLifecycleCallbacks()]
+#[ORM\Table(name: "movies"), ORM\HasLifecycleCallbacks, Gedmo\SoftDeleteable]
 class Movie extends AbstractEntity
 {
     use SoftDeleteableEntity;
@@ -21,7 +21,7 @@ class Movie extends AbstractEntity
     private string $title;
 
     #[ORM\Column(type: 'string', length: 65535, nullable: true)]
-    private ?string $description;
+    private ?string $synopsis;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $poster;
@@ -33,15 +33,23 @@ class Movie extends AbstractEntity
     private int $year;
 
     #[ORM\Column(type: 'smallint')]
-    private int $duration;
+    private int $runtime;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'movies')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Category $category;
+    #[ORM\Column(type: 'string', enumType: PEGI::class)]
+    private PEGI $rating;
 
-    #[ORM\ManyToOne(targetEntity: Producer::class, inversedBy: 'movies')]
+    #[ORM\ManyToOne(targetEntity: Language::class, inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
-    private Producer $producer;
+    private Language $language;
+
+    #[ORM\ManyToMany(targetEntity: Country::class, mappedBy: 'movies')]
+    private Collection $countries;
+
+    #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movies')]
+    private Collection $genres;
+
+    #[ORM\ManyToMany(targetEntity: Director::class, mappedBy: 'movies')]
+    private Collection $directors;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Session::class)]
     private Collection $sessions;
@@ -51,8 +59,11 @@ class Movie extends AbstractEntity
 
     public function __construct()
     {
-        $this->sessions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->frames = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sessions = new ArrayCollection();
+        $this->frames = new ArrayCollection();
+        $this->countries = new ArrayCollection();
+        $this->genres = new ArrayCollection();
+        $this->directors = new ArrayCollection();
     }
 
     public function getTitle(): string
@@ -67,14 +78,14 @@ class Movie extends AbstractEntity
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getSynopsis(): ?string
     {
-        return $this->description;
+        return $this->synopsis;
     }
 
-    public function setDescription(?string $description): self
+    public function setSynopsis(?string $synopsis): self
     {
-        $this->description = $description;
+        $this->synopsis = $synopsis;
 
         return $this;
     }
@@ -115,45 +126,126 @@ class Movie extends AbstractEntity
         return $this;
     }
 
-    public function getDuration(): int
+    public function getRuntime(): int
     {
-        return $this->duration;
+        return $this->runtime;
     }
 
-    public function setDuration(int $duration): self
+    public function setRuntime(int $runtime): self
     {
-        $this->duration = $duration;
+        $this->runtime = $runtime;
 
         return $this;
     }
 
-    public function getCategory(): Category
+    public function getRating(): PEGI
     {
-        return $this->category;
+        return $this->rating;
     }
 
-    public function setCategory(?Category $category): self
+    public function setRating(PEGI $rating): self
     {
-        $this->category = $category;
+        $this->rating = $rating;
 
         return $this;
     }
 
-    public function getProducer(): Producer
+    public function getLanguage(): Language
     {
-        return $this->producer;
+        return $this->language;
     }
 
-    public function setProducer(?Producer $producer): self
+    public function setLanguage(?Language $language): self
     {
-        $this->producer = $producer;
+        $this->language = $language;
 
         return $this;
     }
 
     /**
-      * @return Collection<int, Session>
-      */
+     * @return Collection<int, Country>
+     */
+    public function getCountries(): Collection
+    {
+        return $this->countries;
+    }
+
+    public function addCountry(Country $country): self
+    {
+        if (!$this->countries->contains($country)) {
+            $this->countries[] = $country;
+            $country->addMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCountry(Country $country): self
+    {
+        if ($this->countries->removeElement($country)) {
+            $country->removeMovie($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getGenres(): Collection
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): self
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres[] = $genre;
+            $genre->addMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): self
+    {
+        if ($this->genres->removeElement($genre)) {
+            $genre->removeMovie($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Director>
+     */
+    public function getDirectors(): Collection
+    {
+        return $this->directors;
+    }
+
+    public function addDirector(Director $director): self
+    {
+        if (!$this->directors->contains($director)) {
+            $this->directors[] = $director;
+            $director->addMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDirector(Director $director): self
+    {
+        if ($this->directors->removeElement($director)) {
+            $director->removeMovie($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Session>
+     */
     public function getSessions(): Collection
     {
         return $this->sessions;
@@ -164,17 +256,6 @@ class Movie extends AbstractEntity
         if (!$this->sessions->contains($session)) {
             $this->session[] = $session;
             $session->setMovie($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSession(Session $session): self
-    {
-        if ($this->session->removeElement($session)) {
-            if ($session->getMovie() === $this) {
-                $session->setMovie(null);
-            }
         }
 
         return $this;
@@ -214,23 +295,42 @@ class Movie extends AbstractEntity
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this->description,
+            'synopsis' => $this->synopsis,
             'poster' => $this->poster,
             'price' => $this->price,
             'year' => $this->year,
-            'duration' => $this->duration,
-            'category' => [
-                'id' => $this->category->getId(),
-                'name' => $this->category->getName(),
-                'created_at' => $this->category->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                'updated_at' => $this->category->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+            'runtime' => $this->runtime,
+            'rating' => $this->rating,
+            'language' => [
+                'id' => $this->language->getId(),
+                'name' => $this->language->getName(),
+                'created_at' => $this->language->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                'updated_at' => $this->language->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
             ],
-            'producer' => [
-                'id' => $this->producer->getId(),
-                'name' => $this->producer->getName(),
-                'created_at' => $this->producer->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                'updated_at' => $this->producer->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-            ],
+            'countries' => $this->countries->map(function (Country $country) {
+                return [
+                    'id' => $country->getId(),
+                    'name' => $country->getName(),
+                    'created_at' => $country->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $country->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                ];
+            })->toArray(),
+            'genres' => $this->genres->map(function (Genre $genre) {
+                return [
+                    'id' => $genre->getId(),
+                    'name' => $genre->getName(),
+                    'created_at' => $genre->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $genre->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                ];
+            })->toArray(),
+            'directors' => $this->directors->map(function (Director $director) {
+                return [
+                    'id' => $director->getId(),
+                    'name' => $director->getName(),
+                    'created_at' => $director->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
+                    'updated_at' => $director->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
+                ];
+            })->toArray(),
             'sessions' => $this->sessions->map(function (Session $session) {
                 return [
                     'id' => $session->getId(),

@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Service\AuthService;
 use App\Service\SessionService;
+use App\Validator\SessionValidator;
 use App\Repository\SessionRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,8 +18,8 @@ class SessionController extends AbstractController
     public function __construct(
         private AuthService $authService,
         private SessionService $sessionService,
-        private SessionRepository $sessionRepository,
-        private ValidatorInterface $validator
+        private SessionValidator $sessionValidator,
+        private SessionRepository $sessionRepository
     ) {
     }
 
@@ -47,19 +47,19 @@ class SessionController extends AbstractController
             }
         }
 
-        $params = new \App\Parameters\CreateSessionParameters(
-            beginAt: $request->get('begin_at'),
-            endAt: $request->get('end_at'),
-            movieId: $request->get('movie_id'),
-            hallId: $request->get('hall_id')
-        );
+        $params = [
+            'beginAt' => $request->get('begin_at'),
+            'endAt' => $request->get('end_at'),
+            'movieId' => (int) $request->get('movie_id') ?: null,
+            'hallId' => (int) $request->get('hall_id') ?: null
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->sessionValidator->validate($params)) {
             return $errorResponse;
         }
 
-        $params->setBeginAt(new \DateTime($params->getBeginAt()));
-        $params->setEndAt(new \DateTime($params->getEndAt()));
+        $params['beginAt'] = new \DateTime($params['beginAt']);
+        $params['endAt'] = new \DateTime($params['endAt']);
 
         $session = $this->sessionService->create($params);
 
@@ -71,7 +71,7 @@ class SessionController extends AbstractController
         }
 
         $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
-        if ($minutes < $session->getMovie()->getDuration()) {
+        if ($minutes < $session->getMovie()->getRuntime()) {
             return new JsonResponse(
                 ["message" => 'Session can not be shorter then the movie.'],
                 JsonResponse::HTTP_CONFLICT
@@ -114,22 +114,22 @@ class SessionController extends AbstractController
             return new JsonResponse(["message" => 'No session found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $params = new \App\Parameters\UpdateSessionParameters(
-            beginAt: $request->get('begin_at'),
-            endAt: $request->get('end_at'),
-            movieId: $request->get('movie_id'),
-            hallId: $request->get('hall_id')
-        );
+        $params = [
+            'beginAt' => $request->get('begin_at'),
+            'endAt' => $request->get('end_at'),
+            'movieId' => (int) $request->get('movie_id') ?: null,
+            'hallId' => (int) $request->get('hall_id') ?: null
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->sessionValidator->validate($params, true)) {
             return $errorResponse;
         }
 
-        if (!!$beginAt = $params->getBeginAt()) {
-            $params->setBeginAt(new \DateTime($beginAt));
+        if (isset($params['beginAt'])) {
+            $params['beginAt'] = new \DateTime($params['beginAt']);
         }
-        if (!!$endAt = $params->getEndAt()) {
-            $params->setEndAt(new \DateTime($endAt));
+        if (isset($params['endAt'])) {
+            $params['endAt'] = new \DateTime($params['endAt']);
         }
 
         $session = $this->sessionService->create($params, $session);
@@ -142,7 +142,7 @@ class SessionController extends AbstractController
         }
 
         $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
-        if ($minutes < $session->getMovie()->getDuration()) {
+        if ($minutes < $session->getMovie()->getRuntime()) {
             return new JsonResponse(
                 ["message" => 'Session can not be shorter then the movie.'],
                 JsonResponse::HTTP_CONFLICT

@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Movie;
+use App\Enum\PEGI;
 use App\Exception\NotExistsException;
-use App\Parameters\CreateMovieParameters;
-use App\Parameters\UpdateMovieParameters;
 
 class MovieService extends AbstractEntityService
 {
@@ -16,41 +15,54 @@ class MovieService extends AbstractEntityService
      *
      * @throws NotExistsException
      */
-    public function create(CreateMovieParameters | UpdateMovieParameters $params, Movie $movie = new Movie()): Movie
+    public function create(array $params, Movie $movie = new Movie()): Movie
     {
-        if ($title = $params->getTitle()) {
-            $movie->setTitle($title);
+        if (isset($params['title'])) {
+            $movie->setTitle($params['title']);
         }
-        if ($description = $params->getDescription()) {
-            $movie->setDescription($description);
-        } else {
-            $movie->setDescription(null);
+        $movie->setSynopsis($params['synopsis'] ?? null);
+        $movie->setPoster($params['poster'] ?? null);
+        if (isset($params['price'])) {
+            $movie->setPrice($params['price']);
         }
-        if ($poster = $params->getPoster()) {
-            $movie->setPoster($poster);
-        } else {
-            $movie->setPoster(null);
+        if (isset($params['year'])) {
+            $movie->setYear($params['year']);
         }
-        if ($price = $params->getPrice()) {
-            $movie->setPrice($price);
+        if (isset($params['runtime'])) {
+            $movie->setRuntime($params['runtime']);
         }
-        if ($year = $params->getYear()) {
-            $movie->setYear($year);
+        if (isset($params['rating'])) {
+            $movie->setRating(PEGI::from($params['rating']));
         }
-        if ($duration = $params->getDuration()) {
-            $movie->setDuration($duration);
-        }
-        if ($category_id = $params->getCategoryId()) {
-            if (!$categoryEntity = $this->getEntityRepository(\App\Entity\Category::class)->find($category_id)) {
-                throw new NotExistsException("Selected category does not exist.");
+        if (isset($params['languageId'])) {
+            if (!$entity = $this->getEntityRepository(\App\Entity\Language::class)->find($params['languageId'])) {
+                throw new NotExistsException("Selected language does not exist.");
             }
-            $movie->setCategory($categoryEntity);
+            $movie->setLanguage($entity);
         }
-        if ($producer_id = $params->getProducerId()) {
-            if (!$producerEntity = $this->getEntityRepository(\App\Entity\Producer::class)->find($producer_id)) {
-                throw new NotExistsException("Selected producer does not exist.");
+        if (isset($params['countryIds'])) {
+            foreach ($params['countryIds'] as $id) {
+                if (!$entity = $this->getEntityRepository(\App\Entity\Country::class)->find($id)) {
+                    throw new NotExistsException("Selected country with ID $id does not exist.");
+                }
+                $movie->addCountry($entity);
             }
-            $movie->setProducer($producerEntity);
+        }
+        if (isset($params['genreIds'])) {
+            foreach ($params['genreIds'] as $id) {
+                if (!$entity = $this->getEntityRepository(\App\Entity\Genre::class)->find($id)) {
+                    throw new NotExistsException("Selected genre with ID $id does not exist.");
+                }
+                $movie->addGenre($entity);
+            }
+        }
+        if (isset($params['directorIds'])) {
+            foreach ($params['directorIds'] as $id) {
+                if (!$entity = $this->getEntityRepository(\App\Entity\Director::class)->find($id)) {
+                    throw new NotExistsException("Selected director with ID $id does not exist.");
+                }
+                $movie->addDirector($entity);
+            }
         }
 
         return $movie;

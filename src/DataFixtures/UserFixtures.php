@@ -24,7 +24,7 @@ final class UserFixtures extends Fixture
         $user = new User();
         $user->setName('PAXANDDOS');
         $user->setEmail('pashalitovka@gmail.com');
-        $user->setRoles([Role::Admin->value, Role::User->value]);
+        $user->setRoles([Role::Admin, Role::User]);
         $user->setPassword($this->userService->hashPassword($user, '123456789'));
         $manager->persist($user);
         $this->addReference("user_0", $user);
@@ -32,7 +32,7 @@ final class UserFixtures extends Fixture
         $user = new User();
         $user->setName('Luna');
         $user->setEmail('lunadeepblue@gmail.com');
-        $user->setRoles([Role::User->value]);
+        $user->setRoles([Role::User]);
         $user->setPassword($this->userService->hashPassword($user, '123456789'));
         $manager->persist($user);
         $this->addReference("user_1", $user);
@@ -40,7 +40,7 @@ final class UserFixtures extends Fixture
         $user = new User();
         $user->setName('Deeja');
         $user->setEmail('deeja@stab.com');
-        $user->setRoles([Role::Admin->value]);
+        $user->setRoles([Role::Admin]);
         $user->setPassword($this->userService->hashPassword($user, '123456789'));
         $manager->persist($user);
         $this->addReference("user_2", $user);
@@ -50,7 +50,7 @@ final class UserFixtures extends Fixture
             $user = new User();
             $user->setName($generator->name);
             $user->setEmail($generator->email);
-            $user->setRoles([Role::User->value]);
+            $user->setRoles([Role::User]);
             $user->setPassword($this->userService->hashPassword($user, $generator->password(8)));
             $manager->persist($user);
 

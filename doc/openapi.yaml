@@ -1,15 +1,17 @@
 openapi: 3.0.3
 info:
     title: Stargaze Cinema API documentation
-    version: 1.1.0
+    version: 1.2.0
 servers:
     - url: http://localhost:8000
 tags:
     - name: Auth
     - name: Movie
     - name: Frame
-    - name: Category
-    - name: Producer
+    - name: Genre
+    - name: Director
+    - name: Country
+    - name: Language
     - name: Hall
     - name: Session
     - name: Ticket
@@ -25,14 +27,26 @@ paths:
         $ref: './resources/movie.yaml#/MovieWithID'
     /api/movies/{id}/frames:
         $ref: './resources/movie.yaml#/MovieFrames'
-    /api/categories:
-        $ref: './resources/category.yaml#/Category'
-    /api/categories/{id}:
-        $ref: './resources/category.yaml#/CategoryWithID'
-    /api/producers:
-        $ref: './resources/producer.yaml#/Producer'
-    /api/producers/{id}:
-        $ref: './resources/producer.yaml#/ProducerWithID'
+    /api/genres:
+        $ref: './resources/genre.yaml#/Genre'
+    /api/genres/{id}:
+        $ref: './resources/genre.yaml#/GenreWithID'
+    /api/directors:
+        $ref: './resources/director.yaml#/Director'
+    /api/directors/{id}:
+        $ref: './resources/director.yaml#/DirectorWithID'
+    /api/countries:
+        $ref: './resources/country.yaml#/Country'
+    /api/countries/{id}:
+        $ref: './resources/country.yaml#/CountryWithID'
+    /api/languages:
+        $ref: './resources/language.yaml#/Language'
+    /api/languages/{id}:
+        $ref: './resources/language.yaml#/LanguageWithID'
+    /api/frames:
+        $ref: './resources/frame.yaml#/Frame'
+    /api/frames/{id}:
+        $ref: './resources/frame.yaml#/FrameWithID'
     /api/halls:
         $ref: './resources/hall.yaml#/Hall'
     /api/halls/{id}:
@@ -56,10 +70,14 @@ components:
             $ref: './schemas/movie.yaml'
         Frame:
             $ref: './schemas/frame.yaml'
-        Category:
-            $ref: './schemas/category.yaml'
-        Producer:
-            $ref: './schemas/producer.yaml'
+        Genre:
+            $ref: './schemas/genre.yaml'
+        Directors:
+            $ref: './schemas/directors.yaml'
+        Country:
+            $ref: './schemas/country.yaml'
+        Language:
+            $ref: './schemas/language.yaml'
         Hall:
             $ref: './schemas/hall.yaml'
         Session:

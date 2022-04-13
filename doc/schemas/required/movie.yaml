@@ -2,6 +2,9 @@ required:
     - title
     - price
     - year
-    - duration
-    - category_id
-    - producer_id
+    - runtime
+    - rating
+    - language_id
+    - country_ids
+    - genre_ids
+    - director_ids

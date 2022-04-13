@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Movie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use App\Entity\Movie;
+use App\Enum\PEGI;
 use Faker\Factory;
 
 final class MovieFixtures extends Fixture implements DependentFixtureInterface
@@ -27,7 +28,7 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
 
         $movie = new Movie();
         $movie->setTitle('Raya and the Last Dragon');
-        $movie->setDescription('Long ago, in the fantasy world of Kumandra, humans and dragons lived
+        $movie->setSynopsis('Long ago, in the fantasy world of Kumandra, humans and dragons lived
         together in harmony. However, when sinister monsters known as the Druun threatened the land,
         the dragons sacrificed themselves to save humanity. Now, 500 years later, those same monsters
         have returned, and it is up to a lone warrior to track down the last dragon and stop the
@@ -35,24 +36,34 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
         $movie->setPoster('https://media.comicbook.com/2021/03/sisu-poster-1261403.jpeg');
         $movie->setPrice(22.00);
         $movie->setYear(2021);
-        $movie->setDuration(107);
-        $movie->setCategory($this->getReference('category_0'));
-        $movie->setProducer($this->getReference('producer_0'));
+        $movie->setRuntime(107);
+        $movie->addCountry($this->getReference('country_0'));
+        $movie->addCountry($this->getReference('country_1'));
+        $movie->setLanguage($this->getReference('language_39'));
+        $movie->setRating(PEGI::PG3);
+        $movie->addGenre($this->getReference('genre_0'));
+        $movie->addGenre($this->getReference('genre_1'));
+        $movie->addDirector($this->getReference('director_0'));
         $manager->persist($movie);
         $this->addReference("movie_0", $movie);
 
         for ($i = 1; $i <= self::NUMBER; $i++) {
             $movie = new Movie();
             $movie->setTitle($generator->words(2, true));
-            $movie->setDescription($generator->realText());
+            $movie->setSynopsis($generator->realText());
             $movie->setPoster($this->posters[array_rand($this->posters)]);
             $movie->setPrice($generator->randomNumber(2));
             $movie->setYear($generator->numberBetween(1888, 2022));
-            $movie->setDuration($generator->numberBetween(0, 300));
-            $movie->setCategory($this->getReference('category_' .
-                $generator->numberBetween(0, CategoryFixtures::NUMBER)));
-            $movie->setProducer($this->getReference('producer_' .
-                $generator->numberBetween(0, ProducerFixtures::NUMBER)));
+            $movie->setRuntime($generator->numberBetween(0, 300));
+            $movie->addCountry($this->getReference('country_' .
+                $generator->numberBetween(0, CountryFixtures::NUMBER)));
+            $movie->setLanguage($this->getReference('language_' .
+                $generator->numberBetween(0, LanguageFixtures::NUMBER)));
+            $movie->setRating(PEGI::getRandom());
+            $movie->addGenre($this->getReference('genre_' .
+                $generator->numberBetween(0, GenreFixtures::NUMBER)));
+            $movie->addDirector($this->getReference('director_' .
+                $generator->numberBetween(0, DirectorFixtures::NUMBER)));
             $manager->persist($movie);
 
             $this->addReference("movie_$i", $movie);
@@ -64,8 +75,10 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            CategoryFixtures::class,
-            ProducerFixtures::class
+            GenreFixtures::class,
+            DirectorFixtures::class,
+            CountryFixtures::class,
+            LanguageFixtures::class
         ];
     }
 }
