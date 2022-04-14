@@ -22,7 +22,7 @@ final class HallFixtures extends Fixture
             $hall = new Hall();
             $hall->setName($generator->firstName);
             $hall->setCapacity($generator->numberBetween(0, 100));
-            $hall->setType(HallType::getRandom()->value);
+            $hall->setType(HallType::getRandom());
             $manager->persist($hall);
 
             $this->addReference("hall_$i", $hall);

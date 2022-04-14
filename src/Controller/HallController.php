@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Service\AuthService;
 use App\Service\HallService;
+use App\Validator\HallValidator;
 use App\Repository\HallRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,8 +18,8 @@ class HallController extends AbstractController
     public function __construct(
         private AuthService $authService,
         private HallService $hallService,
-        private HallRepository $hallRepository,
-        private ValidatorInterface $validator
+        private HallValidator $hallValidator,
+        private HallRepository $hallRepository
     ) {
     }
 
@@ -47,13 +47,13 @@ class HallController extends AbstractController
             }
         }
 
-        $params = new \App\Parameters\CreateHallParameters(
-            name: $request->get('name'),
-            capacity: $request->get('capacity'),
-            type: $request->get('type')
-        );
+        $params = [
+            'name' => $request->get('name'),
+            'capacity' => $request->get('capacity'),
+            'type' => $request->get('type')
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->hallValidator->validate($params)) {
             return $errorResponse;
         }
 
@@ -94,13 +94,13 @@ class HallController extends AbstractController
             return new JsonResponse(["message" => 'No hall found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        $params = new \App\Parameters\UpdateHallParameters(
-            name: $request->get('name'),
-            capacity: $request->get('capacity'),
-            type: $request->get('type')
-        );
+        $params = [
+            'name' => $request->get('name'),
+            'capacity' => $request->get('capacity'),
+            'type' => $request->get('type')
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->hallValidator->validate($params, true)) {
             return $errorResponse;
         }
 

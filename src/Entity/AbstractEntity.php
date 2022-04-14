@@ -8,8 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 abstract class AbstractEntity implements \JsonSerializable
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Id, ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(type: 'integer')]
     protected int $id;
 

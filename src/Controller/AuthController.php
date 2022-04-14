@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\UserService;
+use App\Validator\UserValidator;
 use App\Repository\UserRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +19,7 @@ class AuthController extends AbstractController
     public function __construct(
         private UserService $userService,
         private UserRepository $userRepository,
-        private ValidatorInterface $validator
+        private UserValidator $userValidator
     ) {
     }
 
@@ -31,22 +31,21 @@ class AuthController extends AbstractController
             return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $params = new \App\Parameters\SignUpParameters(
-            name: $request->get('name'),
-            email: $request->get('email'),
-            password: $request->get('password'),
-            passwordConfirmation: $request->get('password_confirmation'),
-        );
+        $params = [
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => $request->get('password'),
+            'passwordConfirmation' => $request->get('password_confirmation'),
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->userValidator->validateSignUp($params)) {
             return $errorResponse;
         }
 
-        if ($this->userRepository->findOneBy([ 'email' => $params->getEmail() ])) {
+        if ($this->userRepository->findOneBy([ 'email' => $params['email'] ])) {
             return new JsonResponse(['message' => 'This email is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
-
-        if ($params->getPassword() !== $params->getPasswordConfirmation()) {
+        if ($params['password'] !== $params['passwordConfirmation']) {
             return new JsonResponse(['message' => 'Password did not match.'], JsonResponse::HTTP_CONFLICT);
         }
 
@@ -67,20 +66,20 @@ class AuthController extends AbstractController
             return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $params = new \App\Parameters\SignInParameters(
-            email: $request->get('email'),
-            password: $request->get('password'),
-        );
+        $params = [
+            'email' => $request->get('email'),
+            'password' => $request->get('password')
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($errorResponse = $this->userValidator->validateSignIn($params)) {
             return $errorResponse;
         }
 
-        if (!$user = $this->userRepository->findOneBy([ 'email' => $params->getEmail() ])) {
+        if (!$user = $this->userRepository->findOneBy([ 'email' => $params['email'] ])) {
             return new JsonResponse(['message' => 'Invalid credentials.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        if (!$passwordHasher->isPasswordValid($user, $params->getPassword())) {
+        if (!$passwordHasher->isPasswordValid($user, $params['password'])) {
             return new JsonResponse(['message' => 'Incorrect password.'], JsonResponse::HTTP_CONFLICT);
         }
 

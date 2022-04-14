@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Hall;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 /**
  * @method Hall|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,10 +16,34 @@ use App\Entity\Hall;
  * @method Hall[]    findAll()
  * @method Hall[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class HallRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
+class HallRepository extends ServiceEntityRepository
 {
-    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Hall::class);
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function add(Hall $entity, bool $flush = true): void
+    {
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function remove(Hall $entity, bool $flush = true): void
+    {
+        $this->_em->remove($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
     }
 }

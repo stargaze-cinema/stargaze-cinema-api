@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\HallType;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: \App\Repository\HallRepository::class)]
-#[ORM\Table(name: "halls")]
-#[ORM\HasLifecycleCallbacks()]
+#[ORM\Table(name: "halls"), ORM\HasLifecycleCallbacks]
 class Hall extends AbstractEntity
 {
     #[ORM\Column(type: 'string', length: 16)]
@@ -17,8 +17,8 @@ class Hall extends AbstractEntity
     #[ORM\Column(type: 'smallint')]
     private int $capacity;
 
-    #[ORM\Column(type: 'string', length: 8)]
-    private string $type;
+    #[ORM\Column(type: 'string', enumType: HallType::class)]
+    private HallType $type;
 
     public function getName(): string
     {
@@ -44,12 +44,12 @@ class Hall extends AbstractEntity
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): HallType
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(HallType $type): self
     {
         $this->type = $type;
 

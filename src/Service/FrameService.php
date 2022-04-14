@@ -6,7 +6,6 @@ namespace App\Service;
 
 use App\Entity\Frame;
 use App\Exception\NotExistsException;
-use App\Parameters\CreateFrameParameters;
 
 class FrameService extends AbstractEntityService
 {
@@ -15,16 +14,16 @@ class FrameService extends AbstractEntityService
      *
      * @throws NotExistsException
      */
-    public function create(CreateFrameParameters $params, Frame $frame = new Frame()): Frame
+    public function create(array $params, Frame $frame = new Frame()): Frame
     {
-        if ($image = $params->getImage()) {
-            $frame->setImage($image);
+        if (isset($params['image'])) {
+            $frame->setImage($params['image']);
         }
-        if ($movieId = $params->getMovieId()) {
-            if (!$movieEntity = $this->getEntityRepository(\App\Entity\Movie::class)->find($movieId)) {
-                throw new NotExistsException("Selected category does not exist.");
+        if (isset($params['movieId'])) {
+            if (!$entity = $this->getEntityRepository(\App\Entity\Movie::class)->find($params['movieId'])) {
+                throw new NotExistsException("Selected movie does not exist.");
             }
-            $frame->setMovie($movieEntity);
+            $frame->setMovie($entity);
         }
 
         return $frame;

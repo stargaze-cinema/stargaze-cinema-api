@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\S3Service;
 use App\Service\AuthService;
 use App\Service\FrameService;
+use App\Validator\FrameValidator;
 use App\Repository\FrameRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,10 +17,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class FrameController extends AbstractController
 {
     public function __construct(
+        private S3Service $s3Service,
         private AuthService $authService,
         private FrameService $frameService,
-        private FrameRepository $frameRepository,
-        private ValidatorInterface $validator
+        private FrameValidator $frameValidator,
+        private FrameRepository $frameRepository
     ) {
     }
 
@@ -51,12 +53,16 @@ class FrameController extends AbstractController
             }
         }
 
-        $params = new \App\Parameters\CreateFrameParameters(
-            movieId: $request->get('movie_id'),
-            image: $request->get('image')
-        );
+        $params = [
+            'movieId' => (int) $request->get('movie_id') ?: null,
+            'image' => $request->get('image')
+        ];
 
-        if ($errorResponse = $this->parseErrors($this->validator->validate($params))) {
+        if ($image = $request->files->get('image')) {
+            $params['image'] = $this->s3Service->upload($image, 'frames', $params['movieId'] . '_' . md5(uniqid()));
+        }
+
+        if ($errorResponse = $this->frameValidator->validate($params)) {
             return $errorResponse;
         }
 

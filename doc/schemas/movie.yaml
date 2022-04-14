@@ -4,7 +4,7 @@ properties:
         type: integer
     title:
         type: string
-    description:
+    synopsis:
         type: string
     poster:
         type: string
@@ -13,12 +13,24 @@ properties:
         type: number
     year:
         type: integer
-    duration:
+    runtime:
         type: integer
-    category_id:
+    rating:
+        type: string
+    language_id:
         type: integer
-    producer_id:
-        type: integer
+    country_ids:
+        type: array
+        items:
+            type: integer
+    genre_ids:
+        type: array
+        items:
+            type: integer
+    director_ids:
+        type: array
+        items:
+            type: integer
     created_at:
         type: string
     updated_at:

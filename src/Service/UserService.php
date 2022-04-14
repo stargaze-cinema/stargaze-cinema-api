@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\User;
 use App\Enum\Role;
-use App\Parameters\SignUpParameters;
-use App\Parameters\UpdateUserParameters;
+use App\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService extends AbstractEntityService
@@ -19,23 +17,23 @@ class UserService extends AbstractEntityService
         parent::__construct($entityManager);
     }
 
-    public function create(SignUpParameters| UpdateUserParameters $params, User $user = new User()): User
+    public function create(array $params, User $user = new User()): User
     {
-        if ($name = $params->getName()) {
-            $user->setName($name);
+        if (isset($params['name'])) {
+            $user->setName($params['name']);
         }
-        if ($email = $params->getEmail()) {
-            $user->setEmail($email);
+        if (isset($params['email'])) {
+            $user->setEmail($params['email']);
         }
-        if ($password = $params->getPassword()) {
-            $user->setPassword($this->hashPassword($user, $password));
+        if (isset($params['password'])) {
+            $user->setPassword($this->hashPassword($user, $params['password']));
         }
-        if (!$params instanceof \App\Parameters\SignUpParameters) {
-            if ($roles = $params->getRoles()) {
+        if (!isset($params['passwordConfirmation'])) {
+            if ($roles = $params['roles']) {
                 $user->setRoles($roles);
             }
         } else {
-            $user->setRoles([Role::User->value]);
+            $user->setRoles([Role::User]);
         }
 
         return $user;

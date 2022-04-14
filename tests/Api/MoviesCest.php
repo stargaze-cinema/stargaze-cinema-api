@@ -4,23 +4,30 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use App\Entity\Category;
+use App\Entity\Country;
+use App\Entity\Genre;
 use App\Entity\Movie;
-use App\Entity\Producer;
+use App\Entity\Director;
+use App\Entity\Language;
+use App\Enum\PEGI;
 use App\Tests\ApiTester;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class MoviesCest
 {
     public function tryToGetMovie(ApiTester $I): void
     {
         $I->haveInRepository(Movie::class, [
-            'category' => $I->grabEntityFromRepository(Category::class, ['id' => 1]),
-            'producer' => $I->grabEntityFromRepository(Producer::class, ['id' => 1]),
+            'genres' => new ArrayCollection([$I->grabEntityFromRepository(Genre::class, ['id' => 1])]),
+            'directors' =>  new ArrayCollection([$I->grabEntityFromRepository(Director::class, ['id' => 1])]),
+            'countries' =>  new ArrayCollection([$I->grabEntityFromRepository(Country::class, ['id' => 1])]),
+            'language' => $I->grabEntityFromRepository(Language::class, ['id' => 1]),
             'title' => "Raya And The Last Dragon",
-            'description' => "Some text.",
+            'synopsis' => "Some text.",
             'price' => 10.00,
             'year' => 2021,
-            'duration' => 120,
+            'runtime' => 120,
+            'rating' => PEGI::PG3
         ]);
 
         $I->sendGet('/movies');
@@ -42,13 +49,16 @@ class MoviesCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/movies', [
-            'category_id' => 3,
-            'producer_id' => 3,
+            'genre_ids' => '[1,2]',
+            'director_ids' => '[1,2]',
+            'country_ids' => '[1,2]',
+            'language_id' => 3,
             'title' => "Raya And The Last Dragon",
-            'description' => "Some text.",
+            'synopsis' => "Some text.",
             'price' => 10.00,
             'year' => 2021,
-            'duration' => 120
+            'runtime' => 120,
+            'rating' => 'PEGI 3'
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
@@ -58,13 +68,16 @@ class MoviesCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/movies', [
-            'category_id' => "Cartoon",
-            'producer_id' => "Somebody",
+            'genre_id' => "Cartoon",
+            'director_id' => "Somebody",
             'title' => "Raya And The Last Dragon",
-            'description' => "Some text.",
+            'synopsis' => "Some text.",
             'price' => 10.00,
             'year' => 2021,
-            'duration' => 'long'
+            'runtime' => 'long',
+            'country' => 'United States',
+            'language' => 'English',
+            'rating' => 'PEGI 3',
         ]);
         $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();
@@ -75,13 +88,16 @@ class MoviesCest
         $I->amBearerAuthorized();
         $I->deleteHeader('Content-Type');
         $I->haveInRepository(Movie::class, [
-            'category' => $I->grabEntityFromRepository(Category::class, ['id' => 1]),
-            'producer' => $I->grabEntityFromRepository(Producer::class, ['id' => 1]),
+            'genres' => new ArrayCollection([$I->grabEntityFromRepository(Genre::class, ['id' => 1])]),
+            'directors' =>  new ArrayCollection([$I->grabEntityFromRepository(Director::class, ['id' => 1])]),
+            'countries' =>  new ArrayCollection([$I->grabEntityFromRepository(Country::class, ['id' => 1])]),
+            'language' => $I->grabEntityFromRepository(Language::class, ['id' => 1]),
             'title' => "Raya And The Last Dragon",
-            'description' => "Some text.",
+            'synopsis' => "Some text.",
             'price' => 10.00,
-            'year' => 2019,
-            'duration' => 120,
+            'year' => 2021,
+            'runtime' => 120,
+            'rating' => PEGI::PG3
         ]);
         $id = $I->grabFromRepository(Movie::class, 'id', ['title' => 'Raya And The Last Dragon']);
 
@@ -100,17 +116,22 @@ class MoviesCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Movie::class, [
-            'category' => $I->grabEntityFromRepository(Category::class, ['id' => 1]),
-            'producer' => $I->grabEntityFromRepository(Producer::class, ['id' => 1]),
+            'genres' => new ArrayCollection([$I->grabEntityFromRepository(Genre::class, ['id' => 1])]),
+            'directors' =>  new ArrayCollection([$I->grabEntityFromRepository(Director::class, ['id' => 1])]),
+            'countries' =>  new ArrayCollection([$I->grabEntityFromRepository(Country::class, ['id' => 1])]),
+            'language' => $I->grabEntityFromRepository(Language::class, ['id' => 1]),
             'title' => "Raya And The Last Dragon",
-            'description' => "Some text.",
+            'synopsis' => "Some text.",
+            'poster' => "https://lol.com/com.png",
             'price' => 10.00,
-            'year' => 2019,
-            'duration' => 120,
+            'year' => 2021,
+            'runtime' => 120,
+            'rating' => PEGI::PG3
         ]);
         $id = $I->grabFromRepository(Movie::class, 'id', ['title' => 'Raya And The Last Dragon']);
         $I->sendPatch("/movies/$id", [
-            'description' => "Updated text.",
+            'synopsis' => "Updated text.",
+            'poster' => "https://lol.com/com.png",
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
@@ -120,13 +141,16 @@ class MoviesCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Movie::class, [
-            'category' => $I->grabEntityFromRepository(Category::class, ['id' => 1]),
-            'producer' => $I->grabEntityFromRepository(Producer::class, ['id' => 1]),
+            'genres' => new ArrayCollection([$I->grabEntityFromRepository(Genre::class, ['id' => 1])]),
+            'directors' =>  new ArrayCollection([$I->grabEntityFromRepository(Director::class, ['id' => 1])]),
+            'countries' =>  new ArrayCollection([$I->grabEntityFromRepository(Country::class, ['id' => 1])]),
+            'language' => $I->grabEntityFromRepository(Language::class, ['id' => 1]),
             'title' => "Delete me",
-            'description' => "Some text.",
+            'synopsis' => "Some text.",
             'price' => 10.00,
-            'year' => 2019,
-            'duration' => 120,
+            'year' => 2021,
+            'runtime' => 120,
+            'rating' => PEGI::PG3
         ]);
         $id = $I->grabFromRepository(Movie::class, 'id', ['title' => 'Delete me']);
         $I->sendDelete("/movies/$id");
