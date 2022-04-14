@@ -10,8 +10,6 @@ tags:
     - name: Frame
     - name: Genre
     - name: Director
-    - name: Country
-    - name: Language
     - name: Hall
     - name: Session
     - name: Ticket
@@ -35,14 +33,6 @@ paths:
         $ref: './resources/director.yaml#/Director'
     /api/directors/{id}:
         $ref: './resources/director.yaml#/DirectorWithID'
-    /api/countries:
-        $ref: './resources/country.yaml#/Country'
-    /api/countries/{id}:
-        $ref: './resources/country.yaml#/CountryWithID'
-    /api/languages:
-        $ref: './resources/language.yaml#/Language'
-    /api/languages/{id}:
-        $ref: './resources/language.yaml#/LanguageWithID'
     /api/frames:
         $ref: './resources/frame.yaml#/Frame'
     /api/frames/{id}:
@@ -74,10 +64,6 @@ components:
             $ref: './schemas/genre.yaml'
         Directors:
             $ref: './schemas/directors.yaml'
-        Country:
-            $ref: './schemas/country.yaml'
-        Language:
-            $ref: './schemas/language.yaml'
         Hall:
             $ref: './schemas/hall.yaml'
         Session:
