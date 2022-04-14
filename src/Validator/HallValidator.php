@@ -15,17 +15,17 @@ class HallValidator extends AbstractValidator
             'name' => [
                 $this->assertReqOpt,
                 new Assert\Type('string'),
-                new Assert\Length(min: 2, max: 16)
+                new Assert\Length(min: 2, max: 16),
             ],
             'capacity' => [
                 $this->assertReqOpt,
                 new Assert\Type('integer'),
-                new Assert\Positive()
+                new Assert\Positive(),
             ],
             'type' => [
                 $this->assertReqOpt,
-                new Assert\Choice(HallType::toArray())
-            ]
+                new Assert\Choice(HallType::toArray()),
+            ],
         ]);
     }
 }

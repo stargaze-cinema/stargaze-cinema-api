@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
     /**
-     * Transforms payload of the JSON request to readable data
+     * Transforms payload of the JSON request to readable data.
      */
     final protected function transformJsonBody(Request $request): ?Request
     {

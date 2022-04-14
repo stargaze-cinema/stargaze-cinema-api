@@ -17,7 +17,7 @@ final class FrameFixtures extends Fixture implements DependentFixtureInterface
         'https://cdn.discordapp.com/attachments/691374456513233036/959478775601590342/unknown.png',
         'https://cdn.discordapp.com/attachments/691374456513233036/959478776050364496/unknown.png',
         'https://cdn.discordapp.com/attachments/691374456513233036/959478776645951548/unknown.png',
-        'https://cdn.discordapp.com/attachments/691374456513233036/959478777077968946/unknown.png'
+        'https://cdn.discordapp.com/attachments/691374456513233036/959478777077968946/unknown.png',
     ];
 
     public function load(ObjectManager $manager): void
@@ -35,7 +35,7 @@ final class FrameFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            MovieFixtures::class
+            MovieFixtures::class,
         ];
     }
 }

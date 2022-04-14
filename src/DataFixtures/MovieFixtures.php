@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Movie;
+use App\Enum\PEGI;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use App\Entity\Movie;
-use App\Enum\PEGI;
 use Faker\Factory;
 
 final class MovieFixtures extends Fixture implements DependentFixtureInterface
@@ -19,7 +19,7 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
         'https://cdn.discordapp.com/attachments/691374456513233036/959449815874424832/FFHNt85aMAEoqUL.png',
         'https://cdn.discordapp.com/attachments/691374456513233036/959449816176394310/FD_htaLacAEVWsb.jpg',
         'https://cdn.discordapp.com/attachments/691374456513233036/959449816545525770/FD5pZ9nacAENkv1.jpg',
-        'https://cdn.discordapp.com/attachments/691374456513233036/959449816943976479/FF7LC_2UYAAqDme.png'
+        'https://cdn.discordapp.com/attachments/691374456513233036/959449816943976479/FF7LC_2UYAAqDme.png',
     ];
 
     public function load(ObjectManager $manager): void
@@ -45,9 +45,9 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
         $movie->addGenre($this->getReference('genre_1'));
         $movie->addDirector($this->getReference('director_0'));
         $manager->persist($movie);
-        $this->addReference("movie_0", $movie);
+        $this->addReference('movie_0', $movie);
 
-        for ($i = 1; $i <= self::NUMBER; $i++) {
+        for ($i = 1; $i <= self::NUMBER; ++$i) {
             $movie = new Movie();
             $movie->setTitle($generator->words(2, true));
             $movie->setSynopsis($generator->realText());
@@ -55,14 +55,14 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
             $movie->setPrice($generator->randomNumber(2));
             $movie->setYear($generator->numberBetween(1888, 2022));
             $movie->setRuntime($generator->numberBetween(0, 300));
-            $movie->addCountry($this->getReference('country_' .
+            $movie->addCountry($this->getReference('country_'.
                 $generator->numberBetween(0, CountryFixtures::NUMBER)));
-            $movie->setLanguage($this->getReference('language_' .
+            $movie->setLanguage($this->getReference('language_'.
                 $generator->numberBetween(0, LanguageFixtures::NUMBER)));
             $movie->setRating(PEGI::getRandom());
-            $movie->addGenre($this->getReference('genre_' .
+            $movie->addGenre($this->getReference('genre_'.
                 $generator->numberBetween(0, GenreFixtures::NUMBER)));
-            $movie->addDirector($this->getReference('director_' .
+            $movie->addDirector($this->getReference('director_'.
                 $generator->numberBetween(0, DirectorFixtures::NUMBER)));
             $manager->persist($movie);
 
@@ -78,7 +78,7 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
             GenreFixtures::class,
             DirectorFixtures::class,
             CountryFixtures::class,
-            LanguageFixtures::class
+            LanguageFixtures::class,
         ];
     }
 }

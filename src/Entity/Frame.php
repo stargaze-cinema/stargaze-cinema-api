@@ -6,7 +6,7 @@ use App\Repository\FrameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FrameRepository::class)]
-#[ORM\Table(name: "frames"), ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'frames'), ORM\HasLifecycleCallbacks]
 class Frame extends AbstractEntity
 {
     #[ORM\Column(type: 'string', length: 255)]
@@ -43,6 +43,7 @@ class Frame extends AbstractEntity
     public function jsonSerialize(): array
     {
         $movie = $this->getMovie();
+
         return [
             'id' => $this->id,
             'image' => $this->image,
@@ -100,7 +101,7 @@ class Frame extends AbstractEntity
                         ],
                         'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                         'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-                        'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                        'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u'),
                     ];
                 })->toArray(),
                 'frames' => $movie->getFrames()->map(function (Frame $frame) {
@@ -108,7 +109,7 @@ class Frame extends AbstractEntity
                         'id' => $frame->getId(),
                         'image' => $frame->getImage(),
                         'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                        'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                        'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                     ];
                 })->toArray(),
                 'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

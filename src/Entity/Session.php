@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\SessionRepository::class)]
-#[ORM\Table(name: "sessions"), ORM\HasLifecycleCallbacks, Gedmo\SoftDeleteable]
+#[ORM\Table(name: 'sessions'), ORM\HasLifecycleCallbacks, Gedmo\SoftDeleteable]
 class Session extends AbstractEntity
 {
     use SoftDeleteableEntity;
@@ -79,6 +79,7 @@ class Session extends AbstractEntity
     public function jsonSerialize(): array
     {
         $movie = $this->getMovie();
+
         return [
             'id' => $this->id,
             'begin_at' => $this->begin_at->format('Y-m-d\TH:i:s.u'),
@@ -137,7 +138,7 @@ class Session extends AbstractEntity
                         ],
                         'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                         'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-                        'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                        'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u'),
                     ];
                 })->toArray(),
                 'frames' => $movie->getFrames()->map(function (Frame $frame) {
@@ -145,7 +146,7 @@ class Session extends AbstractEntity
                         'id' => $frame->getId(),
                         'image' => $frame->getImage(),
                         'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                        'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                        'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                     ];
                 })->toArray(),
                 'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

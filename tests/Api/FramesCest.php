@@ -22,8 +22,8 @@ class FramesCest
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             [
-                'image' => 'http://localhost:9000/stargazecinema/frames/1.png'
-            ]
+                'image' => 'http://localhost:9000/stargazecinema/frames/1.png',
+            ],
         ]);
     }
 
@@ -38,7 +38,7 @@ class FramesCest
         $I->amBearerAuthorized();
         $I->sendPost(
             '/frames',
-            [ 'movie_id' => 3, ],
+            ['movie_id' => 3],
             [
                 'image' => [
                     'name' => 'image_1.jpg',
@@ -46,7 +46,7 @@ class FramesCest
                     'error' => UPLOAD_ERR_OK,
                     'size' => filesize(codecept_data_dir('image_1.jpg')),
                     'tmp_name' => codecept_data_dir('image_1.jpg'),
-                ]
+                ],
             ]
         );
         $I->seeResponseCodeIsSuccessful();

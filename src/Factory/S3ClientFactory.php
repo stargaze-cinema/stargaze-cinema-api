@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use Aws\S3\S3Client;
 use Aws\Credentials\Credentials;
+use Aws\S3\S3Client;
 
 /**
- * Class S3ClientFactory
- * @package App\Factory
+ * Class S3ClientFactory.
  */
 class S3ClientFactory
 {
@@ -22,17 +21,15 @@ class S3ClientFactory
     }
 
     /**
-     * Creates a S3 client
-     *
-     * @return S3Client
+     * Creates a S3 client.
      */
     public function createClient(): S3Client
     {
         return new S3Client([
-            'version'     => 'latest',
-            'region'      => $this->region,
+            'version' => 'latest',
+            'region' => $this->region,
             'credentials' => new Credentials($this->key, $this->secret),
-            'endpoint'    => $this->endpoint,
+            'endpoint' => $this->endpoint,
             'use_path_style_endpoint' => true,
         ]);
     }

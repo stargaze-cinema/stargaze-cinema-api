@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use App\Entity\User;
-use App\Entity\Ticket;
 use App\Entity\Session;
+use App\Entity\Ticket;
+use App\Entity\User;
 use App\Tests\ApiTester;
 
 class TicketsCest
@@ -17,15 +17,15 @@ class TicketsCest
         $I->haveInRepository(Ticket::class, [
             'place' => 20,
             'user' => $I->grabEntityFromRepository(User::class, ['id' => 1]),
-            'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1])
+            'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1]),
         ]);
 
         $I->sendGet('/tickets');
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             [
-                'place' => 20
-            ]
+                'place' => 20,
+            ],
         ]);
     }
 
@@ -42,7 +42,7 @@ class TicketsCest
         $I->sendPost('/tickets', [
             'place' => 20,
             'user_id' => 3,
-            'session_id' => 3
+            'session_id' => 3,
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
@@ -55,7 +55,7 @@ class TicketsCest
         $I->sendPost('/tickets', [
             'place' => 500,
             'user_id' => 3,
-            'session_id' => 3
+            'session_id' => 3,
         ]);
         $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();
@@ -67,7 +67,7 @@ class TicketsCest
         $I->haveInRepository(Ticket::class, [
             'place' => 20,
             'user' => $I->grabEntityFromRepository(User::class, ['id' => 1]),
-            'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1])
+            'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1]),
         ]);
         $id = $I->grabFromRepository(Ticket::class, 'id', ['place' => 20]);
         $I->sendPatch("/tickets/$id", [
@@ -84,7 +84,7 @@ class TicketsCest
         $I->haveInRepository(Ticket::class, [
             'place' => 20,
             'user' => $I->grabEntityFromRepository(User::class, ['id' => 1]),
-            'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1])
+            'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1]),
         ]);
         $id = $I->grabFromRepository(Ticket::class, 'id', ['place' => 20]);
         $I->sendDelete("/tickets/$id");

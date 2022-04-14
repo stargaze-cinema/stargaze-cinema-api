@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Movie;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Movie|null find($id, $lockMode = null, $lockVersion = null)
@@ -29,11 +29,11 @@ class MovieRepository extends ServiceEntityRepository
                 continue;
             }
 
-            if ($this->getClassMetadata()->getTypeOfField($param) === 'string') {
-                $qb->andWhere($qb->expr()->like("movie.$param", ":value"))
+            if ('string' === $this->getClassMetadata()->getTypeOfField($param)) {
+                $qb->andWhere($qb->expr()->like("movie.$param", ':value'))
                     ->setParameter('value', "%$value%");
             } else {
-                $qb->andWhere($qb->expr()->eq("movie.$param", ":value"))
+                $qb->andWhere($qb->expr()->eq("movie.$param", ':value'))
                     ->setParameter('value', $value);
             }
         }
@@ -60,9 +60,9 @@ class MovieRepository extends ServiceEntityRepository
                 'totalPages' => $pages,
                 'totalItems' => $totalItems,
                 'nextPage' => $page >= $pages ? null : $page + 1,
-                'prevPage' => $page === 1 ? null : $page - 1
+                'prevPage' => 1 === $page ? null : $page - 1,
             ],
-            'data' => $paginator->getQuery()->getResult()
+            'data' => $paginator->getQuery()->getResult(),
         ];
     }
 }

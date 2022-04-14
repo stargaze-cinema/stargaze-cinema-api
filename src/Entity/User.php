@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\Role;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Enum\Role;
 
 #[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
-#[ORM\Table(name: "users"), ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'users'), ORM\HasLifecycleCallbacks]
 class User extends AbstractEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Column(type: 'string', length: 32)]

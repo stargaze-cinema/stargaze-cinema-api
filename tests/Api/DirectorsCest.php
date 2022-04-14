@@ -12,15 +12,15 @@ class DirectorsCest
     public function tryToGetDirector(ApiTester $I): void
     {
         $I->haveInRepository(Director::class, [
-            'name' => "Ryan Raynolds",
+            'name' => 'Ryan Raynolds',
         ]);
 
         $I->sendGet('/directors');
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             [
-                'name' => 'Ryan Raynolds'
-            ]
+                'name' => 'Ryan Raynolds',
+            ],
         ]);
     }
 
@@ -34,7 +34,7 @@ class DirectorsCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/directors', [
-            'name' => "Ryan Raynolds",
+            'name' => 'Ryan Raynolds',
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
@@ -54,15 +54,15 @@ class DirectorsCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Director::class, [
-            'name' => "Ryan Raynolds"
+            'name' => 'Ryan Raynolds',
         ]);
         $id = $I->grabFromRepository(Director::class, 'id', ['name' => 'Ryan Raynolds']);
         $I->sendPatch("/directors/$id", [
-            'name' => "Star Raynolds"
+            'name' => 'Star Raynolds',
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
-            'name' => "Star Raynolds"
+            'name' => 'Star Raynolds',
         ]);
     }
 
@@ -70,7 +70,7 @@ class DirectorsCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Director::class, [
-            'name' => "Ryan Raynolds"
+            'name' => 'Ryan Raynolds',
         ]);
         $id = $I->grabFromRepository(Director::class, 'id', ['name' => 'Ryan Raynolds']);
         $I->sendDelete("/directors/$id");

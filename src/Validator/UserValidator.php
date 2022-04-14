@@ -13,25 +13,25 @@ class UserValidator extends AbstractValidator
         return new Assert\Collection([
             'name' => [
                 $this->assertReqOpt,
-                new Assert\Length(min: 2, max: 32)
+                new Assert\Length(min: 2, max: 32),
             ],
             'email' => [
                 $this->assertReqOpt,
                 new Assert\Email(),
-                new Assert\Length(min: 2, max: 128)
+                new Assert\Length(min: 2, max: 128),
             ],
             'roles' => [
                 $this->assertReqOpt,
-                new Assert\Type('array')
+                new Assert\Type('array'),
             ],
             'password' => [
                 $this->assertReqOpt,
-                new Assert\Length(min: 8, max: 255)
+                new Assert\Length(min: 8, max: 255),
             ],
             'passwordConfirmation' => [
                 $this->assertReqOpt,
-                new Assert\Length(min: 8, max: 255)
-            ]
+                new Assert\Length(min: 8, max: 255),
+            ],
         ]);
     }
 
@@ -43,12 +43,12 @@ class UserValidator extends AbstractValidator
                 'email' => [
                     new Assert\NotBlank(),
                     new Assert\Email(),
-                    new Assert\Length(min: 2, max: 128)
+                    new Assert\Length(min: 2, max: 128),
                 ],
                 'password' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(min: 8, max: 255)
-                ]
+                    new Assert\Length(min: 8, max: 255),
+                ],
             ])
         ));
     }
@@ -61,24 +61,24 @@ class UserValidator extends AbstractValidator
                 'name' => [
                     new Assert\NotBlank(),
                     new Assert\Type('string'),
-                    new Assert\Length(min: 2, max: 32)
+                    new Assert\Length(min: 2, max: 32),
                 ],
                 'email' => [
                     new Assert\NotBlank(),
                     new Assert\Email(),
                     new Assert\Type('string'),
-                    new Assert\Length(min: 2, max: 128)
+                    new Assert\Length(min: 2, max: 128),
                 ],
                 'password' => [
                     new Assert\NotBlank(),
                     new Assert\Type('string'),
-                    new Assert\Length(min: 8, max: 255)
+                    new Assert\Length(min: 8, max: 255),
                 ],
                 'passwordConfirmation' => [
                     new Assert\NotBlank(),
                     new Assert\Type('string'),
-                    new Assert\Length(min: 8, max: 255)
-                ]
+                    new Assert\Length(min: 8, max: 255),
+                ],
             ])
         ));
     }

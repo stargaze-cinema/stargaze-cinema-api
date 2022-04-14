@@ -14,13 +14,13 @@ class FrameValidator extends AbstractValidator
             'movieId' => [
                 $this->assertReqOpt,
                 new Assert\Type('integer'),
-                new Assert\Positive()
+                new Assert\Positive(),
             ],
             'image' => [
                 $this->assertReqOpt,
                 new Assert\Type('string'),
-                new Assert\Length(max: 255)
-            ]
+                new Assert\Length(max: 255),
+            ],
         ]);
     }
 }

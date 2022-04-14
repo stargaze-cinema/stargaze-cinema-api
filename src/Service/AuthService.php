@@ -7,8 +7,8 @@ namespace App\Service;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Exception\UnauthorizedException;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class AuthService
 {

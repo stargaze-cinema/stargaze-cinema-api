@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\TicketRepository::class)]
-#[ORM\Table(name: "tickets"), ORM\HasLifecycleCallbacks, Gedmo\SoftDeleteable]
+#[ORM\Table(name: 'tickets'), ORM\HasLifecycleCallbacks, Gedmo\SoftDeleteable]
 class Ticket extends AbstractEntity
 {
     use SoftDeleteableEntity;
@@ -65,6 +65,7 @@ class Ticket extends AbstractEntity
     {
         $sessionMovie = $this->session->getMovie();
         $sessionHall = $this->session->getHall();
+
         return [
             'id' => $this->id,
             'place' => $this->place,
@@ -134,7 +135,7 @@ class Ticket extends AbstractEntity
                             ],
                             'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                             'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-                            'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                            'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u'),
                         ];
                     })->toArray(),
                     'frames' => $sessionMovie->getFrames()->map(function (Frame $frame) {
@@ -142,7 +143,7 @@ class Ticket extends AbstractEntity
                             'id' => $frame->getId(),
                             'image' => $frame->getImage(),
                             'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                            'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                            'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                         ];
                     })->toArray(),
                     'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

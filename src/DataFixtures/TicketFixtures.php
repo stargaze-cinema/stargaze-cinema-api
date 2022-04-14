@@ -18,12 +18,12 @@ final class TicketFixtures extends Fixture implements DependentFixtureInterface
     {
         $generator = Factory::create();
 
-        for ($i = 0; $i <= self::NUMBER; $i++) {
-            $session = $this->getReference('session_' . $generator->numberBetween(0, SessionFixtures::NUMBER));
+        for ($i = 0; $i <= self::NUMBER; ++$i) {
+            $session = $this->getReference('session_'.$generator->numberBetween(0, SessionFixtures::NUMBER));
 
             $ticket = new Ticket();
             $ticket->setPlace($generator->numberBetween(1, $session->getHall()->getCapacity()));
-            $ticket->setUser($this->getReference('user_' . $generator->numberBetween(0, UserFixtures::NUMBER)));
+            $ticket->setUser($this->getReference('user_'.$generator->numberBetween(0, UserFixtures::NUMBER)));
             $ticket->setSession($session);
 
             $manager->persist($ticket);
@@ -36,7 +36,7 @@ final class TicketFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             UserFixtures::class,
-            SessionFixtures::class
+            SessionFixtures::class,
         ];
     }
 }

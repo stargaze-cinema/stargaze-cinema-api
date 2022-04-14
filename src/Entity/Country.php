@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
-#[ORM\Table(name: "countries"), ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'countries'), ORM\HasLifecycleCallbacks]
 class Country extends AbstractEntity
 {
     #[ORM\Column(type: 'string', length: 64)]
@@ -118,7 +118,7 @@ class Country extends AbstractEntity
                             ],
                             'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                             'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-                            'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                            'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u'),
                         ];
                     })->toArray(),
                     'frames' => $movie->getFrames()->map(function (Frame $frame) {
@@ -126,7 +126,7 @@ class Country extends AbstractEntity
                             'id' => $frame->getId(),
                             'image' => $frame->getImage(),
                             'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                            'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                            'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                         ];
                     })->toArray(),
                     'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

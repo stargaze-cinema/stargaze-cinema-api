@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Tests;
 
 /**
- * Inherited Methods
+ * Inherited Methods.
+ *
  * @method void wantToTest($text)
  * @method void wantTo($text)
  * @method void execute($callable)
@@ -24,8 +25,8 @@ class ApiTester extends \Codeception\Actor
     use _generated\ApiTesterActions;
 
     private array $credentials = [
-        'email' => "deeja@stab.com",
-        'password' => "123456789"
+        'email' => 'deeja@stab.com',
+        'password' => '123456789',
     ];
 
     public function amBearerAuthorized(array $credentials = null): void
