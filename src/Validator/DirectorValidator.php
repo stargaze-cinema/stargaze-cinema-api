@@ -14,8 +14,8 @@ class DirectorValidator extends AbstractValidator
             'name' => [
                 $this->assertReqOpt,
                 new Assert\Type('string'),
-                new Assert\Length(min: 2, max: 64)
-            ]
+                new Assert\Length(min: 2, max: 64),
+            ],
         ]);
     }
 }

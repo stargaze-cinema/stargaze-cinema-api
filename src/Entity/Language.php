@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\LanguageRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LanguageRepository::class)]
-#[ORM\Table(name: "languages"), ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'languages'), ORM\HasLifecycleCallbacks]
 class Language extends AbstractEntity
 {
     #[ORM\Column(type: 'string', length: 64)]
@@ -153,7 +153,7 @@ class Language extends AbstractEntity
                             ],
                             'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                             'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-                            'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                            'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u'),
                         ];
                     })->toArray(),
                     'frames' => $movie->getFrames()->map(function (Frame $frame) {
@@ -161,7 +161,7 @@ class Language extends AbstractEntity
                             'id' => $frame->getId(),
                             'image' => $frame->getImage(),
                             'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                            'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                            'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                         ];
                     })->toArray(),
                     'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

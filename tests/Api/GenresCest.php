@@ -12,15 +12,15 @@ class GenresCest
     public function tryToGetGenre(ApiTester $I): void
     {
         $I->haveInRepository(Genre::class, [
-            'name' => "Action",
+            'name' => 'Action',
         ]);
 
         $I->sendGet('/genres');
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             [
-                'name' => 'Action'
-            ]
+                'name' => 'Action',
+            ],
         ]);
     }
 
@@ -34,7 +34,7 @@ class GenresCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/genres', [
-            'name' => 'Cringe'
+            'name' => 'Cringe',
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
@@ -44,7 +44,7 @@ class GenresCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/genres', [
-            'name' => true
+            'name' => true,
         ]);
         $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();
@@ -54,15 +54,15 @@ class GenresCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Genre::class, [
-            'name' => "Disnep"
+            'name' => 'Disnep',
         ]);
         $id = $I->grabFromRepository(Genre::class, 'id', ['name' => 'Disnep']);
         $I->sendPatch("/genres/$id", [
-            'name' => "Disney"
+            'name' => 'Disney',
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
-            'name' => "Disney"
+            'name' => 'Disney',
         ]);
     }
 
@@ -70,7 +70,7 @@ class GenresCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Genre::class, [
-            'name' => "Delete me"
+            'name' => 'Delete me',
         ]);
         $id = $I->grabFromRepository(Genre::class, 'id', ['name' => 'Delete me']);
         $I->sendDelete("/genres/$id");

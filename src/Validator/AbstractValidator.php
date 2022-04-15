@@ -7,8 +7,8 @@ namespace App\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractValidator
 {
@@ -30,7 +30,7 @@ abstract class AbstractValidator
             foreach ($violations as $error) {
                 array_push($errorMessage, [$error->getPropertyPath() => $error->getMessage()]);
             }
-            $errorResponse = new JsonResponse(["message" => $errorMessage], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            $errorResponse = new JsonResponse(['message' => $errorMessage], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return $errorResponse;

@@ -36,13 +36,14 @@
         "symfony/yaml": "^6.0"
     },
     "require-dev": {
+        "captainhook/captainhook": "^5.10",
         "codeception/codeception": "^5.0",
         "codeception/module-doctrine2": "^3.0",
         "codeception/module-rest": "^3.0",
         "codeception/module-symfony": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "friendsofphp/php-cs-fixer": "^3.8",
         "fzaninotto/faker": "^1.5",
-        "squizlabs/php_codesniffer": "^3.6",
         "symfony/maker-bundle": "^1.0"
     },
     "config": {
@@ -85,6 +86,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "post-autoload-dump": [
+            "vendor/bin/captainhook install -f -s"
         ],
         "lint": [
             "vendor/bin/phpcs -wap --colors"

@@ -9,7 +9,7 @@ use App\Entity\Genre;
 class GenreService extends AbstractEntityService
 {
     /**
-     * Creates new Genre from parameters or updates an existing by passing its entity
+     * Creates new Genre from parameters or updates an existing by passing its entity.
      */
     public function create(array $params, Genre $genre = new Genre()): Genre
     {

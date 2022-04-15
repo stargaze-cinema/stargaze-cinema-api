@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\TicketRepository;
 use App\Service\AuthService;
 use App\Service\TicketService;
 use App\Validator\TicketValidator;
-use App\Repository\TicketRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,7 +31,7 @@ class TicketController extends AbstractController
     public function index(): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         $tickets = $this->ticketRepository->findAll();
@@ -43,13 +43,13 @@ class TicketController extends AbstractController
     public function store(Request $request): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($request->getContentType() === 'json') {
+        if ('json' === $request->getContentType()) {
             if (!$request = $this->transformJsonBody($request)) {
                 return new JsonResponse(
-                    ["message" => 'No request body found.'],
+                    ['message' => 'No request body found.'],
                     JsonResponse::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
@@ -58,7 +58,7 @@ class TicketController extends AbstractController
         $params = [
             'place' => (int) $request->get('place') ?: null,
             'userId' => (int) $request->get('user_id') ?: null,
-            'sessionId' => (int) $request->get('session_id') ?: null
+            'sessionId' => (int) $request->get('session_id') ?: null,
         ];
 
         if ($errorResponse = $this->ticketValidator->validate($params)) {
@@ -80,9 +80,9 @@ class TicketController extends AbstractController
         }
 
         if (
-            !!$this->ticketRepository->findOneBy([
+            (bool) $this->ticketRepository->findOneBy([
             'place' => $ticket->getPlace(),
-            'session' => $ticket->getSession()
+            'session' => $ticket->getSession(),
             ])
         ) {
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
@@ -91,7 +91,7 @@ class TicketController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address('support@stargaze.com'))
             ->to(new Address($user->getEmail(), $user->getName()))
-            ->subject('Your ticket for ' . $movie->getTitle())
+            ->subject('Your ticket for '.$movie->getTitle())
             ->htmlTemplate('emails/ticket.html.twig')
             ->context([
                 'place' => $ticket->getPlace(),
@@ -99,7 +99,7 @@ class TicketController extends AbstractController
                 'hall' => $hall,
                 'movie' => $movie,
                 'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
-                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%')
+                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
             ]);
 
         $this->ticketService->save($ticket);
@@ -112,7 +112,7 @@ class TicketController extends AbstractController
     public function show(int $id): JsonResponse
     {
         if (!$ticket = $this->ticketRepository->find($id)) {
-            return new JsonResponse(["message" => 'No ticket found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No ticket found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         return new JsonResponse($ticket);
@@ -122,27 +122,27 @@ class TicketController extends AbstractController
     public function update(Request $request, int $id): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($request->getContentType() === 'json') {
+        if ('json' === $request->getContentType()) {
             $request = $this->transformJsonBody($request);
             if (!$request) {
                 return new JsonResponse(
-                    ["message" => 'No request body found.'],
+                    ['message' => 'No request body found.'],
                     JsonResponse::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
         }
 
         if (!$ticket = $this->ticketRepository->find($id)) {
-            return new JsonResponse(["message" => 'No ticket found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No ticket found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $params = [
             'place' => (int) $request->get('place') ?: null,
             'userId' => (int) $request->get('user_id') ?: null,
-            'sessionId' => (int) $request->get('session_id') ?: null
+            'sessionId' => (int) $request->get('session_id') ?: null,
         ];
 
         if ($errorResponse = $this->ticketValidator->validate($params, true)) {
@@ -164,9 +164,9 @@ class TicketController extends AbstractController
         }
 
         if (
-            !!$this->ticketRepository->findOneBy([
+            (bool) $this->ticketRepository->findOneBy([
             'place' => $ticket->getPlace(),
-            'session' => $ticket->getSession()
+            'session' => $ticket->getSession(),
             ])
         ) {
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
@@ -175,7 +175,7 @@ class TicketController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address('support@stargaze.com'))
             ->to(new Address($user->getEmail(), $user->getName()))
-            ->subject('Your ticket for ' . $movie->getTitle() . ' was updated.')
+            ->subject('Your ticket for '.$movie->getTitle().' was updated.')
             ->htmlTemplate('emails/ticket.html.twig')
             ->context([
                 'place' => $ticket->getPlace(),
@@ -183,7 +183,7 @@ class TicketController extends AbstractController
                 'hall' => $hall,
                 'movie' => $movie,
                 'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
-                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%')
+                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
             ]);
 
         $this->ticketService->save($ticket);
@@ -196,11 +196,11 @@ class TicketController extends AbstractController
     public function destroy(int $id): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if (!$ticket = $this->ticketRepository->find($id)) {
-            return new JsonResponse(["message" => 'No ticket found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No ticket found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $this->ticketService->delete($ticket);

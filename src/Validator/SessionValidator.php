@@ -19,23 +19,23 @@ class SessionValidator extends AbstractValidator
             'beginAt' => [
                 $this->assertReqOpt,
                 new Assert\Type('string'),
-                $dateTimeISO
+                $dateTimeISO,
             ],
             'endAt' => [
                 $this->assertReqOpt,
                 new Assert\Type('string'),
-                $dateTimeISO
+                $dateTimeISO,
             ],
             'movieId' => [
                 $this->assertReqOpt,
                 new Assert\Type('integer'),
-                new Assert\Positive()
+                new Assert\Positive(),
             ],
             'hallId' => [
                 $this->assertReqOpt,
                 new Assert\Type('integer'),
-                new Assert\Positive()
-            ]
+                new Assert\Positive(),
+            ],
         ]);
     }
 }

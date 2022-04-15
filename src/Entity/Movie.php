@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\PEGI;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: \App\Repository\MovieRepository::class)]
-#[ORM\Table(name: "movies"), ORM\HasLifecycleCallbacks, Gedmo\SoftDeleteable]
+#[ORM\Table(name: 'movies'), ORM\HasLifecycleCallbacks, Gedmo\SoftDeleteable]
 class Movie extends AbstractEntity
 {
     use SoftDeleteableEntity;
@@ -346,7 +346,7 @@ class Movie extends AbstractEntity
                     ],
                     'created_at' => $session->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
                     'updated_at' => $session->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
-                    'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u')
+                    'deleted_at' => $session->getDeletedAt()?->format('Y-m-d\TH:i:s.u'),
                 ];
             })->toArray(),
             'frames' => $this->frames->map(function (Frame $frame) {
@@ -354,7 +354,7 @@ class Movie extends AbstractEntity
                     'id' => $frame->getId(),
                     'image' => $frame->getImage(),
                     'created_at' => $frame->getCreatedAt()->format('Y-m-d\TH:i:s.u'),
-                    'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u')
+                    'updated_at' => $frame->getUpdatedAt()->format('Y-m-d\TH:i:s.u'),
                 ];
             })->toArray(),
             'created_at' => $this->created_at->format('Y-m-d\TH:i:s.u'),

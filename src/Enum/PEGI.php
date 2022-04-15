@@ -11,10 +11,10 @@ enum PEGI: string
     case PG12 = 'PEGI 12';
     case PG16 = 'PEGI 16';
     case PG18 = 'PEGI 18';
-
     public static function getRandom(): self
     {
         $cases = self::cases();
+
         return $cases[array_rand($cases)];
     }
 

@@ -11,7 +11,7 @@ use App\Exception\NotExistsException;
 class MovieService extends AbstractEntityService
 {
     /**
-     * Creates new Movie from parameters or updates an existing by passing its entity
+     * Creates new Movie from parameters or updates an existing by passing its entity.
      *
      * @throws NotExistsException
      */
@@ -36,7 +36,7 @@ class MovieService extends AbstractEntityService
         }
         if (isset($params['languageId'])) {
             if (!$entity = $this->getEntityRepository(\App\Entity\Language::class)->find($params['languageId'])) {
-                throw new NotExistsException("Selected language does not exist.");
+                throw new NotExistsException('Selected language does not exist.');
             }
             $movie->setLanguage($entity);
         }

@@ -18,7 +18,7 @@ final class HallFixtures extends Fixture
     {
         $generator = Factory::create();
 
-        for ($i = 0; $i <= self::NUMBER; $i++) {
+        for ($i = 0; $i <= self::NUMBER; ++$i) {
             $hall = new Hall();
             $hall->setName($generator->firstName);
             $hall->setCapacity($generator->numberBetween(0, 100));

@@ -12,10 +12,10 @@ class AuthCest
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost('/auth/signup', [
-            'name' => "FluffyTester",
-            'email' => "fluffytester@io",
-            'password' => "securepass",
-            'password_confirmation' => "securepass"
+            'name' => 'FluffyTester',
+            'email' => 'fluffytester@io',
+            'password' => 'securepass',
+            'password_confirmation' => 'securepass',
         ]);
         $I->seeResponseCodeIsClientError();
     }
@@ -24,10 +24,10 @@ class AuthCest
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost('/auth/signup', [
-            'name' => "FluffyTester",
-            'email' => "fluffytester@test.net",
-            'password' => "securepass",
-            'password_confirmation' => "unsecurepass"
+            'name' => 'FluffyTester',
+            'email' => 'fluffytester@test.net',
+            'password' => 'securepass',
+            'password_confirmation' => 'unsecurepass',
         ]);
         $I->seeResponseCodeIsClientError();
     }
@@ -36,10 +36,10 @@ class AuthCest
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost('/auth/signup', [
-            'name' => "FluffyTester",
-            'email' => "fluffytester@test.net",
-            'password' => "securepass",
-            'password_confirmation' => "securepass"
+            'name' => 'FluffyTester',
+            'email' => 'fluffytester@test.net',
+            'password' => 'securepass',
+            'password_confirmation' => 'securepass',
         ]);
         $I->seeResponseCodeIsSuccessful();
     }
@@ -48,8 +48,8 @@ class AuthCest
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost('/auth/signin', [
-            'email' => "deeja@stab.com",
-            'password' => "123456789"
+            'email' => 'deeja@stab.com',
+            'password' => '123456789',
         ]);
         $I->seeResponseCodeIsSuccessful();
     }

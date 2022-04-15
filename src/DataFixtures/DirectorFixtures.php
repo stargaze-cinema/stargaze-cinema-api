@@ -20,9 +20,9 @@ final class DirectorFixtures extends Fixture
         $director = new Director();
         $director->setName('Don Hall');
         $manager->persist($director);
-        $this->addReference("director_0", $director);
+        $this->addReference('director_0', $director);
 
-        for ($i = 1; $i <= self::NUMBER; $i++) {
+        for ($i = 1; $i <= self::NUMBER; ++$i) {
             $director = new Director();
             $director->setName($generator->name);
             $manager->persist($director);

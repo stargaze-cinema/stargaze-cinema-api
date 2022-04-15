@@ -10,7 +10,7 @@ use App\Enum\HallType;
 class HallService extends AbstractEntityService
 {
     /**
-     * Creates new Hall from parameters or updates an existing by passing its entity
+     * Creates new Hall from parameters or updates an existing by passing its entity.
      */
     public function create(array $params, Hall $hall = new Hall()): Hall
     {

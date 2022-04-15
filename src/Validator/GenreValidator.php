@@ -14,8 +14,8 @@ class GenreValidator extends AbstractValidator
             'name' => [
                 $this->assertReqOpt,
                 new Assert\Type('string'),
-                new Assert\Length(min: 2, max: 32)
-            ]
+                new Assert\Length(min: 2, max: 32),
+            ],
         ]);
     }
 }

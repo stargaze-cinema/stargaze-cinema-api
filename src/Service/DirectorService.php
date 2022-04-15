@@ -9,7 +9,7 @@ use App\Entity\Director;
 class DirectorService extends AbstractEntityService
 {
     /**
-     * Creates new Director from parameters or updates an existing by passing its entity
+     * Creates new Director from parameters or updates an existing by passing its entity.
      *
      * @throws NotExistsException
      */

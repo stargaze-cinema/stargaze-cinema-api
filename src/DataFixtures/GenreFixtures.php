@@ -20,9 +20,9 @@ final class GenreFixtures extends Fixture
         $genre = new Genre();
         $genre->setName('Animation');
         $manager->persist($genre);
-        $this->addReference("genre_0", $genre);
+        $this->addReference('genre_0', $genre);
 
-        for ($i = 1; $i <= self::NUMBER; $i++) {
+        for ($i = 1; $i <= self::NUMBER; ++$i) {
             $genre = new Genre();
             $genre->setName($generator->colorName);
             $manager->persist($genre);

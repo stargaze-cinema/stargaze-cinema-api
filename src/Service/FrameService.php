@@ -10,7 +10,7 @@ use App\Exception\NotExistsException;
 class FrameService extends AbstractEntityService
 {
     /**
-     * Creates new Frame from parameters or updates an existing by passing its entity
+     * Creates new Frame from parameters or updates an existing by passing its entity.
      *
      * @throws NotExistsException
      */
@@ -21,7 +21,7 @@ class FrameService extends AbstractEntityService
         }
         if (isset($params['movieId'])) {
             if (!$entity = $this->getEntityRepository(\App\Entity\Movie::class)->find($params['movieId'])) {
-                throw new NotExistsException("Selected movie does not exist.");
+                throw new NotExistsException('Selected movie does not exist.');
             }
             $frame->setMovie($entity);
         }

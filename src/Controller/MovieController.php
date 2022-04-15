@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\S3Service;
-use App\Service\AuthService;
-use App\Service\MovieService;
-use App\Service\FrameService;
 use App\Repository\MovieRepository;
+use App\Service\AuthService;
+use App\Service\FrameService;
+use App\Service\MovieService;
+use App\Service\S3Service;
 use App\Validator\MovieValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,14 +39,14 @@ class MovieController extends AbstractController
     public function store(Request $request): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($request->getContentType() === 'json') {
+        if ('json' === $request->getContentType()) {
             $request = $this->transformJsonBody($request);
             if (!$request) {
                 return new JsonResponse(
-                    ["message" => 'No request body found.'],
+                    ['message' => 'No request body found.'],
                     JsonResponse::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
@@ -62,7 +62,7 @@ class MovieController extends AbstractController
             'languageId' => (int) $request->get('language_id') ?: null,
             'countryIds' => $request->get('country_ids') ? json_decode($request->get('country_ids')) : null,
             'genreIds' => $request->get('genre_ids') ? json_decode($request->get('genre_ids')) : null,
-            'directorIds' => $request->get('director_ids') ? json_decode($request->get('director_ids')) : null
+            'directorIds' => $request->get('director_ids') ? json_decode($request->get('director_ids')) : null,
         ];
 
         if ($posterFile = $request->files->get('poster')) {
@@ -89,7 +89,7 @@ class MovieController extends AbstractController
         }
 
         if (!$movie) {
-            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         return new JsonResponse($movie);
@@ -99,21 +99,21 @@ class MovieController extends AbstractController
     public function update(Request $request, int $id): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($request->getContentType() === 'json') {
+        if ('json' === $request->getContentType()) {
             $request = $this->transformJsonBody($request);
             if (!$request) {
                 return new JsonResponse(
-                    ["message" => 'No request body found.'],
+                    ['message' => 'No request body found.'],
                     JsonResponse::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
         }
 
         if (!$movie = $this->movieRepository->find($id)) {
-            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $params = [
@@ -126,7 +126,7 @@ class MovieController extends AbstractController
             'languageId' => (int) $request->get('language_id') ?: null,
             'countryIds' => $request->get('country_ids') ? json_decode($request->get('country_ids')) : null,
             'genreIds' => $request->get('genre_ids') ? json_decode($request->get('genre_ids')) : null,
-            'directorIds' => $request->get('director_ids') ? json_decode($request->get('director_ids')) : null
+            'directorIds' => $request->get('director_ids') ? json_decode($request->get('director_ids')) : null,
         ];
 
         if ($posterFile = $request->files->get('poster')) {
@@ -149,11 +149,11 @@ class MovieController extends AbstractController
     public function destroy(int $id): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if (!$movie = $this->movieRepository->find($id)) {
-            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         if ($poster = $movie->getPoster()) {
@@ -168,19 +168,19 @@ class MovieController extends AbstractController
     #[Route('/movies/{id}/frames', name: 'uploadFrames', methods: ['POST'])]
     public function uploadFrames(int $id, Request $request): JsonResponse
     {
-        if ($request->getContentType() === 'json') {
+        if ('json' === $request->getContentType()) {
             return new JsonResponse(
-                ["message" => 'JSON request unsupported. Use Form-Data instead.'],
+                ['message' => 'JSON request unsupported. Use Form-Data instead.'],
                 JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if (!$movie = $this->movieRepository->find($id)) {
-            return new JsonResponse(["message" => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No movie found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $frames = [];
@@ -191,11 +191,11 @@ class MovieController extends AbstractController
                 continue;
             }
 
-            $imageUrl = $this->s3Service->upload($file, 'frames', $movie->getId() . '_' . md5(uniqid()));
+            $imageUrl = $this->s3Service->upload($file, 'frames', $movie->getId().'_'.md5(uniqid()));
 
             $params = [
                 'movieId' => $id,
-                'image' => $imageUrl
+                'image' => $imageUrl,
             ];
 
             $frame = $this->frameService->create($params);

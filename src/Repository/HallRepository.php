@@ -6,9 +6,9 @@ namespace App\Repository;
 
 use App\Entity\Hall;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Hall|null find($id, $lockMode = null, $lockVersion = null)

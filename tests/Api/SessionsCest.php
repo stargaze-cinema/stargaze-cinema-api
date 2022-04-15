@@ -17,7 +17,7 @@ class SessionsCest
             'movie' => $I->grabEntityFromRepository(Movie::class, ['id' => 1]),
             'hall' => $I->grabEntityFromRepository(Hall::class, ['id' => 1]),
             'begin_at' => new \DateTime(),
-            'end_at' => new \DateTime('+2 hours')
+            'end_at' => new \DateTime('+2 hours'),
         ]);
 
         $I->sendGet('/sessions');
@@ -37,7 +37,7 @@ class SessionsCest
             'movie_id' => 3,
             'hall_id' => 3,
             'begin_at' => (new \DateTime())->format(\DateTime::ISO8601),
-            'end_at' => (new \DateTime('+6 hours'))->format(\DateTime::ISO8601)
+            'end_at' => (new \DateTime('+6 hours'))->format(\DateTime::ISO8601),
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
@@ -50,7 +50,7 @@ class SessionsCest
             'movie_id' => 3,
             'hall_id' => 3,
             'begin_at' => (new \DateTime())->format(\DateTime::ISO8601),
-            'end_at' => (new \DateTime('+30 minutes'))->format(\DateTime::ISO8601)
+            'end_at' => (new \DateTime('+30 minutes'))->format(\DateTime::ISO8601),
         ]);
         $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();
@@ -64,7 +64,7 @@ class SessionsCest
             'movie' => $I->grabEntityFromRepository(Movie::class, ['id' => 1]),
             'hall' => $I->grabEntityFromRepository(Hall::class, ['id' => 1]),
             'begin_at' => $now,
-            'end_at' => new \DateTime('+3 hours')
+            'end_at' => new \DateTime('+3 hours'),
         ]);
         $id = $I->grabFromRepository(Session::class, 'id', ['begin_at' => $now]);
         $I->sendPatch("/sessions/$id", [
@@ -82,7 +82,7 @@ class SessionsCest
             'movie' => $I->grabEntityFromRepository(Movie::class, ['id' => 1]),
             'hall' => $I->grabEntityFromRepository(Hall::class, ['id' => 1]),
             'begin_at' => $now,
-            'end_at' => new \DateTime('+2 hours')
+            'end_at' => new \DateTime('+2 hours'),
         ]);
         $id = $I->grabFromRepository(Session::class, 'id', ['begin_at' => $now]);
         $I->sendDelete("/sessions/$id");

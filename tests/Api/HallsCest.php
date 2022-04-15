@@ -13,7 +13,7 @@ class HallsCest
     public function tryToGetHall(ApiTester $I): void
     {
         $I->haveInRepository(Hall::class, [
-            'name' => "Moon",
+            'name' => 'Moon',
             'capacity' => 100,
             'type' => HallType::IMAX,
         ]);
@@ -22,8 +22,8 @@ class HallsCest
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
             [
-                'name' => 'Moon'
-            ]
+                'name' => 'Moon',
+            ],
         ]);
     }
 
@@ -37,9 +37,9 @@ class HallsCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/halls', [
-            'name' => "Moon",
+            'name' => 'Moon',
             'capacity' => 100,
-            'type' => 'IMAX 3D'
+            'type' => 'IMAX 3D',
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
@@ -49,8 +49,8 @@ class HallsCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/halls', [
-            'name' => "Moon",
-            'type' => 'IMAX'
+            'name' => 'Moon',
+            'type' => 'IMAX',
         ]);
         $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();
@@ -60,17 +60,17 @@ class HallsCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Hall::class, [
-            'name' => "Cringe",
+            'name' => 'Cringe',
             'capacity' => 100,
-            'type' => HallType::IMAX
+            'type' => HallType::IMAX,
         ]);
-        $id = $I->grabFromRepository(Hall::class, 'id', ['name' => "Cringe"]);
+        $id = $I->grabFromRepository(Hall::class, 'id', ['name' => 'Cringe']);
         $I->sendPatch("/halls/$id", [
-            'name' => "Moon"
+            'name' => 'Moon',
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseContainsJson([
-            'name' => "Moon"
+            'name' => 'Moon',
         ]);
     }
 
@@ -78,11 +78,11 @@ class HallsCest
     {
         $I->amBearerAuthorized();
         $I->haveInRepository(Hall::class, [
-            'name' => "Delete me",
+            'name' => 'Delete me',
             'capacity' => 100,
-            'type' => HallType::IMAX
+            'type' => HallType::IMAX,
         ]);
-        $id = $I->grabFromRepository(Hall::class, 'id', ['name' => "Delete me"]);
+        $id = $I->grabFromRepository(Hall::class, 'id', ['name' => 'Delete me']);
         $I->sendDelete("/halls/$id");
         $I->seeResponseCodeIsSuccessful();
     }

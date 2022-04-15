@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Aws\S3\S3Client;
 use App\Factory\S3ClientFactory;
+use Aws\S3\S3Client;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class S3Service
@@ -23,25 +23,26 @@ class S3Service
     }
 
     /**
-     * Uploads a file to Amazon S3
+     * Uploads a file to Amazon S3.
      *
-     * @param UploadedFile $file File.
-     * @param string $path Path inside the bucket.
-     * @param string $filename Name of the file.
-     * @return string URL of the uploaded file.
+     * @param UploadedFile $file     file
+     * @param string       $path     path inside the bucket
+     * @param string       $filename name of the file
+     *
+     * @return string URL of the uploaded file
      */
     public function upload(UploadedFile $file, string $path = '', string $filename = ''): string
     {
         $filename = $filename
-        ? $filename . '.' . $file->guessClientExtension()
+        ? $filename.'.'.$file->guessClientExtension()
         : $file->getClientOriginalName();
         $folderPath = !empty($path) ? "$path/" : '';
         $result = $this->client->putObject([
             'ACL' => 'public-read',
             'Bucket' => $this->bucket,
-            'Key' => $folderPath . $filename,
+            'Key' => $folderPath.$filename,
             'SourceFile' => $file->getRealPath(),
-            'ContentType' => $file->getMimeType()
+            'ContentType' => $file->getMimeType(),
         ]);
 
         $imageUrl = $result->get('ObjectURL');
@@ -53,21 +54,21 @@ class S3Service
     }
 
     /**
-     * Deletes an object inside Amazon S3
+     * Deletes an object inside Amazon S3.
      *
-     * @param string $key Path to the file inside the bucket.
-     * @return bool
+     * @param string $key path to the file inside the bucket
      */
     public function delete(string $key): bool
     {
         $result = $this->client->deleteObject([
             'Bucket' => $this->bucket,
-            'Key' => $key
+            'Key' => $key,
         ]);
 
         if ($result['DeleteMarker']) {
             return true;
         }
+
         return false;
     }
 }

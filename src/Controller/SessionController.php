@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\SessionRepository;
 use App\Service\AuthService;
 use App\Service\SessionService;
 use App\Validator\SessionValidator;
-use App\Repository\SessionRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,13 +35,13 @@ class SessionController extends AbstractController
     public function store(Request $request): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($request->getContentType() === 'json') {
+        if ('json' === $request->getContentType()) {
             if (!$request = $this->transformJsonBody($request)) {
                 return new JsonResponse(
-                    ["message" => 'No request body found.'],
+                    ['message' => 'No request body found.'],
                     JsonResponse::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
@@ -51,7 +51,7 @@ class SessionController extends AbstractController
             'beginAt' => $request->get('begin_at'),
             'endAt' => $request->get('end_at'),
             'movieId' => (int) $request->get('movie_id') ?: null,
-            'hallId' => (int) $request->get('hall_id') ?: null
+            'hallId' => (int) $request->get('hall_id') ?: null,
         ];
 
         if ($errorResponse = $this->sessionValidator->validate($params)) {
@@ -65,7 +65,7 @@ class SessionController extends AbstractController
 
         if ($session->getBeginAt() > $session->getEndAt()) {
             return new JsonResponse(
-                ["message" => 'Start of the session should be earlier than the end.'],
+                ['message' => 'Start of the session should be earlier than the end.'],
                 JsonResponse::HTTP_CONFLICT
             );
         }
@@ -73,7 +73,7 @@ class SessionController extends AbstractController
         $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
         if ($minutes < $session->getMovie()->getRuntime()) {
             return new JsonResponse(
-                ["message" => 'Session can not be shorter then the movie.'],
+                ['message' => 'Session can not be shorter then the movie.'],
                 JsonResponse::HTTP_CONFLICT
             );
         }
@@ -87,7 +87,7 @@ class SessionController extends AbstractController
     public function show(int $id): JsonResponse
     {
         if (!$session = $this->sessionRepository->find($id)) {
-            return new JsonResponse(["message" => 'No session found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No session found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         return new JsonResponse($session);
@@ -97,28 +97,28 @@ class SessionController extends AbstractController
     public function update(Request $request, int $id): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($request->getContentType() === 'json') {
+        if ('json' === $request->getContentType()) {
             $request = $this->transformJsonBody($request);
             if (!$request) {
                 return new JsonResponse(
-                    ["message" => 'No request body found.'],
+                    ['message' => 'No request body found.'],
                     JsonResponse::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
         }
 
         if (!$session = $this->sessionRepository->find($id)) {
-            return new JsonResponse(["message" => 'No session found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No session found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $params = [
             'beginAt' => $request->get('begin_at'),
             'endAt' => $request->get('end_at'),
             'movieId' => (int) $request->get('movie_id') ?: null,
-            'hallId' => (int) $request->get('hall_id') ?: null
+            'hallId' => (int) $request->get('hall_id') ?: null,
         ];
 
         if ($errorResponse = $this->sessionValidator->validate($params, true)) {
@@ -136,7 +136,7 @@ class SessionController extends AbstractController
 
         if ($session->getBeginAt() > $session->getEndAt()) {
             return new JsonResponse(
-                ["message" => 'Start of the session should be earlier than the end.'],
+                ['message' => 'Start of the session should be earlier than the end.'],
                 JsonResponse::HTTP_CONFLICT
             );
         }
@@ -144,7 +144,7 @@ class SessionController extends AbstractController
         $minutes = ceil(abs($session->getEndAt()->getTimestamp() - $session->getBeginAt()->getTimestamp()) / 60);
         if ($minutes < $session->getMovie()->getRuntime()) {
             return new JsonResponse(
-                ["message" => 'Session can not be shorter then the movie.'],
+                ['message' => 'Session can not be shorter then the movie.'],
                 JsonResponse::HTTP_CONFLICT
             );
         }
@@ -158,11 +158,11 @@ class SessionController extends AbstractController
     public function destroy(int $id): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(["message" => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if (!$session = $this->sessionRepository->find($id)) {
-            return new JsonResponse(["message" => 'No session found.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'No session found.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $this->sessionService->delete($session);

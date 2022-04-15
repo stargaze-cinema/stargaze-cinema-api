@@ -9,7 +9,6 @@ enum Role: string
     case User = 'User';
     case Moder = 'Moderator';
     case Admin = 'Administrator';
-
     public static function toArray(): array
     {
         return array_map(function ($case) {

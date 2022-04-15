@@ -8,14 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 abstract class AbstractEntity implements \JsonSerializable
 {
-    #[ORM\Id, ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Id, ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: 'integer')]
     protected int $id;
 
-    #[ORM\Column(type: "datetime", nullable: true)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     protected \DateTime $created_at;
 
-    #[ORM\Column(type: "datetime", nullable: true)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     protected \DateTime $updated_at;
 
     public function getId(): int

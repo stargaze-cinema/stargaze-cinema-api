@@ -11,10 +11,10 @@ enum HallType: string
     case IMAX = 'IMAX 3D';
     case H4DX = '4DX';
     case H5D = '5D';
-
     public static function getRandom(): self
     {
         $cases = self::cases();
+
         return $cases[array_rand($cases)];
     }
 

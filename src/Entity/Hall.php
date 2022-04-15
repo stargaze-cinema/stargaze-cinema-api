@@ -8,7 +8,7 @@ use App\Enum\HallType;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: \App\Repository\HallRepository::class)]
-#[ORM\Table(name: "halls"), ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'halls'), ORM\HasLifecycleCallbacks]
 class Hall extends AbstractEntity
 {
     #[ORM\Column(type: 'string', length: 16)]

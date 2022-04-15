@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\UserRepository;
 use App\Service\UserService;
 use App\Validator\UserValidator;
-use App\Repository\UserRepository;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/auth', name: 'auth.')]
@@ -28,7 +28,7 @@ class AuthController extends AbstractController
     {
         $request = $this->transformJsonBody($request);
         if (!$request) {
-            return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse(['message' => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $params = [
@@ -42,7 +42,7 @@ class AuthController extends AbstractController
             return $errorResponse;
         }
 
-        if ($this->userRepository->findOneBy([ 'email' => $params['email'] ])) {
+        if ($this->userRepository->findOneBy(['email' => $params['email']])) {
             return new JsonResponse(['message' => 'This email is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
         if ($params['password'] !== $params['passwordConfirmation']) {
@@ -63,19 +63,19 @@ class AuthController extends AbstractController
     ): JsonResponse {
         $request = $this->transformJsonBody($request);
         if (!$request) {
-            return new JsonResponse(["message" => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse(['message' => 'No request body found.'], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $params = [
             'email' => $request->get('email'),
-            'password' => $request->get('password')
+            'password' => $request->get('password'),
         ];
 
         if ($errorResponse = $this->userValidator->validateSignIn($params)) {
             return $errorResponse;
         }
 
-        if (!$user = $this->userRepository->findOneBy([ 'email' => $params['email'] ])) {
+        if (!$user = $this->userRepository->findOneBy(['email' => $params['email']])) {
             return new JsonResponse(['message' => 'Invalid credentials.'], JsonResponse::HTTP_CONFLICT);
         }
 
@@ -89,9 +89,9 @@ class AuthController extends AbstractController
         return new JsonResponse([
             'token' => [
                 'value' => $token,
-                'ttl' => $ttl
+                'ttl' => $ttl,
             ],
-            'user' => $user
+            'user' => $user,
         ], JsonResponse::HTTP_OK);
     }
 }

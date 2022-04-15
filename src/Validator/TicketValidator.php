@@ -14,18 +14,18 @@ class TicketValidator extends AbstractValidator
             'place' => [
                 $this->assertReqOpt,
                 new Assert\Type('integer'),
-                new Assert\Positive()
+                new Assert\Positive(),
             ],
             'userId' => [
                 $this->assertReqOpt,
                 new Assert\Type('integer'),
-                new Assert\Positive()
+                new Assert\Positive(),
             ],
             'sessionId' => [
                 $this->assertReqOpt,
                 new Assert\Type('integer'),
-                new Assert\Positive()
-            ]
+                new Assert\Positive(),
+            ],
         ]);
     }
 }

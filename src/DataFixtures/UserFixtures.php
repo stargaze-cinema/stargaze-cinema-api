@@ -27,7 +27,7 @@ final class UserFixtures extends Fixture
         $user->setRoles([Role::Admin, Role::User]);
         $user->setPassword($this->userService->hashPassword($user, '123456789'));
         $manager->persist($user);
-        $this->addReference("user_0", $user);
+        $this->addReference('user_0', $user);
 
         $user = new User();
         $user->setName('Luna');
@@ -35,7 +35,7 @@ final class UserFixtures extends Fixture
         $user->setRoles([Role::User]);
         $user->setPassword($this->userService->hashPassword($user, '123456789'));
         $manager->persist($user);
-        $this->addReference("user_1", $user);
+        $this->addReference('user_1', $user);
 
         $user = new User();
         $user->setName('Deeja');
@@ -43,10 +43,10 @@ final class UserFixtures extends Fixture
         $user->setRoles([Role::Admin]);
         $user->setPassword($this->userService->hashPassword($user, '123456789'));
         $manager->persist($user);
-        $this->addReference("user_2", $user);
+        $this->addReference('user_2', $user);
 
         $generator = Factory::create();
-        for ($i = 3; $i <= self::NUMBER; $i++) {
+        for ($i = 3; $i <= self::NUMBER; ++$i) {
             $user = new User();
             $user->setName($generator->name);
             $user->setEmail($generator->email);
