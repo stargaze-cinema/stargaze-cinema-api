@@ -115,6 +115,6 @@ class GenreController extends AbstractController
 
         $this->genreService->delete($genre);
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(status: JsonResponse::HTTP_NO_CONTENT);
     }
 }

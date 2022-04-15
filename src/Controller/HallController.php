@@ -123,6 +123,6 @@ class HallController extends AbstractController
 
         $this->hallService->delete($hall);
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(status: JsonResponse::HTTP_NO_CONTENT);
     }
 }

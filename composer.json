@@ -112,16 +112,16 @@
             "vendor/bin/codecept build"
         ],
         "database-scratch": [
-            "bin/console doctrine:database:drop --force",
-            "bin/console doctrine:database:create",
-            "bin/console doctrine:migrations:migrate",
-            "bin/console doctrine:fixtures:load"
+            "bin/console -n doctrine:database:drop --force || true",
+            "bin/console -n doctrine:database:create",
+            "bin/console -n doctrine:migrations:migrate",
+            "bin/console -n doctrine:fixtures:load"
         ],
         "database-test-scratch": [
-            "bin/console --env=test doctrine:database:drop --force",
-            "bin/console --env=test doctrine:database:create",
-            "bin/console --env=test doctrine:migrations:migrate",
-            "bin/console --env=test doctrine:fixtures:load"
+            "bin/console -n --env=test doctrine:database:drop --force || true",
+            "bin/console -n --env=test doctrine:database:create",
+            "bin/console -n --env=test doctrine:migrations:migrate",
+            "bin/console -n --env=test doctrine:fixtures:load"
         ]
     },
     "conflict": {

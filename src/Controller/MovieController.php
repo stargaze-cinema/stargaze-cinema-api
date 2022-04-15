@@ -162,7 +162,7 @@ class MovieController extends AbstractController
         }
         $this->movieService->delete($movie);
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(status: JsonResponse::HTTP_NO_CONTENT);
     }
 
     #[Route('/movies/{id}/frames', name: 'uploadFrames', methods: ['POST'])]

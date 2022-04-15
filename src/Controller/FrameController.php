@@ -95,6 +95,6 @@ class FrameController extends AbstractController
 
         $this->frameService->delete($frame);
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(status: JsonResponse::HTTP_NO_CONTENT);
     }
 }

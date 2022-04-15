@@ -40,7 +40,7 @@ class TicketsCest
     {
         $I->amBearerAuthorized();
         $I->sendPost('/tickets', [
-            'place' => 20,
+            'place' => 1,
             'user_id' => 3,
             'session_id' => 3,
         ]);
