@@ -10,8 +10,8 @@ RESTful API built with Symfony framework for the "Stargaze Cinema" project.
     1. Run `bin/console doctrine:database:create` to create a database for the application.
     2. Run `bin/console doctrine:migrations:migrate` to add tables to the database.
     3. Run `bin/console doctrine:fixtures:load` to seed the database.
-    4. Run `bin/console lexik:jwt:generate-keypair` to generate JWT SSL keys.
-6. Now you are ready use the application:
+6. Run `bin/console lexik:jwt:generate-keypair` to generate JWT SSL keys.
+7. Now you are ready use the application:
     - Open `localhost:8000` in the browser to access the application.
     - Open `localhost:8080` in the browser to access PhpPgAdmin.
     - Open `localhost:8008` in the browser to access Swagger API Documentation.

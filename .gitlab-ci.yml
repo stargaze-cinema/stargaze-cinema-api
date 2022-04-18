@@ -1,0 +1,41 @@
+image: docker:20.10
+
+services:
+    - docker:20.10-dind
+
+stages:
+    - test
+
+variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+
+before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - cp .env.example .env
+    - apk -U upgrade
+    - apk add --no-cache docker-compose
+    - docker version
+    - docker info
+    - docker-compose version
+    - docker-compose up -d --build
+    - docker exec php composer i
+    - docker exec php bin/console lexik:jwt:generate-keypair
+
+cache:
+    key: vendor
+    paths:
+        - vendor/
+
+Run all tests:
+    stage: test
+    tags:
+        - r1
+    script:
+        - docker exec php composer database-test-scratch
+        - docker exec php composer test-build
+        - docker exec php composer test
+    retry:
+        max: 2
+        when: always

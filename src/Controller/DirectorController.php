@@ -115,6 +115,6 @@ class DirectorController extends AbstractController
 
         $this->directorService->delete($director);
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(status: JsonResponse::HTTP_NO_CONTENT);
     }
 }

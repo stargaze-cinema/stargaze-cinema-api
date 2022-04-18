@@ -167,6 +167,6 @@ class SessionController extends AbstractController
 
         $this->sessionService->delete($session);
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(status: JsonResponse::HTTP_NO_CONTENT);
     }
 }

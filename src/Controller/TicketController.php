@@ -80,7 +80,7 @@ class TicketController extends AbstractController
         }
 
         if (
-            (bool) $this->ticketRepository->findOneBy([
+            $this->ticketRepository->findOneBy([
             'place' => $ticket->getPlace(),
             'session' => $ticket->getSession(),
             ])
@@ -164,7 +164,7 @@ class TicketController extends AbstractController
         }
 
         if (
-            (bool) $this->ticketRepository->findOneBy([
+            $this->ticketRepository->findOneBy([
             'place' => $ticket->getPlace(),
             'session' => $ticket->getSession(),
             ])
@@ -205,6 +205,6 @@ class TicketController extends AbstractController
 
         $this->ticketService->delete($ticket);
 
-        return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse(status: JsonResponse::HTTP_NO_CONTENT);
     }
 }

@@ -50,7 +50,7 @@ class SessionsCest
             'movie_id' => 3,
             'hall_id' => 3,
             'begin_at' => (new \DateTime())->format(\DateTime::ISO8601),
-            'end_at' => (new \DateTime('+30 minutes'))->format(\DateTime::ISO8601),
+            'end_at' => (new \DateTime('+5 minutes'))->format(\DateTime::ISO8601),
         ]);
         $I->seeResponseCodeIsClientError();
         $I->seeResponseIsJson();

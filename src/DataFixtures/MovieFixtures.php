@@ -54,7 +54,7 @@ final class MovieFixtures extends Fixture implements DependentFixtureInterface
             $movie->setPoster($this->posters[array_rand($this->posters)]);
             $movie->setPrice($generator->randomNumber(2));
             $movie->setYear($generator->numberBetween(1888, 2022));
-            $movie->setRuntime($generator->numberBetween(0, 300));
+            $movie->setRuntime($generator->numberBetween(70, 300));
             $movie->addCountry($this->getReference('country_'.
                 $generator->numberBetween(0, CountryFixtures::NUMBER)));
             $movie->setLanguage($this->getReference('language_'.

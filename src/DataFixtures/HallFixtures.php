@@ -21,7 +21,7 @@ final class HallFixtures extends Fixture
         for ($i = 0; $i <= self::NUMBER; ++$i) {
             $hall = new Hall();
             $hall->setName($generator->firstName);
-            $hall->setCapacity($generator->numberBetween(0, 100));
+            $hall->setCapacity($generator->numberBetween(1, 100));
             $hall->setType(HallType::getRandom());
             $manager->persist($hall);
 
