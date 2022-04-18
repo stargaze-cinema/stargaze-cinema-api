@@ -36,3 +36,6 @@ Run all tests:
         - docker exec php composer database-test-scratch
         - docker exec php composer test-build
         - docker exec php composer test
+    retry:
+        max: 2
+        when: always
