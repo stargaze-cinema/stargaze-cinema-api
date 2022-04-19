@@ -22,7 +22,7 @@ class User extends AbstractEntity implements UserInterface, PasswordAuthenticate
     #[ORM\Column(type: 'string', length: 255)]
     private string $password;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'simple_array', enumType: Role::class)]
     private array $roles = [];
 
     public function getName(): string
@@ -70,9 +70,11 @@ class User extends AbstractEntity implements UserInterface, PasswordAuthenticate
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = Role::User->value;
+        if (!in_array(Role::User, $roles)) {
+            $roles[] = Role::User;
+        }
 
-        return array_unique($roles);
+        return $roles;
     }
 
     public function setRoles(array $roles): self

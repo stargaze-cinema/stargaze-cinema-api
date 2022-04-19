@@ -13,8 +13,7 @@ RESTful API built with Symfony framework for the "Stargaze Cinema" project.
 6. Run `bin/console lexik:jwt:generate-keypair` to generate JWT SSL keys.
 7. Now you are ready use the application:
     - Open `localhost:8000` in the browser to access the application.
-    - Open `localhost:8080` in the browser to access PhpPgAdmin.
-    - Open `localhost:8008` in the browser to access Swagger API Documentation.
+    - Open `localhost:8080` in the browser to access Swagger API Documentation.
     - Open `localhost:8025` in the browser to access MailHog UI.
     - Open `localhost:9001` in the browser to access MinIO Console.
 

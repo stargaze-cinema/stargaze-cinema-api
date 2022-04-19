@@ -83,26 +83,11 @@ services:
         networks:
             - stargaze-api
 
-    phppgadmin:
-        container_name: phppgadmin
-        image: neimheadh/phppgadmin:7.13.0
-        environment:
-            POSTGRES_HOST: postgres
-            POSTGRES_PORT: 5432
-            POSTGRES_USER: ${POSTGRES_USER:-symfony}
-            POSTGRES_PASS: ${POSTGRES_PASSWORD:-secret}
-        ports:
-            - 8080:80
-        networks:
-            - stargaze-api
-        depends_on:
-            - postgres
-
     swagger-ui:
         container_name: swagger-ui
         image: swaggerapi/swagger-ui:v4.10.3
         ports:
-            - 8008:8080
+            - 8080:8080
         volumes:
             - ./doc:/usr/share/nginx/html/doc
         environment:
