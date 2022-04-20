@@ -37,7 +37,7 @@ class AuthService
     public function authenticatedAsAdmin(): bool
     {
         $roles = $this->getCurrentUser()->getRoles();
-        if (!in_array(Role::Admin->value, $roles)) {
+        if (!in_array(Role::Admin, $roles)) {
             return false;
         }
 
@@ -47,7 +47,7 @@ class AuthService
     public function authenticatedAsModer(): bool
     {
         $roles = $this->getCurrentUser()->getRoles();
-        if (!in_array(Role::Moder->value, $roles)) {
+        if (!in_array(Role::Moder, $roles)) {
             return false;
         }
 

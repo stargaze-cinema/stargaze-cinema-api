@@ -1,10 +1,10 @@
-FROM php:8.1.4-fpm-alpine
+FROM php:8.1.5-fpm-alpine
 
-COPY --from=composer:2.3 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.3.5 /usr/bin/composer /usr/local/bin/composer
 WORKDIR /var/www/stargaze
 USER root
 
-RUN apk update && apk --no-cache add \
+RUN apk -U --no-cache add \
     autoconf make g++ \
     unzip curl-dev \
     libzip-dev icu-dev libpq-dev zlib-dev

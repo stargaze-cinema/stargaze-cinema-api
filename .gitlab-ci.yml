@@ -1,41 +1,94 @@
-image: docker:20.10
+image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:20.10.14
 
 services:
-    - docker:20.10-dind
+    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:20.10.14-dind
+      alias: docker
 
 stages:
+    - build
     - test
+    - release
+    - deploy
 
 variables:
+    APP_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    APP_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: ''
+
+cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+        - config/jwt/
+        - var/
+        - vendor/
+    policy: pull-push
+
+.launch_app: &launch_app
+    - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --no-build nginx minio mailhog
+    - docker exec php composer i
+    - docker exec php bin/console lexik:jwt:generate-keypair || true
+
+.load_images: &load_images
+    - docker load -i images.tar
 
 before_script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
     - cp .env.example .env
-    - apk -U upgrade
-    - apk add --no-cache docker-compose
-    - docker version
+    - apk -U add --no-cache docker-compose
     - docker info
     - docker-compose version
-    - docker-compose up -d --build
-    - docker exec php composer i
-    - docker exec php bin/console lexik:jwt:generate-keypair
 
-cache:
-    key: vendor
-    paths:
-        - vendor/
+Build images:
+    stage: build
+    tags:
+        - r2
+    script:
+        - docker build --pull -f docker/php/Dockerfile -t $APP_IMAGE .
+        - docker-compose pull nginx postgres minio mailhog
+        - docker save -o images.tar $APP_IMAGE nginx postgres minio/minio mailhog/mailhog
+    needs: []
+    artifacts:
+        paths:
+            - images.tar
 
 Run all tests:
     stage: test
     tags:
-        - r1
+        - r2
     script:
+        - *load_images
+        - *launch_app
         - docker exec php composer database-test-scratch
         - docker exec php composer test-build
         - docker exec php composer test
+    needs:
+        - job: Build images
+          artifacts: true
     retry:
         max: 2
         when: always
+
+Release images:
+    stage: release
+    when: on_success
+    tags:
+        - r2
+    script:
+        - *load_images
+        - docker tag $APP_IMAGE $APP_RELEASE_IMAGE
+        - docker push $APP_RELEASE_IMAGE
+        - docker push $APP_IMAGE
+    needs:
+        - job: Build images
+          artifacts: true
+        - job: Run all tests
+
+Deploy app:
+    stage: deploy
+    when: manual
+    script:
+        - deploy.sh
+    only:
+        - master
