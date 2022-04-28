@@ -367,6 +367,9 @@
     "softcreatr/jsonpath": {
         "version": "0.8.0"
     },
+    "stella-maris/clock": {
+        "version": "0.1.4"
+    },
     "stof/doctrine-extensions-bundle": {
         "version": "1.7",
         "recipe": {

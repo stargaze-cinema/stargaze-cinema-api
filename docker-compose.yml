@@ -50,7 +50,7 @@ services:
 
     minio:
         container_name: minio
-        image: minio/minio:RELEASE.2022-04-16T04-26-02Z
+        image: minio/minio:RELEASE.2022-04-26T01-20-24Z
         entrypoint: sh
         command: >
             -c 'mkdir -p /data/${MINIO_BUCKET:-stargazecinema} &&
@@ -59,8 +59,8 @@ services:
             - 127.0.0.1:9000:9000
             - 9001:9001
         environment:
-            MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-mykey}
-            MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-mysecretkey}
+            MINIO_ROOT_USER: ${MINIO_ROOT_USER:-mykey}
+            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-mysecretkey}
         volumes:
             - minio-storage:/data
         healthcheck:

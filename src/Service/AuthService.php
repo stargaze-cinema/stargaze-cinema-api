@@ -29,7 +29,7 @@ class AuthService
         return $token;
     }
 
-    private function getCurrentUser(): User
+    public function getCurrentUser(): User
     {
         return $this->getUserToken()->getUser();
     }
@@ -52,5 +52,10 @@ class AuthService
         }
 
         return true;
+    }
+
+    public function isAuthenticated(): bool
+    {
+        return (bool) $this->tokenStorage->getToken();
     }
 }

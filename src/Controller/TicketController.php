@@ -6,13 +6,11 @@ namespace App\Controller;
 
 use App\Repository\TicketRepository;
 use App\Service\AuthService;
+use App\Service\MailerService;
 use App\Service\TicketService;
 use App\Validator\TicketValidator;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'tickets.')]
@@ -23,7 +21,7 @@ class TicketController extends AbstractController
         private TicketService $ticketService,
         private TicketValidator $ticketValidator,
         private TicketRepository $ticketRepository,
-        private MailerInterface $mailer
+        private MailerService $mailerService
     ) {
     }
 
@@ -42,8 +40,8 @@ class TicketController extends AbstractController
     #[Route('/tickets', name: 'store', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
-        if (!$this->authService->authenticatedAsAdmin()) {
-            return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
+        if (!$this->authService->isAuthenticated()) {
+            return new JsonResponse(['message' => 'Unauthorized.'], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if ('json' === $request->getContentType()) {
@@ -57,7 +55,7 @@ class TicketController extends AbstractController
 
         $params = [
             'place' => (int) $request->get('place') ?: null,
-            'userId' => (int) $request->get('user_id') ?: null,
+            'userId' => (int) $request->get('user_id') ?: $this->authService->getCurrentUser()->getId(),
             'sessionId' => (int) $request->get('session_id') ?: null,
         ];
 
@@ -81,29 +79,22 @@ class TicketController extends AbstractController
 
         if (
             $this->ticketRepository->findOneBy([
-            'place' => $ticket->getPlace(),
-            'session' => $ticket->getSession(),
+                'place' => $ticket->getPlace(),
+                'session' => $ticket->getSession(),
             ])
         ) {
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        $email = (new TemplatedEmail())
-            ->from(new Address('support@stargaze.com'))
-            ->to(new Address($user->getEmail(), $user->getName()))
-            ->subject('Your ticket for '.$movie->getTitle())
-            ->htmlTemplate('emails/ticket.html.twig')
-            ->context([
-                'place' => $ticket->getPlace(),
-                'user' => $user,
-                'hall' => $hall,
-                'movie' => $movie,
-                'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
-                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
-            ]);
-
+        $this->mailerService->composeTicket([
+            'place' => $ticket->getPlace(),
+            'user' => $user,
+            'hall' => $hall,
+            'movie' => $movie,
+            'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
+            'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
+        ]);
         $this->ticketService->save($ticket);
-        $this->mailer->send($email);
 
         return new JsonResponse($ticket, JsonResponse::HTTP_CREATED);
     }
@@ -165,29 +156,23 @@ class TicketController extends AbstractController
 
         if (
             $this->ticketRepository->findOneBy([
-            'place' => $ticket->getPlace(),
-            'session' => $ticket->getSession(),
+                'place' => $ticket->getPlace(),
+                'session' => $ticket->getSession(),
             ])
         ) {
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        $email = (new TemplatedEmail())
-            ->from(new Address('support@stargaze.com'))
-            ->to(new Address($user->getEmail(), $user->getName()))
-            ->subject('Your ticket for '.$movie->getTitle().' was updated.')
-            ->htmlTemplate('emails/ticket.html.twig')
-            ->context([
-                'place' => $ticket->getPlace(),
-                'user' => $user,
-                'hall' => $hall,
-                'movie' => $movie,
-                'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
-                'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
-            ]);
+        $this->mailerService->composeTicket([
+            'place' => $ticket->getPlace(),
+            'user' => $user,
+            'hall' => $hall,
+            'movie' => $movie,
+            'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
+            'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
+        ]);
 
         $this->ticketService->save($ticket);
-        $this->mailer->send($email);
 
         return new JsonResponse($ticket, JsonResponse::HTTP_CREATED);
     }
