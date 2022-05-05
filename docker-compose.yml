@@ -13,8 +13,8 @@ services:
             - 8000:80
         volumes:
             - ./:/var/www/stargaze
-            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - ./docker/php/php.ini:/etc/nginx/conf.d/php.ini
+            - ./docker/etc/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+            - ./docker/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
         networks:
             - stargaze-api
         depends_on:
@@ -24,10 +24,10 @@ services:
         container_name: php
         image: php
         build:
-            context: ./docker/php
+            context: ./docker
+            dockerfile: Dockerfile
         volumes:
             - ./:/var/www/stargaze
-            - ./docker/php/php.ini:/usr/local/etc/php/php.ini
         networks:
             - stargaze-api
         depends_on:
@@ -50,7 +50,7 @@ services:
 
     minio:
         container_name: minio
-        image: minio/minio:RELEASE.2022-04-30T22-23-53Z
+        image: minio/minio:RELEASE.2022-05-04T07-45-27Z
         entrypoint: sh
         command: >
             -c 'mkdir -p /data/${MINIO_BUCKET:-stargazecinema} &&

@@ -1,8 +1,10 @@
 FROM php:8.1.5-fpm-alpine
 
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/local/bin/composer
+
 WORKDIR /var/www/stargaze
-USER root
+
+COPY etc /usr/local/etc
 
 RUN apk -U --no-cache add \
     autoconf make g++ \

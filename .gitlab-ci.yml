@@ -43,7 +43,7 @@ before_script:
 Build images:
     stage: build
     tags:
-        - r2
+        - docker
     script:
         - docker build --pull -f docker/php/Dockerfile -t $APP_IMAGE .
         - docker-compose pull nginx postgres minio mailhog
@@ -56,7 +56,7 @@ Build images:
 Run all tests:
     stage: test
     tags:
-        - r2
+        - docker
     script:
         - *load_images
         - *launch_app
@@ -74,7 +74,7 @@ Release images:
     stage: release
     when: on_success
     tags:
-        - r2
+        - docker
     script:
         - *load_images
         - docker tag $APP_IMAGE $APP_RELEASE_IMAGE
