@@ -1,35 +1,23 @@
 version: "3.9"
 
 networks:
-    stargaze-api:
-        name: stargaze-api
+    api-network:
+        name: api-network
         driver: bridge
 
 services:
-    nginx:
-        container_name: nginx
-        image: nginx:1.21.6-alpine
+    app:
+        container_name: ${APP_NAME:-symfony}
+        image: ${APP_NAME:-symfony}:${APP_VERSION:-latest}
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
         ports:
             - 8000:80
         volumes:
             - ./:/var/www/stargaze
-            - ./docker/etc/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-            - ./docker/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
         networks:
-            - stargaze-api
-        depends_on:
-            - php
-
-    php:
-        container_name: php
-        image: php
-        build:
-            context: ./docker
-            dockerfile: Dockerfile
-        volumes:
-            - ./:/var/www/stargaze
-        networks:
-            - stargaze-api
+            - api-network
         depends_on:
             - postgres
 
@@ -40,13 +28,13 @@ services:
             - 5432:5432
         restart: always
         environment:
-            POSTGRES_DB: ${POSTGRES_DB:-stargaze-cinema}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
-            POSTGRES_USER: ${POSTGRES_USER:-symfony}
-        networks:
-            - stargaze-api
+            POSTGRES_DB: ${POSTGRES_DB:-database}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
+            POSTGRES_USER: ${POSTGRES_USER:-myuser}
         volumes:
             - pg-storage:/var/lib/postgresql/data:rw
+        networks:
+            - api-network
 
     minio:
         container_name: minio
@@ -70,7 +58,7 @@ services:
             retries: 3
         restart: on-failure
         networks:
-            - stargaze-api
+            - api-network
 
     mailhog:
         container_name: mailhog
@@ -81,7 +69,7 @@ services:
             - 1025:1025
             - 8025:8025
         networks:
-            - stargaze-api
+            - api-network
 
     swagger-ui:
         container_name: swagger-ui
@@ -93,9 +81,9 @@ services:
         environment:
             API_URL: doc/openapi.yaml
         networks:
-            - stargaze-api
+            - api-network
         depends_on:
-            - nginx
+            - app
 
 volumes:
     minio-storage:

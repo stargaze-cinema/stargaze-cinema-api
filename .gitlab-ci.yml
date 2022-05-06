@@ -1,18 +1,19 @@
-image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:20.10.14
+image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:20.10.15
 
 services:
-    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:20.10.14-dind
+    - name: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker:20.10.15-dind
       alias: docker
 
 stages:
     - build
     - test
     - release
-    - deploy
+    - publish
 
 variables:
     APP_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
     APP_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+    AWS_ECR_IMAGE: $AWS_ECR_REGISTRY/$AWS_ECR_REPOSITORY:latest
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ''
@@ -25,52 +26,70 @@ cache:
         - vendor/
     policy: pull-push
 
-.launch_app: &launch_app
-    - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --no-build nginx minio mailhog
-    - docker exec php composer i
-    - docker exec php bin/console lexik:jwt:generate-keypair || true
+.install_compose: &install_compose
+    - apk add --no-cache docker-compose
+    - docker-compose version
 
 .load_images: &load_images
-    - docker load -i images.tar
+    - docker load -i build.tar || true
+    - docker load -i pull.tar || true
+
+.launch_app: &launch_app
+    - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --no-build app minio mailhog
+    - docker exec stargaze-cinema-api composer i
+    - docker exec stargaze-cinema-api bin/console lexik:jwt:generate-keypair --overwrite
 
 before_script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
     - cp .env.example .env
-    - apk -U add --no-cache docker-compose
-    - docker info
-    - docker-compose version
+    - docker version
 
-Build images:
+Build image:
     stage: build
     tags:
         - docker
     script:
-        - docker build --pull -f docker/php/Dockerfile -t $APP_IMAGE .
-        - docker-compose pull nginx postgres minio mailhog
-        - docker save -o images.tar $APP_IMAGE nginx postgres minio/minio mailhog/mailhog
+        - docker build -f docker/Dockerfile -t $APP_IMAGE .
+        - docker save -o build.tar $APP_IMAGE
     needs: []
     artifacts:
         paths:
-            - images.tar
+            - build.tar
+
+Pull images:
+    stage: build
+    tags:
+        - docker
+    script:
+        - *install_compose
+        - docker-compose pull postgres minio mailhog
+        - docker save -o pull.tar postgres minio/minio mailhog/mailhog
+    needs: []
+    artifacts:
+        paths:
+            - pull.tar
 
 Run all tests:
     stage: test
     tags:
         - docker
     script:
+        - *install_compose
         - *load_images
         - *launch_app
-        - docker exec php composer database-test-scratch
-        - docker exec php composer test-build
-        - docker exec php composer test
+        - docker exec stargaze-cinema-api composer database-test-scratch
+        - docker exec stargaze-cinema-api composer test-build
+        - docker exec stargaze-cinema-api composer test
     needs:
-        - job: Build images
+        - job: Build image
+          artifacts: true
+        - job: Pull images
           artifacts: true
     retry:
         max: 2
         when: always
 
-Release images:
+Release image:
     stage: release
     when: on_success
     tags:
@@ -81,14 +100,32 @@ Release images:
         - docker push $APP_RELEASE_IMAGE
         - docker push $APP_IMAGE
     needs:
-        - job: Build images
+        - job: Build image
           artifacts: true
         - job: Run all tests
+          artifacts: false
 
-Deploy app:
-    stage: deploy
-    when: manual
+Publish image:
+    stage: publish
+    when: on_success
+    image:
+        name: amazon/aws-cli:2.6.2
+        entrypoint: [""]
+    tags:
+        - docker
+    before_script:
+        - amazon-linux-extras install docker
+        - aws --version
+        - docker --version
     script:
-        - deploy.sh
+        - *load_images
+        - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY
+        - docker tag $APP_IMAGE $AWS_ECR_IMAGE
+        - docker push $AWS_ECR_IMAGE
+    needs:
+        - job: Build image
+          artifacts: true
+        - job: Run all tests
+          artifacts: false
     only:
         - master
