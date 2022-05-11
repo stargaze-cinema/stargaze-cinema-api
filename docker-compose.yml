@@ -12,6 +12,7 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile
+            target: development
         ports:
             - 8000:80
         volumes:
@@ -23,14 +24,14 @@ services:
 
     postgres:
         container_name: postgres
-        image: postgres:14.2-alpine
+        image: postgres:14.2-alpine3.15
         ports:
             - 5432:5432
         restart: always
         environment:
             POSTGRES_DB: ${POSTGRES_DB:-database}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
             POSTGRES_USER: ${POSTGRES_USER:-myuser}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
         volumes:
             - pg-storage:/var/lib/postgresql/data:rw
         networks:
@@ -38,7 +39,7 @@ services:
 
     minio:
         container_name: minio
-        image: minio/minio:RELEASE.2022-05-04T07-45-27Z
+        image: minio/minio:RELEASE.2022-05-08T23-50-31Z
         entrypoint: sh
         command: >
             -c 'mkdir -p /data/${MINIO_BUCKET:-stargazecinema} &&
@@ -73,7 +74,7 @@ services:
 
     swagger-ui:
         container_name: swagger-ui
-        image: swaggerapi/swagger-ui:v4.10.3
+        image: swaggerapi/swagger-ui:v4.11.0
         ports:
             - 8080:8080
         volumes:
@@ -82,8 +83,6 @@ services:
             API_URL: doc/openapi.yaml
         networks:
             - api-network
-        depends_on:
-            - app
 
 volumes:
     minio-storage:
