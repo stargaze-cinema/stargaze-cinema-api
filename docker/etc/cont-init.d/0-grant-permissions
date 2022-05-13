@@ -1,0 +1,16 @@
+#!/command/with-contenv sh
+
+var_dir=/var/www/stargaze/var/
+
+printf "\n📂 Creating cache directories...\n\n"
+mkdir -p \
+    $var_dir/cache \
+    $var_dir/log \
+printf "\n📂 Cache directories ready...\n\n"
+
+printf "\n📂 Granting permissions...\n\n"
+chown -R www-data:www-data $var_dir
+chmod g+s $var_dir
+printf "\n📂 Permissions granted\n\n"
+
+exit 0

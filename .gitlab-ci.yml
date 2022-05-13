@@ -86,8 +86,8 @@ Run all tests:
     tags:
         - docker
     script:
-        - *install_compose
         - *load_images
+        - *install_compose
         - *launch_app
         - docker exec stargaze-cinema-api composer database-test-scratch
         - docker exec stargaze-cinema-api composer test-build
@@ -121,7 +121,7 @@ Publish image:
     stage: publish
     when: on_success
     image:
-        name: amazon/aws-cli:2.6.4
+        name: amazon/aws-cli:2.7.0
         entrypoint: [""]
     tags:
         - docker
