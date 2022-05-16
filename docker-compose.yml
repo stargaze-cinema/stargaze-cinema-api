@@ -20,7 +20,8 @@ services:
         networks:
             - api-network
         depends_on:
-            - postgres
+            postgres:
+                condition: service_healthy
 
     postgres:
         container_name: postgres
@@ -32,6 +33,12 @@ services:
             POSTGRES_DB: ${POSTGRES_DB:-database}
             POSTGRES_USER: ${POSTGRES_USER:-myuser}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
+        healthcheck:
+            test: [CMD-SHELL, pg_isready, -U, $POSTGRES_USER, -d, $POSTGRES_DB]
+            interval: 30s
+            timeout: 60s
+            retries: 5
+            start_period: 80s
         volumes:
             - pg-storage:/var/lib/postgresql/data:rw
         networks:

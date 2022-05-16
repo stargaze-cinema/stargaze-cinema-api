@@ -131,7 +131,7 @@ Publish image:
         - docker --version
     script:
         - *load_images
-        - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY
+        - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY
         - docker tag $APP_IMAGE $AWS_ECR_IMAGE
         - docker push $AWS_ECR_IMAGE
     needs:
