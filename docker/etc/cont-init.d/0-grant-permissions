@@ -4,7 +4,8 @@ var_dir=/var/www/stargaze/var/
 
 printf "\n📂 Creating cache directories...\n\n"
 mkdir -p \
-    $var_dir/cache \
+    $var_dir/cache/dev \
+    $var_dir/cache/prod \
     $var_dir/log \
 printf "\n📂 Cache directories ready...\n\n"
 
