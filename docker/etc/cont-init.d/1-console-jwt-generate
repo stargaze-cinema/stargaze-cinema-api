@@ -1,0 +1,10 @@
+#!/command/with-contenv sh
+
+if [ ! -f /var/www/stargaze/config/jwt/public.pem ]; then
+    printf "\n🔐 Generating a JWT SSL keypair\n\n"
+    /var/www/stargaze/bin/console lexik:jwt:generate-keypair
+    exit 0
+else
+    printf "\n🔐 JWT SSL generation not needed\n\n"
+    exit 0
+fi
