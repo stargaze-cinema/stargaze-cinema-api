@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a451c1f7df7814df522edc836ac7321b",
+    "content-hash": "81147a94eef8e401b33bed4cd68fb4e3",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -58,16 +58,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.222.15",
+            "version": "3.222.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2c73f3f3716516f733d449f504e954446a994994"
+                "reference": "23b31a966ea85e7ec8e76062a072695f832a0b96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2c73f3f3716516f733d449f504e954446a994994",
-                "reference": "2c73f3f3716516f733d449f504e954446a994994",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/23b31a966ea85e7ec8e76062a072695f832a0b96",
+                "reference": "23b31a966ea85e7ec8e76062a072695f832a0b96",
                 "shasum": ""
             },
             "require": {
@@ -143,9 +143,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.222.15"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.222.16"
             },
-            "time": "2022-05-18T18:15:15+00:00"
+            "time": "2022-05-19T18:27:39+00:00"
         },
         {
             "name": "behat/transliterator",
@@ -3615,6 +3615,75 @@
             "time": "2021-11-22T15:17:44+00:00"
         },
         {
+            "name": "symfony/amqp-messenger",
+            "version": "v6.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/amqp-messenger.git",
+                "reference": "ea0266d00badb571266e9b3debc5d1df0f1a9f7b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/amqp-messenger/zipball/ea0266d00badb571266e9b3debc5d1df0f1a9f7b",
+                "reference": "ea0266d00badb571266e9b3debc5d1df0f1a9f7b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-amqp": "*",
+                "php": ">=8.0.2",
+                "symfony/messenger": "^5.4|^6.0"
+            },
+            "require-dev": {
+                "symfony/event-dispatcher": "^5.4|^6.0",
+                "symfony/process": "^5.4|^6.0",
+                "symfony/property-access": "^5.4|^6.0",
+                "symfony/serializer": "^5.4|^6.0"
+            },
+            "type": "symfony-messenger-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Messenger\\Bridge\\Amqp\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony AMQP extension Messenger Bridge",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/amqp-messenger/tree/v6.0.7"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-03-31T17:22:53+00:00"
+        },
+        {
             "name": "symfony/asset",
             "version": "v6.0.7",
             "source": {
@@ -5411,6 +5480,91 @@
                 }
             ],
             "time": "2022-05-17T15:46:50+00:00"
+        },
+        {
+            "name": "symfony/messenger",
+            "version": "v6.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/messenger.git",
+                "reference": "8ba92cff412af800ac9232728f0f659f2261a230"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/messenger/zipball/8ba92cff412af800ac9232728f0f659f2261a230",
+                "reference": "8ba92cff412af800ac9232728f0f659f2261a230",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.2",
+                "psr/log": "^1|^2|^3"
+            },
+            "conflict": {
+                "symfony/event-dispatcher": "<5.4",
+                "symfony/framework-bundle": "<5.4",
+                "symfony/http-kernel": "<5.4",
+                "symfony/serializer": "<5.4"
+            },
+            "require-dev": {
+                "psr/cache": "^1.0|^2.0|^3.0",
+                "symfony/console": "^5.4|^6.0",
+                "symfony/dependency-injection": "^5.4|^6.0",
+                "symfony/event-dispatcher": "^5.4|^6.0",
+                "symfony/http-kernel": "^5.4|^6.0",
+                "symfony/process": "^5.4|^6.0",
+                "symfony/property-access": "^5.4|^6.0",
+                "symfony/routing": "^5.4|^6.0",
+                "symfony/serializer": "^5.4|^6.0",
+                "symfony/service-contracts": "^1.1|^2|^3",
+                "symfony/stopwatch": "^5.4|^6.0",
+                "symfony/validator": "^5.4|^6.0"
+            },
+            "suggest": {
+                "enqueue/messenger-adapter": "For using the php-enqueue library as a transport."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Messenger\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Samuel Roze",
+                    "email": "samuel.roze@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Helps applications send and receive messages to/from other applications or via message queues",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/messenger/tree/v6.0.8"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-04-12T16:11:42+00:00"
         },
         {
             "name": "symfony/mime",
@@ -7948,16 +8102,16 @@
         },
         {
             "name": "captainhook/captainhook",
-            "version": "5.10.8",
+            "version": "5.10.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/captainhookphp/captainhook.git",
-                "reference": "c150f96cc2b6dd13f9a4a9c155e6cb42bcef44ca"
+                "reference": "967e5a6ebba2eccc4b1a381e3119cc0c2a6ff9ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/captainhookphp/captainhook/zipball/c150f96cc2b6dd13f9a4a9c155e6cb42bcef44ca",
-                "reference": "c150f96cc2b6dd13f9a4a9c155e6cb42bcef44ca",
+                "url": "https://api.github.com/repos/captainhookphp/captainhook/zipball/967e5a6ebba2eccc4b1a381e3119cc0c2a6ff9ba",
+                "reference": "967e5a6ebba2eccc4b1a381e3119cc0c2a6ff9ba",
                 "shasum": ""
             },
             "require": {
@@ -8019,7 +8173,7 @@
             ],
             "support": {
                 "issues": "https://github.com/captainhookphp/captainhook/issues",
-                "source": "https://github.com/captainhookphp/captainhook/tree/5.10.8"
+                "source": "https://github.com/captainhookphp/captainhook/tree/5.10.9"
             },
             "funding": [
                 {
@@ -8027,7 +8181,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-06T21:32:16+00:00"
+            "time": "2022-05-20T13:30:33+00:00"
         },
         {
             "name": "codeception/codeception",
