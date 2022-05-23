@@ -36,7 +36,7 @@ cache:
     - docker load -i pull.tar || true
 
 .launch_app: &launch_app
-    - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --no-build app minio mailhog
+    - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --no-build app minio mailhog rabbitmq
     - docker exec stargaze-cinema-api composer i
 
 before_script:
@@ -74,8 +74,8 @@ Pull images:
         - docker
     script:
         - *install_compose
-        - docker-compose pull postgres minio mailhog
-        - docker save -o pull.tar postgres minio/minio mailhog/mailhog
+        - docker-compose pull postgres minio mailhog rabbitmq
+        - docker save -o pull.tar postgres minio/minio mailhog/mailhog rabbitmq
     needs: []
     artifacts:
         paths:
