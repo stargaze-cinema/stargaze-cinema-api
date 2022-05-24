@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Message\EmailNotification;
 use App\Repository\TicketRepository;
 use App\Service\AuthService;
-use App\Service\MailerService;
 use App\Service\TicketService;
 use App\Validator\TicketValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(name: 'tickets.')]
@@ -20,8 +21,7 @@ class TicketController extends AbstractController
         private AuthService $authService,
         private TicketService $ticketService,
         private TicketValidator $ticketValidator,
-        private TicketRepository $ticketRepository,
-        private MailerService $mailerService
+        private TicketRepository $ticketRepository
     ) {
     }
 
@@ -38,7 +38,7 @@ class TicketController extends AbstractController
     }
 
     #[Route('/tickets', name: 'store', methods: ['POST'])]
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, MessageBusInterface $bus): JsonResponse
     {
         if (!$this->authService->isAuthenticated()) {
             return new JsonResponse(['message' => 'Unauthorized.'], JsonResponse::HTTP_UNAUTHORIZED);
@@ -86,14 +86,20 @@ class TicketController extends AbstractController
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        $this->mailerService->composeTicket([
-            'place' => $ticket->getPlace(),
-            'user' => $user,
-            'hall' => $hall,
-            'movie' => $movie,
-            'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
-            'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
-        ]);
+        $bus->dispatch(new EmailNotification(
+            to: [$user->getEmail(), $user->getName()],
+            subject: 'Your ticket for '.$movie->getTitle(),
+            template: 'emails/ticket.html.twig',
+            context: [
+                'place' => $ticket->getPlace(),
+                'user' => $user,
+                'hall' => $hall,
+                'movie' => $movie,
+                'beginAt' => $session->getBeginAt()->format('l d at G:i'),
+                'endAt' => $session->getEndAt()->format('l d at G:i'),
+            ]
+        ));
+
         $this->ticketService->save($ticket);
 
         return new JsonResponse($ticket, JsonResponse::HTTP_CREATED);
@@ -110,7 +116,7 @@ class TicketController extends AbstractController
     }
 
     #[Route('/tickets/{id}', name: 'update', methods: ['PATCH', 'PUT'])]
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id, MessageBusInterface $bus): JsonResponse
     {
         if (!$this->authService->authenticatedAsAdmin()) {
             return new JsonResponse(['message' => 'Insufficient access rights.'], JsonResponse::HTTP_UNAUTHORIZED);
@@ -163,14 +169,19 @@ class TicketController extends AbstractController
             return new JsonResponse(['message' => 'This place is already taken.'], JsonResponse::HTTP_CONFLICT);
         }
 
-        $this->mailerService->composeTicket([
-            'place' => $ticket->getPlace(),
-            'user' => $user,
-            'hall' => $hall,
-            'movie' => $movie,
-            'beginAt' => $session->getBeginAt()->format('%l% %d% at %G:i%'),
-            'endAt' => $session->getEndAt()->format('%l% %d% at %G:i%'),
-        ]);
+        $bus->dispatch(new EmailNotification(
+            to: [$user->getEmail(), $user->getName()],
+            subject: '[UPDATED] Your ticket for '.$movie->getTitle(),
+            template: 'emails/ticket.html.twig',
+            context: [
+                'place' => $ticket->getPlace(),
+                'user' => $user,
+                'hall' => $hall,
+                'movie' => $movie,
+                'beginAt' => $session->getBeginAt()->format('l d at G:i'),
+                'endAt' => $session->getEndAt()->format('l d at G:i'),
+            ]
+        ));
 
         $this->ticketService->save($ticket);
 

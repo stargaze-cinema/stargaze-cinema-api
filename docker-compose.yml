@@ -22,6 +22,8 @@ services:
         depends_on:
             postgres:
                 condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
 
     postgres:
         container_name: postgres
@@ -52,10 +54,11 @@ services:
             - 15672:15672
         restart: always
         healthcheck:
-            test: [rabbitmq-diagnostics, -q, ping]
+            test: "rabbitmq-diagnostics -q ping"
             interval: 30s
-            timeout: 30s
-            retries: 3
+            timeout: 60s
+            retries: 5
+            start_period: 80s
         volumes:
             - rabbitmq-storage:/var/lib/rabbitmq
             - ./docker/rabbitmq:/etc/rabbitmq
@@ -64,7 +67,7 @@ services:
 
     minio:
         container_name: minio
-        image: minio/minio:RELEASE.2022-05-19T18-20-59Z
+        image: minio/minio:RELEASE.2022-05-23T18-45-11Z
         entrypoint: sh
         command: >
             -c 'mkdir -p /data/${MINIO_BUCKET:-stargazecinema} &&

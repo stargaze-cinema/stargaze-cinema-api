@@ -46,7 +46,6 @@ class TicketsCest
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
-        $I->seeEmailIsSent();
     }
 
     public function tryToPostInvalidTicket(ApiTester $I): void
@@ -75,7 +74,6 @@ class TicketsCest
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
-        $I->seeEmailIsSent();
     }
 
     public function tryToDeleteTicket(ApiTester $I): void

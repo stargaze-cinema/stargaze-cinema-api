@@ -21,7 +21,6 @@ variables:
 cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
-        - config/jwt/
         - var/
         - vendor/
     policy: pull-push
@@ -38,6 +37,7 @@ cache:
 .launch_app: &launch_app
     - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --no-build app minio mailhog rabbitmq
     - docker exec stargaze-cinema-api composer i
+    - docker exec stargaze-cinema-api bin/console -n lexik:jwt:generate-keypair --overwrite
 
 before_script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
