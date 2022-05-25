@@ -46,7 +46,6 @@ class TicketsCest
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
-        $I->seeEmailIsSent();
     }
 
     public function tryToPostInvalidTicket(ApiTester $I): void
@@ -64,29 +63,30 @@ class TicketsCest
     public function tryToPatchTicket(ApiTester $I): void
     {
         $I->amBearerAuthorized();
-        $I->haveInRepository(Ticket::class, [
+        $data = [
             'place' => 20,
             'user' => $I->grabEntityFromRepository(User::class, ['id' => 1]),
             'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1]),
-        ]);
-        $id = $I->grabFromRepository(Ticket::class, 'id', ['place' => 20]);
+        ];
+        $I->haveInRepository(Ticket::class, $data);
+        $id = $I->grabFromRepository(Ticket::class, 'id', $data);
         $I->sendPatch("/tickets/$id", [
             'place' => 5,
         ]);
         $I->seeResponseCodeIsSuccessful();
         $I->seeResponseIsJson();
-        $I->seeEmailIsSent();
     }
 
     public function tryToDeleteTicket(ApiTester $I): void
     {
         $I->amBearerAuthorized();
-        $I->haveInRepository(Ticket::class, [
+        $data = [
             'place' => 20,
             'user' => $I->grabEntityFromRepository(User::class, ['id' => 1]),
             'session' => $I->grabEntityFromRepository(Session::class, ['id' => 1]),
-        ]);
-        $id = $I->grabFromRepository(Ticket::class, 'id', ['place' => 20]);
+        ];
+        $I->haveInRepository(Ticket::class, $data);
+        $id = $I->grabFromRepository(Ticket::class, 'id', $data);
         $I->sendDelete("/tickets/$id");
         $I->seeResponseCodeIsSuccessful();
     }

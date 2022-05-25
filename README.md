@@ -14,6 +14,7 @@ RESTful API built with Symfony framework for the "Stargaze Cinema" project.
     - Open `localhost:8080` in the browser to access Swagger API Documentation.
     - Open `localhost:8025` in the browser to access MailHog UI.
     - Open `localhost:9001` in the browser to access MinIO Console.
+    - Open `localhost:15672` in the browser to access RabbitMQ Management.
 
 ## Testing the application with Codeception
 

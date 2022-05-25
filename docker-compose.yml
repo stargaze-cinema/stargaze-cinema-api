@@ -16,11 +16,13 @@ services:
         ports:
             - 8000:80
         volumes:
-            - ./:/var/www/stargaze
+            - ./:/var/www/stargaze:rw
         networks:
             - api-network
         depends_on:
             postgres:
+                condition: service_healthy
+            rabbitmq:
                 condition: service_healthy
 
     postgres:
@@ -44,9 +46,28 @@ services:
         networks:
             - api-network
 
+    rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3.10.2-management-alpine
+        ports:
+            - 5672:5672
+            - 15672:15672
+        restart: always
+        healthcheck:
+            test: "rabbitmq-diagnostics -q ping"
+            interval: 30s
+            timeout: 60s
+            retries: 5
+            start_period: 80s
+        volumes:
+            - rabbitmq-storage:/var/lib/rabbitmq:rw
+            - ./docker/rabbitmq:/etc/rabbitmq:ro
+        networks:
+            - api-network
+
     minio:
         container_name: minio
-        image: minio/minio:RELEASE.2022-05-08T23-50-31Z
+        image: minio/minio:RELEASE.2022-05-23T18-45-11Z
         entrypoint: sh
         command: >
             -c 'mkdir -p /data/${MINIO_BUCKET:-stargazecinema} &&
@@ -58,7 +79,7 @@ services:
             MINIO_ROOT_USER: ${MINIO_ROOT_USER:-mykey}
             MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-mysecretkey}
         volumes:
-            - minio-storage:/data
+            - minio-storage:/data:rw
         healthcheck:
             test: [CMD, curl, -f, http://localhost:9000/minio/health/live]
             interval: 30s
@@ -85,16 +106,19 @@ services:
         ports:
             - 8080:8080
         volumes:
-            - ./doc:/usr/share/nginx/html/doc
+            - ./doc:/usr/share/nginx/html/doc:ro
         environment:
             API_URL: doc/openapi.yaml
         networks:
             - api-network
 
 volumes:
-    minio-storage:
-        name: minio-storage
-        driver: local
     pg-storage:
         name: pg-storage
+        driver: local
+    rabbitmq-storage:
+        name: rabbitmq-storage
+        driver: local
+    minio-storage:
+        name: minio-storage
         driver: local
