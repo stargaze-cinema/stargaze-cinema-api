@@ -1,3 +1,0 @@
-#!/command/execlineb -P
-
-/var/www/stargaze/bin/console messenger:consume async --memory-limit=128M

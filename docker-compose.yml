@@ -16,7 +16,7 @@ services:
         ports:
             - 8000:80
         volumes:
-            - ./:/var/www/stargaze
+            - ./:/var/www/stargaze:rw
         networks:
             - api-network
         depends_on:
@@ -60,8 +60,8 @@ services:
             retries: 5
             start_period: 80s
         volumes:
-            - rabbitmq-storage:/var/lib/rabbitmq
-            - ./docker/rabbitmq:/etc/rabbitmq
+            - rabbitmq-storage:/var/lib/rabbitmq:rw
+            - ./docker/rabbitmq:/etc/rabbitmq:ro
         networks:
             - api-network
 
@@ -79,7 +79,7 @@ services:
             MINIO_ROOT_USER: ${MINIO_ROOT_USER:-mykey}
             MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-mysecretkey}
         volumes:
-            - minio-storage:/data
+            - minio-storage:/data:rw
         healthcheck:
             test: [CMD, curl, -f, http://localhost:9000/minio/health/live]
             interval: 30s
@@ -106,7 +106,7 @@ services:
         ports:
             - 8080:8080
         volumes:
-            - ./doc:/usr/share/nginx/html/doc
+            - ./doc:/usr/share/nginx/html/doc:ro
         environment:
             API_URL: doc/openapi.yaml
         networks:
